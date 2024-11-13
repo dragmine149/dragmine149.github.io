@@ -19,13 +19,14 @@ body {
   overflow: hidden;
 }
 
-article.title-card {
+article.main {
   width: 100%;
   height: 100%;
   background: none;
+  color: inherit;
 }
 
-article.title-card h1 {
+article.main h1 {
   font-family: 'dot_matrix', serif;
   font-size: 7.5rem;
 }

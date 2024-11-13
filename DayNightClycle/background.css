@@ -15,10 +15,6 @@ body {
   height: 100%;
 }
 
-article {
-  color: inherit;
-}
-
 .g0 {
   background: linear-gradient(to bottom, #012459 0%, #001322 100%);
   color: white;
