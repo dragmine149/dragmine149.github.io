@@ -27,7 +27,7 @@ class internal_clock {
 
   start_clock() {
     const now = new Date();
-    const time_to_hour = (60 - now.getMinutes()) * 3600 + (60 - now.getSeconds()) * 60 + (1000 - now.getMilliseconds());
+    const time_to_hour = (60 - now.getMinutes()) * 60 * 1000 + (60 - now.getSeconds()) * 1000 + (1000 - now.getMilliseconds());
     // Sync the clock to the hour
     setTimeout(() => {
       this.start_timer()
