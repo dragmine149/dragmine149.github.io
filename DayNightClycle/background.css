@@ -1,0 +1,129 @@
+/* Source: https://codepen.io/bork/pen/WNrmWr */
+
+
+* {
+  margin: 0;
+  padding: 0
+}
+
+html {
+  height: 100%;
+}
+
+body {
+  width: 100%;
+  height: 100%;
+}
+
+article {
+  color: inherit;
+}
+
+.g0 {
+  background: linear-gradient(to bottom, #012459 0%, #001322 100%);
+  color: white;
+}
+
+.g1 {
+  background: linear-gradient(to bottom, #003972 0%, #001322 100%);
+  color: white;
+}
+
+.g2 {
+  background: linear-gradient(to bottom, #003972 0%, #001322 100%);
+  color: white;
+}
+
+.g3 {
+  background: linear-gradient(to bottom, #004372 0%, #00182b 100%);
+  color: white;
+}
+
+.g4 {
+  background: linear-gradient(to bottom, #004372 0%, #011d34 100%);
+  color: white;
+}
+
+.g5 {
+  background: linear-gradient(to bottom, #016792 0%, #00182b 100%);
+  color: white;
+}
+
+.g6 {
+  background: linear-gradient(to bottom, #07729f 0%, #042c47 100%);
+  color: white;
+}
+
+.g7 {
+  background: linear-gradient(to bottom, #12a1c0 0%, #07506e 100%);
+}
+
+.g8 {
+  background: linear-gradient(to bottom, #74d4cc 0%, #1386a6 100%);
+}
+
+.g9 {
+  background: linear-gradient(to bottom, #efeebc 0%, #61d0cf 100%);
+}
+
+.g10 {
+  background: linear-gradient(to bottom, #fee154 0%, #a3dec6 100%);
+}
+
+.g11 {
+  background: linear-gradient(to bottom, #fdc352 0%, #e8ed92 100%);
+}
+
+.g12 {
+  background: linear-gradient(to bottom, #ffac6f 0%, #ffe467 100%);
+}
+
+.g13 {
+  background: linear-gradient(to bottom, #fda65a 0%, #ffe467 100%);
+}
+
+.g14 {
+  background: linear-gradient(to bottom, #fd9e58 0%, #ffe467 100%);
+}
+
+.g15 {
+  background: linear-gradient(to bottom, #f18448 0%, #ffd364 100%);
+}
+
+.g16 {
+  background: linear-gradient(to bottom, #f06b7e 0%, #f9a856 100%);
+}
+
+.g17 {
+  background: linear-gradient(to bottom, #ca5a92 0%, #f4896b 100%);
+}
+
+.g18 {
+  background: linear-gradient(to bottom, #5b2c83 0%, #d1628b 100%);
+  color: white;
+}
+
+.g19 {
+  background: linear-gradient(to bottom, #371a79 0%, #713684 100%);
+  color: white;
+}
+
+.g20 {
+  background: linear-gradient(to bottom, #28166b 0%, #45217c 100%);
+  color: white;
+}
+
+.g21 {
+  background: linear-gradient(to bottom, #192861 0%, #372074 100%);
+  color: white;
+}
+
+.g22 {
+  background: linear-gradient(to bottom, #040b3c 0%, #233072 100%);
+  color: white;
+}
+
+.g23 {
+  background: linear-gradient(to bottom, #040b3c 0%, #012459 100%);
+  color: white;
+}
