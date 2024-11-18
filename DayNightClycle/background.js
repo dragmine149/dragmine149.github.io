@@ -21,25 +21,24 @@ function set_to_time(old_time) {
 
 // a timer that runs every hour, on the hour, to update the css.
 class internal_clock {
-  constructor(callback) {
-    this.callback = callback;
-  }
+  callback = set_to_now;
 
   start_clock() {
     const now = new Date();
-    const time_to_hour = (60 - now.getMinutes()) * 60 * 1000 + (60 - now.getSeconds()) * 1000 + (1000 - now.getMilliseconds());
+    const time_to_hour = (60 - now.getMinutes()) * 60 * 1000 + (60 - now.getSeconds()) * 1000 + (1000 - now.getMilliseconds()) + 1000;
+    // const time_to_hour = 10_000;
+    console.log(time_to_hour);
     // Sync the clock to the hour
-    setTimeout(() => {
-      this.start_timer()
-    }, time_to_hour);
+    //   setTimeout(() => {
+    //     this.start_timer();
+    //   }, time_to_hour);
+    setTimeout(this.start_timer, time_to_hour);
   }
 
   start_timer() {
     this.callback();
-
-    setInterval(() => {
-      this.classList();
-    }, 3_600_000);
+    // setInterval(this.callback, 10_000);
+    setInterval(this.callback, 3_601_000);
   }
 }
 
@@ -50,9 +49,10 @@ function set_to_now() {
   const old_time = time_index;
   const now = new Date();
   time_index = now.getHours();
+  console.log({ time_index });
   set_to_time(old_time);
 }
 
 set_to_now();
-const clock = new internal_clock(set_to_now);
+const clock = new internal_clock();
 clock.start_clock();
