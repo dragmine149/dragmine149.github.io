@@ -22,6 +22,7 @@ function set_to_time(old_time) {
 // a timer that runs every hour, on the hour, to update the css.
 class internal_clock {
   callback = set_to_now;
+  // callback = increment_time;
 
   start_clock() {
     const now = new Date();
@@ -29,10 +30,9 @@ class internal_clock {
     // const time_to_hour = 10_000;
     console.log(time_to_hour);
     // Sync the clock to the hour
-    //   setTimeout(() => {
-    //     this.start_timer();
-    //   }, time_to_hour);
-    setTimeout(this.start_timer, time_to_hour);
+    setTimeout(() => {
+      this.start_timer();
+    }, time_to_hour);
   }
 
   start_timer() {
