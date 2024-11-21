@@ -1,0 +1,25 @@
+<!-- This head tag redirects the user so the page can be loaded correctly. -->
+<!-- TODO: Change this method so the page doesn't have to be redirected. -->
+<head>
+  <noscript>
+    <meta http-equiv="refresh" content="0; url=https://dragmine149.github.io"/>
+  </noscript>
+  <script>
+    const url = new URL(location);
+    const query = url.searchParams;
+    query.append("load", location.pathname.replace('/', ''));
+    location.href = `${location.origin}${url.search}`;
+  </script>
+</head>
+
+<div id="content">
+  <link rel="stylesheet" href="Blog/blog_style.css">
+  <script src="Blog/blog.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <h1 id="title">Blog</h1>
+
+  <ol>
+  </ol>
+
+  <div id="blog_content"></div>
+</div>

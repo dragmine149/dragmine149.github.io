@@ -1,0 +1,9 @@
+#blog_content {
+  text-align: left;
+  overflow: auto;
+  height: calc(100vh - 150px);
+}
+
+#blog_content h1 {
+  font-family: initial;
+}
