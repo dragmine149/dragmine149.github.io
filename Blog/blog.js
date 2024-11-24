@@ -67,7 +67,9 @@ function load_blog(blog) {
       (value) => {
         // using marked, load the blog post into the page
         let marked = window.marked;
-        document.getElementById('blog_content').innerHTML = marked.parse(value);
+        document.getElementById('blog_content').innerHTML = new marked.Marked()
+          .use(markedFootnote())
+          .parse(value.replace(/^[\u200B\u200C\u200D\u200E\u200F\uFEFF]/, ""));
       })
     .catch(
       /**
