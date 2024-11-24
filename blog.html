@@ -12,14 +12,18 @@
   </script>
 </head>
 
-<div id="content">
+<div id="content" style="width: 100%;">
   <link rel="stylesheet" href="Blog/blog_style.css">
   <script src="Blog/blog.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
   <h1 id="title">Blog</h1>
 
-  <ol>
-  </ol>
+  <div id="blog_list">
+  </div>
 
-  <div id="blog_content"></div>
+  <div id="blog_content" hidden></div>
+
+  <div class="snackbar error" id="blog_snackbar">
+    <span id="blog_snackbar_content"></span>
+  </div>
 </div>

@@ -70,7 +70,7 @@ function load_page_from_url() {
     return;
   }
   url.searchParams.delete('load');
-  console.log(url);
+  // console.log(url);
 
   const page_path = query.split('/');
   load_page(page_path[0], url.search);
