@@ -17,6 +17,12 @@ function decrement_time() {
 function set_to_time(old_time) {
   document.body.classList.remove(`g${old_time}`);
   document.body.classList.add(`g${time_index}`);
+
+  let website_mode = 'light';
+  if (time_index >= 18 || time_index <= 6) {
+    website_mode = 'dark';
+  }
+  ui('mode', website_mode);
 }
 
 // a timer that runs every hour, on the hour, to update the css.
