@@ -9,11 +9,25 @@
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="DayNightClycle/background.css">
     <!-- <link rel="stylesheet" href="Stars/star.css"> -->
+    <script src="functions.js"></script>
     <script src="page_loader.js"></script>
   </head>
   <body class="g0">
     <article class="main no-padding medium center-align middle-align">
       <script src="DayNightClycle/background.js" defer></script>
+      <div id="navigation" class="snackbar top active">
+        <button disabled>
+          <i>Arrow_Back</i>
+        </button>
+        <div class="max"></div>
+        <button onclick="load_page('main_page.html')">Home</button>
+        <button onclick="load_page('blog.html')">Blog</button>
+        <div class="max"></div>
+        <button disabled>
+          <i>Arrow_Forward</i>
+        </button>
+      </div>
+      <div id="scripts"></div>
       <div id="content">
         <h1>Dragmine149</h1>
         <h6>Welcome to the site of dragons</h6>

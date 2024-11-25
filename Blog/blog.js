@@ -1,13 +1,3 @@
-/**
-* Gets the root of the page.
-* @returns The page
-*/
-function get_current_page() {
-  const url = new URL(location);
-  const page_location = url.origin + "/";
-  return page_location;
-}
-
 function view_blog() {
   const blog_content = document.getElementById('blog_content');
   const blog_list = document.getElementById('blog_list');
@@ -24,17 +14,6 @@ function view_blog_list() {
   blog_content.hidden = true;
 }
 
-
-/**
-*
-* @param {String} element_id The id of the element to replace the text with
-* @param {String} page_location The page location to load.
-*/
-function load_page_content(element_id, page_location) {
-  fetch(page_location)
-    .then((response) => response.text())
-    .then((value) => document.getElementById(element_id).innerHTML = value);
-}
 
 /**
 * Load a blog post onto the page
@@ -141,7 +120,11 @@ function load_blog_from_url() {
   return true;
 }
 
-const blog_loaded = load_blog_from_url();
-if (!blog_loaded) {
-  load_blog_list();
+function blog_loader() {
+  const blog_loaded = load_blog_from_url();
+  if (!blog_loaded) {
+    load_blog_list();
+  }
 }
+
+blog_loader();
