@@ -12,5 +12,11 @@
       "Test"
     ],
     "preview": "A second blog post?"
+  },
+  "2024-11-27": {
+    "categories": [
+      "Code"
+    ],
+    "preview": "A post not related to the website?"
   }
 }

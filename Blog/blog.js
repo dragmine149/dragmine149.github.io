@@ -47,7 +47,24 @@ function load_blog(blog) {
         // using marked, load the blog post into the page
         let marked = window.marked;
         document.getElementById('blog_content').innerHTML = new marked.Marked()
+          // .use(markedFootnote(), customHeadingId(), markedHighlight({
+          //   emptyLangClass: 'hljs',
+          //   langPrefix: 'hljs language-',
+          //   highlight(code, lang, info) {
+          //     const language = hljs.getLanguage(lang) ? lang : 'plaintext';
+          //     return hljs.highlight(code, { language }).value;
+          //   }
+          // }))
+          .use(markedCustomHeadingId())
           .use(markedFootnote())
+          .use(markedHighlight.markedHighlight({
+            emptyLangClass: 'hljs',
+            langPrefix: 'hljs language-',
+            highlight(code, lang, info) {
+              const language = hljs.getLanguage(lang) ? lang : 'plaintext';
+              return hljs.highlight(code, { language }).value;
+            }
+          }))
           .parse(value.replace(/^[\u200B\u200C\u200D\u200E\u200F\uFEFF]/, ""));
       })
     .catch(
