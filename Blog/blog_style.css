@@ -1,15 +1,41 @@
+#blog_list article {
+  background-color: #f7f2f72b;
+}
+
 #blog_content {
   text-align: left;
   overflow: auto;
   height: calc(100vh - 150px);
   width: 90%;
   margin: 0 5% 0 5%;
+
+  font-family: initial;
 }
 
 #blog_content h1 {
   font-family: initial;
+  font-size: 4rem;
 }
 
-#blog_list article {
-  background-color: #f7f2f72b;
+#blog_content p {
+  font-size: 1.2rem;
+}
+
+#blog_content a {
+  text-decoration: underline;
+  color: #11554e;
+}
+
+.dark #blog_content a {
+  color: #95ddd5;
+}
+
+#blog_content code {
+  padding: .1rem .25rem .1rem .25rem;
+}
+
+#blog_content pre {
+  background-color: initial;
+  white-space: initial;
+  padding: 0;
 }
