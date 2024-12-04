@@ -11,20 +11,28 @@
     <!-- <link rel="stylesheet" href="Stars/star.css"> -->
     <script src="functions.js"></script>
     <script src="page_loader.js"></script>
-    <a rel="me" href="https://silversword.online/@dragmine149" hidden>Mastodon</a>
+
+    <script defer src="Assets/fontawesome-free-6.6.0-web/js/brands.js"></script>
+    <link href="Assets/fontawesome-free-6.6.0-web/css/brands.css" rel="stylesheet">
+    <!-- <script src="https://kit.fontawesome.com/8b676ead78.js" crossorigin="anonymous"></script> -->
   </head>
   <body class="g0">
     <article class="main no-padding medium center-align middle-align">
       <script src="DayNightClycle/background.js" defer></script>
       <div id="navigation" class="snackbar top active">
-        <button disabled>
+        <button onclick="previous_page()" id="navigation-previous" disabled>
           <i>Arrow_Back</i>
         </button>
         <div class="max"></div>
         <button onclick="load_page('main_page.html')">Home</button>
         <button onclick="load_page('blog.html')">Blog</button>
+        <button onclick="socials()">Socials</button>
+        <div id="socials" class="snackbar top">
+          <i class="fa-brands fa-mastodon"></i>
+          <a rel="me" href="https://silversword.online/@dragmine149" target="_blank">Mastodon</a>
+        </div>
         <div class="max"></div>
-        <button disabled>
+        <button onclick="next_page()" id="navigation-next" disabled>
           <i>Arrow_Forward</i>
         </button>
       </div>

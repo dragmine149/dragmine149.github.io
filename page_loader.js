@@ -1,3 +1,92 @@
+let page_history = [];
+let page_index = -1;
+
+// TODO: Improve this whole page system to be more integrated with the browser.
+
+function previous_page() {
+  if (page_history.length <= 0) {
+    return;
+  }
+
+  page_index -= 1;
+
+  let previous = page_history[page_index];
+  load_page(previous[0], previous[1], false);
+
+  document.getElementById('navigation-previous').disabled = page_index <= 0;
+  document.getElementById('navigation-next').disabled = page_index >= page_history.length - 1;
+}
+
+
+function next_page() {
+  if (page_index >= page_history.length) {
+    return;
+  }
+
+  page_index += 1;
+
+  let next = page_history[page_index];
+  load_page(next[0], next[1], false);
+
+  document.getElementById('navigation-previous').disabled = page_index <= 0;
+  document.getElementById('navigation-next').disabled = page_index >= page_history.length - 1;
+}
+
+
+function add_page_to_history(data) {
+  if (page_index == page_history.length - 1) {
+    page_history.push(data);
+    page_index += 1;
+
+    document.getElementById('navigation-previous').disabled = page_index <= 0;
+    document.getElementById('navigation-next').disabled = page_index >= page_history.length - 1;
+    return;
+  }
+
+  for (let i = 0; i < page_history.length - 1 - page_index; i++) {
+    page_history.pop();
+  }
+  page_history.push(data);
+  page_index += 1;
+
+  document.getElementById('navigation-previous').disabled = page_index <= 0;
+  document.getElementById('navigation-next').disabled = page_index >= page_history.length - 1;
+}
+
+
+
+window.addEventListener('popstate', (event) => {
+  console.log({ event, page_history });
+  console.log(window.history.length);
+})
+window.addEventListener('hashchange', (event) => {
+  console.log(event);
+})
+
+
+window.addEventListener('mousemove', (event) => {
+  // console.log(event);
+  let width = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
+  let height = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
+
+  if (event.clientY <= height * 0.3 && (event.clientX >= width * .35 && event.clientX <= width * .75)) {
+    document.getElementById('navigation').classList.add("active");
+  } else {
+    hide_navbar();
+  }
+})
+
+function hide_navbar() {
+  document.getElementById('navigation').classList.remove("active");
+  document.getElementById('socials').classList.remove("active");
+}
+
+function socials() {
+  // TODO: Move this around on how this gets activated
+  document.getElementById('socials').classList.add("active");
+}
+
+
 /**
 * Gets the root of the page.
 * @returns The page
@@ -102,10 +191,21 @@ function load_page_content(element_id, page_location, page_name) {
 * @param {String} page The page to laod
 * @param {String} params Search paramaters
 */
-function load_page(page, params = null) {
+function load_page(page, params = null, history_save = true) {
   const page_location = get_current_page() + page;
+
+  if (page_location == location.href) {
+    return; // Don't do stuff if we are already on that page.
+  }
+
   load_page_content('content', page_location, page);
-  history.pushState({}, "", page_location + (params == null ? "" : params));
+  history.pushState({
+    name: page
+  }, "", page_location + (params == null ? "" : params));
+
+  if (history_save) {
+    add_page_to_history([page, params]);
+  }
 }
 
 
