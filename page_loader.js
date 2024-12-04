@@ -12,8 +12,14 @@ function get_current_page() {
 const page_cache = new Map();
 
 function load_page_content_from_cache(element_id, cache_name) {
+  /** @type {HTMLElement} */
   const content = page_cache.get(cache_name);
   const scripts = content.getElementsByTagName('script');
+
+  let title = content.getElementsByTagName('pageTitle').item(0);
+  if (title != null) {
+    document.getElementsByTagName('title').item(0).innerText = title.innerText;
+  }
 
   document.getElementById(element_id).replaceWith(content);
   load_page_scripts_from_cache(scripts, cache_name);
@@ -88,8 +94,7 @@ function load_page_content(element_id, page_location, page_name) {
     })
     .finally(() => {
       load_page_content_from_cache(element_id, page_name);
-    })
-    ;
+    });
 }
 
 /**
