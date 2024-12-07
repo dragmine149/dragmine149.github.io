@@ -38,6 +38,23 @@ article.main h1 {
   inset: 4rem auto auto 50%;
 }
 
-i[class*="fa-"] {
+.fa-brands {
   font-family: 'Font Awesome 6 Brands';
+}
+
+.fas,
+.fa-classic,
+.fa-solid,
+.far,
+.fa-regular {
+  /* TODO: Remove !important. */
+  font-family: 'Font Awesome 6 Free';
+}
+
+.snackbar.top.right {
+  inset: 2rem auto auto 95%;
+}
+
+.snackbar.vertical {
+  inline-size: 5%;
 }

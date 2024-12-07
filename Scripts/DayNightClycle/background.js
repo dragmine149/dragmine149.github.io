@@ -18,9 +18,9 @@ function set_to_time(old_time) {
   document.body.classList.remove(`g${old_time}`);
   document.body.classList.add(`g${time_index}`);
 
-  let website_mode = 'light';
+  let website_mode = 'dark';
   if (time_index >= 18 || time_index <= 6) {
-    website_mode = 'dark';
+    website_mode = 'light';
   }
   ui('mode', website_mode);
 }

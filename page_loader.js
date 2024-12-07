@@ -63,30 +63,6 @@ window.addEventListener('hashchange', (event) => {
   console.log(event);
 })
 
-
-window.addEventListener('mousemove', (event) => {
-  // console.log(event);
-  let width = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
-  let height = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
-
-  if (event.clientY <= height * 0.3 && (event.clientX >= width * .35 && event.clientX <= width * .75)) {
-    document.getElementById('navigation').classList.add("active");
-  } else {
-    hide_navbar();
-  }
-})
-
-function hide_navbar() {
-  document.getElementById('navigation').classList.remove("active");
-  document.getElementById('socials').classList.remove("active");
-}
-
-function socials() {
-  // TODO: Move this around on how this gets activated
-  document.getElementById('socials').classList.add("active");
-}
-
-
 /**
 * Gets the root of the page.
 * @returns The page

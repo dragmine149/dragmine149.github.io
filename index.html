@@ -7,22 +7,51 @@
     <script type="module" src="https://cdn.jsdelivr.net/npm/beercss@3.7.12/dist/cdn/beer.min.js"></script>
 
     <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="DayNightClycle/background.css">
+    <link rel="stylesheet" href="Scripts/DayNightClycle/background.css">
     <!-- <link rel="stylesheet" href="Stars/star.css"> -->
     <script src="functions.js"></script>
     <script src="page_loader.js"></script>
+    <script type="module">
+      import {set_area, AREA} from './Scripts/snackbar_hover.mjs';
+      set_area(document.getElementById('navigation'), AREA.Top_Middle);
+      set_area(document.getElementById('Settings'), AREA.Top_Right);
+    </script>
+    <script>
+      function socials() {
+        // TODO: Move this around on how this gets activated
+        document.getElementById('socials').classList.add("active");
+      }
+    </script>
 
-    <script defer src="Assets/fontawesome-free-6.6.0-web/js/brands.js"></script>
-    <link href="Assets/fontawesome-free-6.6.0-web/css/brands.css" rel="stylesheet">
+    <script defer src="Assets/fontawesome-free-6.6.0-web/js/brands.min.js"></script>
+    <script defer src="Assets/fontawesome-free-6.6.0-web/js/regular.min.js"></script>
+    <script defer src="Assets/fontawesome-free-6.6.0-web/js/fontawesome.min.js"></script>
+    <link href="Assets/fontawesome-free-6.6.0-web/css/brands.min.css" rel="stylesheet">
+    <!-- <link href="Assets/fontawesome-free-6.6.0-web/css/solid.min.css" rel="stylesheet"> -->
+    <link href="Assets/fontawesome-free-6.6.0-web/css/regular.min.css" rel="stylesheet">
 
     <!-- Particles -->
-    <script src="Particles/particles.js"></script>
-    <script defer src="Particles/particle_controller.js"></script>
-    <link rel="stylesheet" href="Particles/particles.css">
+    <script src="Scripts/Particles/particles.js"></script>
+    <script defer src="Scripts/Particles/particle_controller.js"></script>
+    <link rel="stylesheet" href="Scripts/Particles/particles.css">
   </head>
   <body class="g0">
     <article class="main no-padding medium center-align middle-align">
-      <script src="DayNightClycle/background.js" defer></script>
+      <script src="Scripts/DayNightClycle/background.js" defer></script>
+
+      <div id="Settings" class="snackbar vertical top right">
+        <span>Settings</span>
+        <label class="switch icon">
+          Snow:
+          <input type="checkbox" onclick="snow_toggle(this)" checked="true">
+          <span>
+            <i style="padding: 4px 0 0 0;">
+              <i class="fa-regular fa-snowflake" style="font-family: 'Font Awesome 6 Free';"></i>
+            </i>
+          </span>
+        </label>
+      </div>
+
       <div id="navigation" class="snackbar top active">
         <button onclick="previous_page()" id="navigation-previous" disabled>
           <i>Arrow_Back</i>
@@ -40,7 +69,9 @@
           <i>Arrow_Forward</i>
         </button>
       </div>
+
       <div id="scripts"></div>
+
       <div id="content">
         <h1>Dragmine149</h1>
         <h6>Welcome to the site of dragons</h6>
