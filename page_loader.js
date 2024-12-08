@@ -199,3 +199,9 @@ function load_page_from_url() {
 }
 
 load_page_from_url();
+
+setTimeout(() => {
+  if (document.getElementById('navigation').classList.has('active')) {
+    document.getElementById('navigation').classList.remove('active');
+  }
+}, 5_000);
