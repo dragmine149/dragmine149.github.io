@@ -130,8 +130,13 @@ function load_page_scripts_from_cache(scripts, page) {
 
     const new_script = document.createElement('script');
 
+
     new_script.id = refrence_script.id;
-    new_script.src = refrence_script.src;
+    if (refrence_script.src.length == 0) {
+      new_script.innerHTML = refrence_script.innerHTML;
+    } else {
+      new_script.src = refrence_script.src;
+    }
 
     script_child.appendChild(new_script);
   }
