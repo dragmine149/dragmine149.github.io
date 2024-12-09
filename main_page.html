@@ -13,7 +13,14 @@
 
 <div id="content">
   <pageTitle hidden>Dragmine149</pageTitle>
-  <h1 id="name" onclick="let writter = new typewritter(this); writter.start('Dragmine149', 1250);">Dragmine149</h1>
+  <script>
+    let obj = document.getElementById('name');
+    let writter = new typewritter(obj);
+    function start_writter() {
+      writter.start('Dragmine149', 1250);
+    }
+  </script>
+  <h1 id="name" onclick="start_writter()">Dragmine149</h1>
   <h6>Welcome to the site of dragons</h6>
   <span>Please note that this site is still in development.</span>
   <br><button onclick="load_page('blog.html')">Blog</button>
