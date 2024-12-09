@@ -14,21 +14,21 @@ class typewritter {
     }
 
     this.elm.innerText = "";
-    this.loop(end, time / end.length);
+    this.loop(end, 1, time / end.length);
   };
 
   /**
   *
   * @param {String} string
+  * @param {number} length
   * @param {number} timeout
   */
-  loop(string, timeout) {
-    this.elm.innerText += string[0];
-    string = string.slice(1, string.length);
+  loop(string, length, timeout) {
+    this.elm.innerText = string.substring(0, length);
 
-    if (string.length != 0) {
+    if (length < string.length) {
       setTimeout(() => {
-        this.loop(string, timeout);
+        this.loop(string, length + 1, timeout);
       }, timeout + Math.random());
     }
   };
