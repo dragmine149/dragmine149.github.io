@@ -30,6 +30,12 @@ article.main h1 {
   font-size: 7.5rem;
 }
 
+article.main h1,
+article.main h6,
+article.main span {
+  user-select: none;
+}
+
 #navigation.snackbar.top {
   inset: 2rem auto auto 50%;
 }
