@@ -2,7 +2,8 @@
   background-color: #f7f2f72b;
 }
 
-#blog_content {
+#blog_content,
+#blog_list {
   text-align: left;
   overflow: auto;
   height: calc(100vh - 150px);
@@ -38,4 +39,8 @@
   background-color: initial;
   white-space: initial;
   padding: 0;
+}
+
+body.light #blog_list article {
+  color: white;
 }
