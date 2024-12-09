@@ -88,11 +88,9 @@
       <div id="content">
         <script>
           const url = new URL(location);
-          const query = url.searchParams.get('load');
-          if (query != null) {
-            return;
+          if (url.searchParams.size == 0)
+            load_page('main_page.html');
           }
-          load_page('main_page.html');
         </script>
         <h1>Dragmine149</h1>
         <h6>Welcome to the site of dragons</h6>
