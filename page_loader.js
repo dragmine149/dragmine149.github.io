@@ -194,6 +194,8 @@ function load_page_from_url() {
   const url = new URL(location);
   const query = url.searchParams.get('load');
   if (query == null) {
+    console.log("Loaded main page due to no search params");
+    load_page('main_page.html');
     return;
   }
   url.searchParams.delete('load');
