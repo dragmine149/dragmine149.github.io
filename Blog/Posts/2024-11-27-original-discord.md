@@ -25,7 +25,7 @@ However, the CLI installer has some annoyances. In order to install vencord:
 5. Type in path (`/home/dragmine/Applications/Discord`)
 6. Submit (1 enter)
 
-So overall, it's not a long process which takes a couple of seconds to do. The problem is how often i have to do it. So now actually onto the intresting part.
+So overall, it's not a long process which takes a couple of seconds to do. The problem is how often i have to do it. So now actually onto the interesting part.
 In total:
 - Discord download (open in browser and save).
 - Vencord install (1 command, 1 password, 4 enter, 1 path)

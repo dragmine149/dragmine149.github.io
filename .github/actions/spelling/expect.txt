@@ -3,7 +3,6 @@ aoc
 apps
 beercss
 cloudflareinsigts
-christmas
 cmp
 cwd
 discordapp
@@ -43,6 +42,7 @@ sudoku
 tmp
 UBlock
 usize
+usercontent
 website
 welp
 Vec

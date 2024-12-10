@@ -1,8 +1,8 @@
 (?:^|/)Assets/
 ^\.github/workflows/
-^\.github/action/spelling/expect.txt
-^\.github/action/spelling/excludes.txt
-^\.github/action/spelling/patterns.txt
+^\Q.github/action/spelling/excludes.txt\E$
+^\Q.github/actions/spelling/expect.txt\E$
+^\Q.github/actions/spelling/patterns.txt\E$
 ^\Q.nojekyll\E$
 ^\Q.well-known/discord\E$
 ^\QBlog/Posts/help.md.bin\E$
