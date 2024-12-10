@@ -1,0 +1,3 @@
+(?:^|/)Assets/
+^\.github/workflows/
+^\.github/action/spelling/
