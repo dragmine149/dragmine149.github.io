@@ -1,7 +1,7 @@
 # Original Discord
 This is the original post of what i was going to put for the discord section. Fell free to read this even though its kinda useless now.
 
-### The situtation
+### The situation
 I use [discord](https://discord.com) with the client modification [Vencord](https://vencord.dev). I also use Fedora Linux (so dnf package manager).
 Nothing sounds wrong here right? Well when it comes to **updating** discord is where the issue occurs. (This most commonly happens on computer restarts).
 
@@ -14,10 +14,10 @@ Because of using the `.tar.gz` version, i believe that discord doesn't like upda
 Now a manually update doesn't sound that bad right, it's just download the files and extract them into the same directory. But then comes the issue of vencord.
 
 This is not an issue with vencord and vencord can't do anything to help this (well they can, which i cover here: [vencord installer](#vencord-installer)).
-I believe when discord auto updates, discord is only changing the files and bytes that discord needs to change to run. However when discord is updaed by replacing all the files in the directory upon extracting the `.tar.gz` file.<br>
+I believe when discord auto updates, discord is only changing the files and bytes that discord needs to change to run. However when discord is updated by replacing all the files in the directory upon extracting the `.tar.gz` file.<br>
 That replaces more data than what discord would otherwise do. Due to this and how vencord works. I believe that the vencord files/changes are being overwritten by the data from the `.tar.gz`.
 As such, every time i install discord via the `.tar.gz` option, i also have to install vencord via their CLI installer.
-However, the CLI installer has some annyonaces. In order to install vencord:
+However, the CLI installer has some annoyances. In order to install vencord:
 1. Download it (1 command)
 2. Give `sudo` permission (1 password)
 3. Navigate to install vencord (1 enter)
@@ -25,7 +25,7 @@ However, the CLI installer has some annyonaces. In order to install vencord:
 5. Type in path (`/home/dragmine/Applications/Discord`)
 6. Submit (1 enter)
 
-So overally, it's not a long process which takes a couple of seconds to do. The problem is how often i have to do it. So now actually onto the intresting part.
+So overall, it's not a long process which takes a couple of seconds to do. The problem is how often i have to do it. So now actually onto the intresting part.
 In total:
 - Discord download (open in browser and save).
 - Vencord install (1 command, 1 password, 4 enter, 1 path)
@@ -36,7 +36,7 @@ In order to automate updating discord there are two important things.
 2. Update vencord
 
 #### Part 1: Downloading and extracting discord
-Upon submiting the request to download manually, discord opens up at this link: `https://discord.com/api/download/stable?platform=linux&format=tar.gz`. <br>
+Upon submitting the request to download manually, discord opens up at this link: `https://discord.com/api/download/stable?platform=linux&format=tar.gz`. <br>
 Using curl gives this joyful response:
 ```html preview title="Curl response"
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
@@ -45,16 +45,16 @@ Using curl gives this joyful response:
 <p>You should be redirected automatically to target URL: <a href="https://stable.dl2.discordapp.net/apps/linux/0.0.76/discord-0.0.76.tar.gz">https://stable.dl2.discordapp.net/apps/linux/0.0.76/discord-0.0.76.tar.gz</a>.  If not click the link.%
 ```
 I would have used the link provided by this redirect (`https://stable.dl2.discordapp.net/apps/linux/0.0.76/discord-0.0.76.tar.gz`) but this link contains a specific version.[^1] <br>
-After finding the option to allow redirects `-L`, the binary file was delieved. Simple
+After finding the option to allow redirects `-L`, the binary file was downloaded. Simple
 
 Extracting took a quick research (zip file is just unzip but tar.gz is something different).
 But overall really easy (expect for one tiny bit which is covered here [Variables](#script-variables))
 
-[^1]: Discord why are you still on v0.0.x anyway? I'm suprised you haven't moved onto v0.1.x yet...
+[^1]: Discord why are you still on v0.0.x anyway? I'm surprised you haven't moved onto v0.1.x yet...
 
 #### Part 2: Vencord
 Vencord required a tiny bit of looking through code. <br>
-The command on the website is: `sh -c "$(curl -sS https://raw.githubusercontent.com/Vendicated/VencordInstaller/main/install.sh)"`. Which works perfectlly for most cases.
+The command on the website is: `sh -c "$(curl -sS https://raw.githubusercontent.com/Vendicated/VencordInstaller/main/install.sh)"`. Which works perfectly for most cases.
 I could have used this command to get the installed but the command wants `sudo` permission. Which makes sense, if discord is installed via flatpak or the system package manager.
 However for a local install into my own Applications folder. `sudo` is not required. <br>
 
@@ -91,7 +91,7 @@ echo "Extracting Discord"
 tar xf $DIR/discord.tar.gz -C ~/Applications/
 
 # Get vencord
-echo "Downlading Vencord"
+echo "Downloading Vencord"
 curl 'https://github.com/Vendicated/VencordInstaller/releases/latest/download/VencordInstallerCli-Linux' -L --output $DIR/vencord.sh
 chmod +x $DIR/vencord.sh
 
@@ -107,7 +107,7 @@ echo "Discord updated. Files used can be found in" $DIR ". (These will be delete
 ```
 <sub><sup>The script above can also be found at this gist: [https://gist.github.com/dragmine149/078f7ee4d0f6d1833c80286f880650b4][https://gist.github.com/dragmine149/078f7ee4d0f6d1833c80286f880650b4]</sup></sub>
 
-The variable `$DIR` is where everything is temporary saved. Scripts can't really change the current working directory (cwd) and we don't really want to keep clogging up the cwd with unnessecarry files. (Yes i know i could just remove them but...) <br>
+The variable `$DIR` is where everything is temporary saved. Scripts can't really change the current working directory (cwd) and we don't really want to keep clogging up the cwd with unnecessary files. (Yes i know i could just remove them but...) <br>
 Hence the use of the `/tmp` directory. <br>
 The rest of the script, all the echos are there as an updater telling you what is going on.
 
