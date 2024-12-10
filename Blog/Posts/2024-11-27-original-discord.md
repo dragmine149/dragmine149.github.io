@@ -30,7 +30,7 @@ In total:
 - Discord download (open in browser and save).
 - Vencord install (1 command, 1 password, 4 enter, 1 path)
 
-### The intresting part
+### The interesting part
 In order to automate updating discord there are two important things.
 1. Download and extract
 2. Update vencord
@@ -113,7 +113,7 @@ The rest of the script, all the echos are there as an updater telling you what i
 
 ### Why not flatpak discord {#flatpak-discord}
 <sub><sup>Flatpak discord: [https://flathub.org/apps/com.discordapp.Discord](https://flathub.org/apps/com.discordapp.Discord)</sub></sup>
-I only just discovered this as i'm writting this (went to vencord.dev to find confirm the reason for snap and found it).
+I only just discovered this as i'm writing this (went to vencord.dev to find confirm the reason for snap and found it).
 Well, put simply. I can't be bothered to switch now and from reading the flatpak description, some feature (which are optional) are disabled.
 
 ### Vencord Installer {#vencord-installer}
