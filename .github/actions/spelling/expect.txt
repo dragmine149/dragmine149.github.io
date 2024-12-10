@@ -26,7 +26,9 @@ kinda
 len
 mashup
 maxed
+mjs
 mktemp
+nojekyll
 noscript
 outfile
 osu
@@ -34,6 +36,7 @@ pathing
 println
 ppy
 QOL
+QBlog
 readline
 roblox
 sponsered
@@ -45,6 +48,7 @@ usize
 usercontent
 website
 welp
+workflows
 Vec
 Vendicated
 youtube
