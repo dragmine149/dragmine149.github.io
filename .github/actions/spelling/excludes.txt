@@ -1,3 +1,10 @@
 (?:^|/)Assets/
 ^\.github/workflows/
 ^\.github/action/spelling/
+^\Q.nojekyll\E$
+^\Q.well-known/discord\E$
+^\QBlog/Posts/help.md.bin\E$
+\.css
+\.js
+\.html
+\.mjs
