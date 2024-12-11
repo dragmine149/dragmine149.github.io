@@ -33,6 +33,8 @@
 
 #blog_content code {
   padding: .1rem .25rem .1rem .25rem;
+  background-color: #48484894;
+  border-radius: 10px;
 }
 
 #blog_content pre {
