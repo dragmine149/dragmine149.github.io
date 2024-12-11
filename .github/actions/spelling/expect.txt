@@ -1,11 +1,14 @@
+AAAAAAAA
 adventofcode
 aoc
 apps
 beercss
+bbd
 cloudflareinsigts
 cmp
 cwd
 discordapp
+dfe
 dnf
 dragmine
 edu
