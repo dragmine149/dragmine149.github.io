@@ -205,6 +205,11 @@ function load_page_from_url() {
   load_page(page_path[0], url.search);
 }
 
+function aoc_2024() {
+  history.pushState({}, "", get_current_page() + "?blog=aoc%2F2024&load=blog.html");
+  load_page_from_url();
+}
+
 load_page_from_url();
 
 setTimeout(() => {
