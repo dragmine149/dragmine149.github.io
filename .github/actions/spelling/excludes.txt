@@ -10,3 +10,4 @@
 \.js
 \.html
 \.mjs
+^\Qpre-commit install --hook-type post-commit\E$
