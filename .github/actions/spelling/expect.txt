@@ -7,6 +7,7 @@ bbd
 cloudflareinsigts
 cmp
 cwd
+desmons
 discordapp
 dfe
 dnf
@@ -42,6 +43,8 @@ QOL
 QBlog
 readline
 roblox
+screenshot
+spam
 sponsered
 steampowered
 sudoku

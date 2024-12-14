@@ -7,3 +7,4 @@
 [Gg]ithub
 [Ll]inux
 [Rr]eddit
+[Vv][Kk][Ee][Tt]
