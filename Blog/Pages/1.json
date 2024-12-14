@@ -22,9 +22,17 @@
   "2024-12-05": {
     "categories": [
       "Website",
-      "Code",
+      "Code/AOC",
       "IRL"
     ],
     "preview": "Welcome to december"
+  },
+  "2024-12-13": {
+    "categories": [
+      "Website",
+      "Code/AOC",
+      "VR/VKET"
+    ],
+    "preview": "What to title this post?"
   }
 }
