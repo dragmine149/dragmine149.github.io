@@ -7,7 +7,7 @@ bbd
 cloudflareinsigts
 cmp
 cwd
-desmons
+desmos
 discordapp
 dfe
 dnf
