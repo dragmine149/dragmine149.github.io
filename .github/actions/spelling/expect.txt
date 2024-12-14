@@ -41,6 +41,7 @@ println
 ppy
 QOL
 QBlog
+Qpre
 readline
 roblox
 screenshot
