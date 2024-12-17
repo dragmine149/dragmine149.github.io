@@ -217,3 +217,5 @@ setTimeout(() => {
     document.getElementById('navigation').classList.remove('active');
   }
 }, 5_000);
+
+document.getElementById('navigation').classList.contains(token)

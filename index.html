@@ -10,17 +10,24 @@
     <link rel="stylesheet" href="Scripts/DayNightClycle/background.css">
     <!-- <link rel="stylesheet" href="Stars/star.css"> -->
     <script src="functions.js"></script>
-    <script src="page_loader.js"></script>
+    <!-- <script src="page_loader.js"></script> -->
     <script type="module">
       import {set_area, AREA} from './Scripts/snackbar_hover.mjs';
       set_area(document.getElementById('navigation'), AREA.Top_Middle);
       set_area(document.getElementById('Settings'), AREA.Top_Right);
     </script>
+    <script src="Scripts/page_loader.js"></script>
     <script>
       function socials() {
         // TODO: Move this around on how this gets activated
         document.getElementById('socials').classList.toggle("active");
       }
+
+      setTimeout(() => {
+        if (document.getElementById('navigation').classList.contains('active')) {
+          document.getElementById('navigation').classList.remove('active');
+        }
+      }, 5_000);
     </script>
 
     <script defer src="Assets/fontawesome-free-6.6.0-web/js/brands.min.js"></script>
@@ -64,14 +71,13 @@
         </div>
       </noscript>
 
+      <div id="warnings" class="snackbar top error"></div>
+
       <div id="navigation" class="snackbar top active">
-        <button onclick="previous_page()" id="navigation-previous" disabled>
-          <i>Arrow_Back</i>
-        </button>
         <div class="max"></div>
-        <button onclick="load_page('main_page.html')">Home</button>
-        <button onclick="load_page('blog.html')">Blog</button>
-        <button onclick="aoc_2024()">Advent Of Code 2024</button>
+        <button onclick="page.load_page('main_page.html')">Home</button>
+        <button onclick="page.load_page('Blog')">Blog</button>
+        <button onclick="page.load_page('Blog?blog=aoc/2024')">Advent Of Code 2024</button>
         <button onclick="socials()">Socials</button>
         <div id="socials" class="snackbar top">
           <i class="fa-brands fa-mastodon"></i>
@@ -80,9 +86,6 @@
           <a rel="me" href="https://github.com/dragmine149" target="_blank">Github</a>
         </div>
         <div class="max"></div>
-        <button onclick="next_page()" id="navigation-next" disabled>
-          <i>Arrow_Forward</i>
-        </button>
       </div>
 
       <div id="scripts"></div>
