@@ -12,6 +12,7 @@ discordapp
 dfe
 dnf
 dragmine
+Dijkstra
 edu
 FAo
 flathub
@@ -48,6 +49,7 @@ roblox
 screenshot
 spam
 sponsered
+stackoverflow
 steampowered
 sudoku
 tmp
