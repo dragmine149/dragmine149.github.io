@@ -1,6 +1,7 @@
 class page_loader {
   constructor() {
     this.cache = new Map();
+    this.state_callback = new Map();
 
     const url = new URL(location);
     const query = url.searchParams.get("load");
@@ -27,6 +28,11 @@ class page_loader {
     return page_location;
   }
 
+  get_current_subpage() {
+    const url = new URL(location);
+    return url.pathname.replace("/", "");
+  }
+
   __warn_load(message) {
     document.getElementById('warnings').innerText = message;
     ui('#warnings');
@@ -34,21 +40,16 @@ class page_loader {
   /**
   * Get the content of a page
   * @param {String} page
-  * @returns {HTMLElement}
+  * @returns {String}
   */
-  async __get_page_content(page) {
-
+  async __get_content(page) {
     if (this.cache.has(page)) {
       return this.cache.get(page);
     }
 
-    let fetch_page = page;
-    if (!page.endsWith(".html")) {
-      fetch_page = fetch_page + "/index.html";
-    }
-    const result = await fetch(fetch_page, {
+    const result = await fetch(page, {
       headers: {
-        "Cache-Control": "max-age=604800"
+        "Cache-Control": "max-age=86400"
       }, mode: 'no-cors'
     });
 
@@ -58,9 +59,21 @@ class page_loader {
       this.cache.set(page, null);
     }
 
-    const response = await result.text();
+    return await result.text();
+  }
+
+  async __get_page_content(page) {
+    if (this.cache.has(page)) {
+      return this.cache.get(page);
+    }
+    let fetch_page = page;
+    if (!page.endsWith(".html")) {
+      fetch_page = fetch_page + "/index.html";
+    }
+
+    let content = await this.__get_content(fetch_page);
     const parser = new DOMParser();
-    const doc = parser.parseFromString(response, "text/html");
+    const doc = parser.parseFromString(content, "text/html");
     this.cache.set(page, doc.getElementById("content"));
     return this.cache.get(page);
   }
@@ -120,6 +133,7 @@ class page_loader {
     await this.__script_loader(page);
 
     let content = await this.__get_page_content(page);
+
     let title = content.getElementsByTagName('pageTitle').item(0);
     if (title != null) {
       document.getElementsByTagName('title').item(0).innerText = title.innerText;
@@ -128,10 +142,21 @@ class page_loader {
     document.getElementById("content").replaceWith(content);
 
     if (history_push) {
-      history.pushState({
-        page: page
-      }, "", this.get_current_page() + page + (this.params == null ? "" : this.params));
+      this.push_state_to_history(page, {});
     }
+  }
+
+  /**
+  *
+  * @param {String} page
+  * @param {Object} state
+  */
+  push_state_to_history(page, state) {
+    if (Object.keys(state).length == 0) {
+      state = {};
+    }
+    state["page"] = page;
+    history.pushState(state, "", this.get_current_page() + page + (this.params == null ? "" : this.params));
   }
 
   async load_page(page) {
@@ -141,9 +166,28 @@ class page_loader {
   async load_page_from_state(state) {
     await this.__page_loader(state.page, false);
   }
+
+  listen_to_state_pop(id, callback) {
+    this.state_callback.set(id, callback);
+  }
+  state_pop(id, value) {
+    if (!this.state_callback.has(id)) {
+      return;
+    }
+    this.state_callback.get(id)(value);
+  }
 }
 
 let page = new page_loader();
 window.addEventListener('popstate', (event) => {
+  console.log(`Processing page pop! Details:`);
+  console.log(event.state);
+
   page.load_page_from_state(event.state);
+  Object.entries(event.state).forEach((entry) => {
+    if (entry[0] == "page") {
+      return;
+    }
+    page.state_pop(entry[0], entry[1]);
+  })
 })
