@@ -22,6 +22,8 @@ godot
 googletagmanager
 gorhill
 HHb
+hhmg
+hhs
 hgv
 idk
 img
@@ -37,6 +39,7 @@ mjs
 mktemp
 nojekyll
 noscript
+onsen
 outfile
 osu
 pathing
