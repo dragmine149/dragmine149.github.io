@@ -24,12 +24,14 @@ class page_loader {
   */
   get_current_page() {
     const url = new URL(location);
+    url.search = "";
     const page_location = url.origin + "/";
     return page_location;
   }
 
   get_current_subpage() {
     const url = new URL(location);
+    url.search = "";
     return url.pathname.replace("/", "");
   }
 
@@ -89,11 +91,11 @@ class page_loader {
 
     // If we already loaded the scripts just call the main function.
     if (script_child != null) {
-      console.log("Script exists! Calling function.");
-      // console.log(`${page.substring(0, page.indexOf('.'))}_loader`);
-      const func_to_call_name = `${page.substring(0, page.indexOf('.'))}_loader`;
+      console.log("Script exists! looking for function.");
+      const func_to_call_name = `${page.toLowerCase()}_loader`;
       const func_to_call = window[func_to_call_name];
       if (typeof func_to_call === "function") {
+        console.log("Function exists! Calling.");
         func_to_call();
         return;
       }
@@ -151,19 +153,33 @@ class page_loader {
   * @param {String} page
   * @param {Object} state
   */
-  push_state_to_history(page, state) {
+  push_state_to_history(page, state, params = null) {
     if (Object.keys(state).length == 0) {
       state = {};
     }
     state["page"] = page;
+    console.log({ params, "this": this.params });
+    if (this.params == null || this.params == "") {
+      this.params = params;
+    }
+    console.log(state);
+    console.log(this.get_current_page() + page + (this.params == null ? "" : this.params));
     history.pushState(state, "", this.get_current_page() + page + (this.params == null ? "" : this.params));
   }
 
-  async load_page(page) {
+  async load_page(page, clear_query = false) {
+    if (clear_query) {
+      this.params = null;
+    }
     await this.__page_loader(page);
   }
 
   async load_page_from_state(state) {
+    // cancel load if we can't determin the page.
+    if (state.page == undefined) {
+      return;
+    }
+
     await this.__page_loader(state.page, false);
   }
 
@@ -174,6 +190,7 @@ class page_loader {
     if (!this.state_callback.has(id)) {
       return;
     }
+    console.log(`Calling ${id}`);
     this.state_callback.get(id)(value);
   }
 }
@@ -183,7 +200,9 @@ window.addEventListener('popstate', (event) => {
   console.log(`Processing page pop! Details:`);
   console.log(event.state);
 
-  page.load_page_from_state(event.state);
+  if (page.get_current_subpage() != event.state.page) {
+    page.load_page_from_state(event.state);
+  }
   Object.entries(event.state).forEach((entry) => {
     if (entry[0] == "page") {
       return;

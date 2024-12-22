@@ -1,17 +1,30 @@
-class blog_loader {
+class Blog {
   constructor() {
     page.listen_to_state_pop("blog", v => this.load_blog(v, false));
+    this.initiate_blog_load();
+  }
+  initiate_blog_load() {
+    this.set_blank_blog();
 
     const blog_loaded = this.load_blog_from_url();
     if (!blog_loaded) {
       this.load_blog_list();
     }
   }
+  set_blank_blog() {
+    let c_state = history.state;
+    c_state["blog"] = "";
+    history.replaceState(c_state, "", location);
+  }
+
+  blog_loaded = false;
+
   /**
   * View the blog
   * @param {Bool} list
   */
   blog_viewer(list = false) {
+    console.log(`Blog viewer. List: ${list}`);
     const blog_content = document.getElementById('blog_content');
     const blog_list = document.getElementById('blog_list');
 
@@ -20,6 +33,11 @@ class blog_loader {
   }
 
   async load_blog(blog_page, history_push = true) {
+    if (blog_page == "") {
+      this.load_blog_list();
+      return;
+    }
+
     console.log(`Loading blog: ${blog_page}`);
     // construct the URL
     const page_location = page.get_current_page() + `Blog/Posts/${blog_page}.md`;
@@ -41,11 +59,12 @@ class blog_loader {
 
     // change the URL, history and display the blog on the page.
     if (history_push) {
-      page.push_state_to_history(page.get_current_subpage() + `?blog=${blog_page}`, {
-        blog: blog
-      });
+      page.push_state_to_history(page.get_current_subpage(), {
+        "blog": blog_page
+      }, `?blog=${blog_page}`);
     }
     this.blog_viewer(true);
+    this.blog_loaded = true;
   }
 
   async load_blog_list() {
@@ -55,11 +74,16 @@ class blog_loader {
     let json_list = JSON.parse(list);
 
     Object.entries(json_list).forEach((entry) => {
+      if (document.getElementById(`blog-${entry[0]}`)) {
+        return;
+      }
+
       const elm = document.createElement('article');
       const title = document.createElement('h5');
       const preview = document.createElement('p');
       const categories = document.createElement('nav');
 
+      elm.id = `blog-${entry[0]}`;
       elm.appendChild(title);
       elm.appendChild(preview);
       elm.appendChild(categories);
@@ -81,6 +105,10 @@ class blog_loader {
         blog.load_blog(entry[0]);
       }
     });
+
+    this.blog_viewer(false);
+    this.blog_loaded = false;
+    this.set_blank_blog();
   }
 
   load_blog_from_url() {
@@ -94,4 +122,8 @@ class blog_loader {
   }
 }
 
-let blog = new blog_loader();
+let blog = new Blog();
+
+function blog_loader() {
+  blog.load_blog_list();
+}
