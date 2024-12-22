@@ -8,3 +8,5 @@
 [Ll]inux
 [Rr]eddit
 [Vv][Kk][Ee][Tt]
+[Vv]ec
+[Pp]ippa

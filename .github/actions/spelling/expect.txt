@@ -8,6 +8,7 @@ cloudflareinsigts
 cmp
 cwd
 desmos
+desu
 discordapp
 dfe
 dnf
@@ -18,6 +19,7 @@ FAo
 firefox
 flathub
 Garreau
+Gochuumon
 gdscript
 godot
 googletagmanager
@@ -39,9 +41,11 @@ leaderboard
 len
 mashup
 maxed
+meh
 mjs
 mozilla
 mktemp
+myanimelist
 nojekyll
 noscript
 onsen
@@ -65,11 +69,11 @@ steampowered
 sudoku
 tmp
 UBlock
+Usagi
 usize
 usercontent
 website
 welp
 workflows
-Vec
 Vendicated
 youtube
