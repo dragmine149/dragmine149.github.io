@@ -7,7 +7,8 @@
   <script>
     const url = new URL(location);
     const query = url.searchParams;
-    query.append("load", location.pathname.replace('/', ''));
+    query.append("load", location.pathname.replaceAll('/', ''));
+    console.log(`Redirect to ${location.origin}${url.search}`);
     location.href = `${location.origin}${url.search}`;
   </script>
 </head>
