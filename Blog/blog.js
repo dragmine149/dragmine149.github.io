@@ -72,6 +72,7 @@ class Blog {
     const page_location = url.origin + "/Blog/Pages/1.json";
     let list = await page.__get_content(page_location);
     let json_list = JSON.parse(list);
+    this.blog_list = json_list;
 
     Object.entries(json_list).forEach((entry) => {
       if (document.getElementById(`blog-${entry[0]}`)) {
