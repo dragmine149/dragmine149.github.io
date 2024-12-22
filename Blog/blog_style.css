@@ -1,5 +1,6 @@
 #blog_list article {
   background-color: #f7f2f72b;
+  color: inherit;
 }
 
 #blog_content,
