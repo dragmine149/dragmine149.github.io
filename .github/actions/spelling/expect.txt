@@ -4,6 +4,7 @@ aoc
 apps
 beercss
 bbd
+bron
 cloudflareinsigts
 cmp
 cwd
@@ -21,6 +22,7 @@ flathub
 Garreau
 Gochuumon
 gdscript
+geeksforgeeks
 godot
 googletagmanager
 gorhill
@@ -36,6 +38,7 @@ irl
 JQuery
 kate
 kde
+kerbosch
 kinda
 leaderboard
 len
@@ -49,6 +52,7 @@ myanimelist
 nojekyll
 noscript
 onsen
+opengenus
 outfile
 osu
 OOM
