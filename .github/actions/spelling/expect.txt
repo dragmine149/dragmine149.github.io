@@ -26,6 +26,7 @@ geeksforgeeks
 godot
 googletagmanager
 gorhill
+graphviz
 HHb
 hehe
 hhmg
