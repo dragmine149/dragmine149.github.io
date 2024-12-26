@@ -36,6 +36,7 @@ hgv
 hjafmi
 idk
 img
+insigts
 irl
 JQuery
 kate
@@ -45,8 +46,10 @@ kinda
 leaderboard
 len
 mashup
+majorly
 maxed
 meh
+minimalistic
 mjs
 mozilla
 mktemp
