@@ -3,6 +3,7 @@ adventofcode
 aoc
 apps
 beercss
+beeeep
 bbd
 bron
 cloudflareinsigts
@@ -65,6 +66,7 @@ QOL
 QBlog
 Qpre
 readline
+rds
 roblox
 screenshot
 spam
@@ -72,7 +74,9 @@ sponsered
 stackoverflow
 steampowered
 sudoku
+tbh
 tmp
+timezone
 UBlock
 Usagi
 usize
@@ -80,5 +84,6 @@ usercontent
 website
 welp
 workflows
+vincentgarreau
 Vendicated
 youtube
