@@ -1,0 +1,26 @@
+{
+  "Discord Bot": {
+    "Discord Bot Jam 2": "https://dragmine149.itch.io/run-bot-run",
+    "Discord Bot Jam 3": "https://dragmine149.itch.io/locklite",
+    "Discord Bot Jam 4": "https://dragmine149.itch.io/blacksmither",
+    "Discord Bot Jam 7": "https://github.com/dragmine149/DBJ7"
+  },
+  "Games": {
+    "Python Battleships": "https://github.com/dragmine149/Python_Battleships",
+    "Fakes": "https://dragmine149.itch.io/fakes",
+    "Bouncy": "TBA",
+    "Deplantation": "https://dragmine149.itch.io/deplantation"
+  },
+  "Tools": {
+    "bit-scripts": "https://github.com/dragmine149/bit-scripts",
+    "Launcher": "https://github.com/dragmine149/Launcher",
+    "Unity Console": "https://github.com/dragmine149/ConsoleProj",
+    "Godot": {
+      "InputManager": "https://github.com/dragmine149/InputManager"
+    }
+  },
+  "Other / Random": {
+    "Website": "https://github.com/dragmine149/dragmine149.github.io",
+    "Advent Of Code": "https://github.com/dragmine149/DragAOC"
+  }
+}
