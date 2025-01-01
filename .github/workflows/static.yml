@@ -62,9 +62,9 @@ jobs:
         if: ${{ matrix.branch == 'main' }}
         with:
           ref: ${{ matrix.branch }}
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
-          name: ${{ strategy.job-index }}
+          name: build-${{ matrix.branch }}
           path: .
 #       - uses: actions/setup-node@v4
 #         with:
@@ -101,10 +101,12 @@ jobs:
       - name: Setup Pages
         uses: actions/configure-pages@v5
 
-      - name: Get branches
-        run: gh run download ${{ vars.GITHUB_RUN_ID }} --dir branches
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Merge Artifacts
+        uses: actions/upload-artifact/merge@v4
+        with:
+          name: artifact
+          pattern: build-*
+
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
