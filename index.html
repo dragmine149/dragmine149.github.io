@@ -11,19 +11,6 @@
 
     <script src="Scripts/page_loader.js"></script>
     <script src="Scripts/snackbar_hover.js"></script>
-    <script defer>
-      function socials() {
-        // TODO: Move this around on how this gets activated
-        document.getElementById('socials').classList.toggle("active");
-      }
-
-      setTimeout(() => {
-        snackbar.remove_elements(snackbar.AREA.Top_Middle);
-      }, 5_000);
-
-      snackbar.set_area('navigation', snackbar.AREA.Top_Middle);
-      snackbar.set_area('Settings', snackbar.AREA.Top_Right);
-    </script>
 
     <script defer src="Assets/fontawesome-free-6.6.0-web/js/brands.min.js"></script>
     <script defer src="Assets/fontawesome-free-6.6.0-web/js/regular.min.js"></script>
@@ -43,6 +30,18 @@
   <body class="g0">
     <article class="main no-padding medium center-align middle-align">
       <script src="Scripts/DayNightClycle/background.js" defer></script>
+      <script src="Scripts/loader.js" defer></script>
+
+      <div id="button-snacks" class="light">
+        <div id="snackbar-tl" onclick="snackbar.toggle_area(snackbar.AREA.Top_Left)" class="snackbar button top left"></div>
+        <div id="snackbar-tm" onclick="snackbar.toggle_area(snackbar.AREA.Top_Middle)" class="snackbar button top"></div>
+        <div id="snackbar-tr" onclick="snackbar.toggle_area(snackbar.AREA.Top_Right)" class="snackbar button top right"></div>
+        <div id="snackbar-ml" onclick="snackbar.toggle_area(snackbar.AREA.Middle_Left)" class="snackbar button middle left"></div>
+        <div id="snackbar-mr" onclick="snackbar.toggle_area(snackbar.AREA.Middle_Right)" class="snackbar button middle right"></div>
+        <div id="snackbar-bl" onclick="snackbar.toggle_area(snackbar.AREA.Bottom_Left)" class="snackbar button bottom left"></div>
+        <div id="snackbar-bm" onclick="snackbar.toggle_area(snackbar.AREA.Bottom_Middle)" class="snackbar button bottom"></div>
+        <div id="snackbar-br" onclick="snackbar.toggle_area(snackbar.AREA.Bottom_Right)" class="snackbar button bottom right"></div>
+      </div>
 
       <div id="Settings" class="snackbar vertical top right">
         <span>Settings</span>
