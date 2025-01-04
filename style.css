@@ -64,3 +64,7 @@ article.main span {
 .snackbar.vertical {
   inline-size: 5%;
 }
+
+.center {
+  inset: 50% auto auto 50%;
+}

@@ -40,9 +40,9 @@ class page_loader {
     ui('#warnings');
   }
   /**
-  * Get the content of a page
+  * Get the content of a file. All in raw data.
   * @param {String} page
-  * @returns {String}
+  * @returns {String} The file contents
   */
   async __get_content(page) {
     if (this.cache.has(page)) {

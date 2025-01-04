@@ -1,0 +1,50 @@
+#projects {
+  height: 100%;
+  display: grid;
+  grid-template-columns: 33.33% 33.34% 33.34%;
+  grid-template-rows: 33.33% 33.34% 33.34%;
+}
+
+#projects>div:not(.hidden) {
+  border: 1px solid;
+  border-radius: 5%;
+  width: 50%;
+  height: 50%;
+  align-self: center;
+  justify-self: center;
+}
+
+body.light #projects>div {
+  border-color: white;
+}
+
+body.dark #projects>div {
+  border-color: black;
+}
+
+#pro-title {
+  /* height: 0%;
+  margin: 0; */
+  justify-self: center;
+  align-self: center;
+}
+
+#projects>*>.title {
+  font-size: 25px;
+}
+
+#pro-1 {}
+
+#pro-2 {}
+
+#pro-3 {}
+
+#pro-4 {}
+
+#pro-5 {}
+
+#pro-6 {}
+
+#pro-7 {}
+
+#pro-8 {}
