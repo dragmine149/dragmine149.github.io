@@ -3,13 +3,9 @@ name: Deploy static content to Pages
 
 on:
   # Runs on pushes targeting the default branch
-  # push:
-  #   branches: ["main"]
-  workflow_run:
-    workflows: ["Check Spelling"]
-    types:
-      - completed
-
+  push:
+    branches:
+      - "**"
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
@@ -26,22 +22,81 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  # Single deploy job since we're just deploying
+  # Generate a matrix of all the branches
+  build_matrix:
+    runs-on: ubuntu-latest
+    outputs:
+      json_branches: ${{ steps.generate-matrix.outputs.json_branches }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Generate Matrix
+        id: generate-matrix
+        run: |
+          branches=($(git branch -r | cut -c 3- | sed 's/origin\///g'))
+          json_branches=$(printf '%s\n' "${branches[@]}" | jq -R . | jq -s -c .)
+          echo "json_branches=${json_branches}" >> $GITHUB_OUTPUT
+
+  # For each branch, make an artifact of said branch
+  build:
+    runs-on: ubuntu-latest
+    needs:
+      - build_matrix
+    strategy:
+      matrix:
+        branch: ${{ fromJSON(needs.build_matrix.outputs.json_branches) }}
+    steps:
+      # Probably a better way of doing this but..
+      # If branch is not main, put under the Branches/<Branch Name> Folder
+      - uses: actions/checkout@v4
+        if: ${{ matrix.branch != 'main' }}
+        with:
+          ref: ${{ matrix.branch }}
+          path: Branches/${{ matrix.branch }}
+      # Else put it in the main directory
+      - uses: actions/checkout@v4
+        if: ${{ matrix.branch == 'main' }}
+        with:
+          ref: ${{ matrix.branch }}
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: build-${{ matrix.branch }}
+          path: .
+
+  # actually deploy to pages
   deploy:
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
+    needs:
+      - build_matrix
+      - build
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
       - name: Setup Pages
         uses: actions/configure-pages@v5
+
+      # Merge all the artifacts into one
+      - name: Merge Artifacts
+        uses: actions/upload-artifact/merge@v4
+        with:
+          name: build-all
+          pattern: build-*
+
+      # Download the artifact, just so we don't have to worry about making it into the format they want
+      - name: Download Artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: build-all
+          path: website/
+
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          # Upload entire repository
-          path: '.'
+          path: website/
+
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4

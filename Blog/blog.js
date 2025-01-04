@@ -126,5 +126,5 @@ class Blog {
 let blog = new Blog();
 
 function blog_loader() {
-  blog.load_blog_list();
+  blog.initiate_blog_load();
 }

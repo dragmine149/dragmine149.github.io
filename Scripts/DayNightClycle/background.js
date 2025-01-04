@@ -19,10 +19,14 @@ function set_to_time(old_time) {
   document.body.classList.add(`g${time_index}`);
 
   let website_mode = 'dark';
+  let real_mode = 'light';
   if (time_index >= 18 || time_index <= 6) {
     website_mode = 'light';
+    real_mode = 'dark';
   }
   ui('mode', website_mode);
+  document.getElementById("button-snacks").classList.remove(website_mode);
+  document.getElementById("button-snacks").classList.add(real_mode);
 }
 
 // a timer that runs every hour, on the hour, to update the css.

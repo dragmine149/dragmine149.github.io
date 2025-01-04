@@ -11,6 +11,36 @@ class SnackBar {
     None: 8
   }
 
+  /**
+  * @param {SnackBar.AREA} area
+  * @returns {String}
+  */
+  get_area_code(area) {
+    switch (area) {
+      case this.AREA.Top_Left:
+        return "tl";
+      case this.AREA.Top_Middle:
+        return "tm";
+      case this.AREA.Top_Right:
+        return "tr";
+      case this.AREA.Middle_Left:
+        return "ml";
+      case this.AREA.Middle_Right:
+        return "mr";
+      case this.AREA.Bottom_Left:
+        return "bl";
+      case this.AREA.Bottom_Middle:
+        return "bm";
+      case this.AREA.Bottom_Right:
+        return "br";
+      case this.AREA.None:
+        return "no";
+      default:
+        console.log("ERROR: Invalid area");
+        return "";
+    }
+  }
+
   constructor() {
     Object.freeze(this.AREA);
   }
@@ -76,6 +106,10 @@ class SnackBar {
   }
 
   remove_elements(area) {
+    if (area == this.AREA.None) {
+      return;
+    }
+
     /** @type {HTMLElement[]} */
     const sub_area = this.elements[area];
     sub_area.forEach((elm) => {
@@ -87,6 +121,19 @@ class SnackBar {
 
       elm.classList.remove("active");
     })
+  }
+
+  /** @param {SnackBar.AREA} area */
+  toggle_area(area) {
+    if (this.last_area == area) {
+      this.remove_elements(area);
+      this.last_area = this.AREA.None;
+      return
+    }
+
+    this.remove_elements(this.last_area);
+    this.show_elements(area);
+    this.last_area = area;
   }
 
   /** @type {String[][]} */
@@ -104,6 +151,8 @@ class SnackBar {
     /** @type {String[]} */
     const sub_area = this.elements[area];
     sub_area.push(element);
+
+    document.getElementById(`snackbar-${this.get_area_code(area)}`).classList.add("active");
   }
 }
 

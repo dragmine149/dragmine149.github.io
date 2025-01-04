@@ -1,4 +1,10 @@
 class page_loader {
+  /**
+  * Used for saving search query paramters, like ?load, etc...
+  * @type {String}
+  */
+  params;
+
   constructor() {
     this.cache = new Map();
     this.state_callback = new Map();
@@ -45,10 +51,6 @@ class page_loader {
   * @returns {String} The file contents
   */
   async __get_content(page) {
-    if (this.cache.has(page)) {
-      return this.cache.get(page);
-    }
-
     const result = await fetch(page, {
       headers: {
         "Cache-Control": "max-age=86400"
@@ -58,7 +60,6 @@ class page_loader {
     if (!result.ok) {
       console.log("Invalid request");
       this.__warn_load(`Failed to get page: ${page}.`);
-      this.cache.set(page, null);
     }
 
     return await result.text();
@@ -132,6 +133,10 @@ class page_loader {
   }
 
   async __page_loader(page, history_push = true) {
+    if (history_push) {
+      this.push_state_to_history(page, {});
+    }
+
     await this.__script_loader(page);
 
     let content = await this.__get_page_content(page);
@@ -143,9 +148,6 @@ class page_loader {
 
     document.getElementById("content").replaceWith(content);
 
-    if (history_push) {
-      this.push_state_to_history(page, {});
-    }
   }
 
   /**
