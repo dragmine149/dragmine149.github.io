@@ -62,6 +62,9 @@ jobs:
         with:
           ref: ${{ matrix.branch }}
 
+      - name: Debug
+        run: tree -L 4
+
       - name: Change Paths
         if: ${{ matrix.branch != 'main' }}
         run: ./Branches/${{ matrix.branch }}/build_branch.sh
