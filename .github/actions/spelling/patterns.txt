@@ -3,6 +3,7 @@
 [Cc]loudflare
 [Ff]latpak
 [Gg]ithub
+[Gg]acha
 [Jj]avascript
 [Kk][Ww]rite
 [Ll]inux
