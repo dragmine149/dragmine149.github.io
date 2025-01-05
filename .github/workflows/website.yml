@@ -1,5 +1,5 @@
 # Simple workflow for deploying static content to GitHub Pages
-name: Deploy static content to Pages
+name: Deploy website to github pages
 
 on:
   # Runs on pushes targeting the default branch
@@ -61,9 +61,6 @@ jobs:
         if: ${{ matrix.branch == 'main' }}
         with:
           ref: ${{ matrix.branch }}
-
-      - name: Debug
-        run: tree -L 4
 
       - name: Change Paths
         if: ${{ matrix.branch != 'main' }}
