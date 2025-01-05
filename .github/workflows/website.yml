@@ -61,7 +61,7 @@ jobs:
           ref: ${{ matrix.branch }}
 
       - name: Change Paths
-        if: ${{ maxtrix.branch != 'main' }}
+        if: ${{ matrix.branch != 'main' }}
         run: build_branch.sh
 
       - uses: actions/upload-artifact@v4
