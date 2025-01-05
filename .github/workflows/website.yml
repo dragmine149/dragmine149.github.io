@@ -49,20 +49,22 @@ jobs:
     steps:
       # Probably a better way of doing this but..
       # If branch is not main, put under the Branches/<Branch Name> Folder
-      - uses: actions/checkout@v4
+      - name: Not main checkout
+        uses: actions/checkout@v4
         if: ${{ matrix.branch != 'main' }}
         with:
           ref: ${{ matrix.branch }}
           path: Branches/${{ matrix.branch }}
       # Else put it in the main directory
-      - uses: actions/checkout@v4
+      - name: Main Checkout
+        uses: actions/checkout@v4
         if: ${{ matrix.branch == 'main' }}
         with:
           ref: ${{ matrix.branch }}
 
       - name: Change Paths
         if: ${{ matrix.branch != 'main' }}
-        run: Branches/${{ matrix.branch }}/build_branch.sh
+        run: ./Branches/${{ matrix.branch }}/build_branch.sh
 
       - uses: actions/upload-artifact@v4
         with:
