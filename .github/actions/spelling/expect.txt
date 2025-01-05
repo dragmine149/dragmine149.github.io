@@ -62,6 +62,7 @@ mjs
 modded
 mozilla
 mktemp
+multiplayer
 myanimelist
 nojekyll
 noscript
