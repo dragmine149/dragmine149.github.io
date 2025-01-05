@@ -62,7 +62,7 @@ jobs:
 
       - name: Change Paths
         if: ${{ matrix.branch != 'main' }}
-        run: build_branch.sh
+        run: Branches/${{ matrix.branch }}/build_branch.sh
 
       - uses: actions/upload-artifact@v4
         with:
