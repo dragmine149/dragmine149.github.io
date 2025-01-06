@@ -1,0 +1,21 @@
+<head>
+  <noscript>
+    <meta http-equiv="refresh" content="0; url=https://dragmine149.github.io"/>
+  </noscript>
+  <script>
+    const url = new URL(location);
+    const query = url.searchParams;
+    query.append("load", location.pathname.replaceAll('/', ''));
+    console.log(`Redirect to ${location.origin}${url.search}`);
+    location.href = `${location.origin}${url.search}`;
+  </script>
+</head>
+
+<div id="content" style="width: 100%; height: 100%;">
+  <script src="project-description/description.js"></script>
+  <link rel="stylesheet" href="project-description/style.css">
+  <pageTitle hidden>Project Information</pageTitle>
+  <h1 id="project-title"></h1>
+  <a id="project-link" target="_blank"></a>
+  <div id="project-description"></div>
+</div>

@@ -1,5 +1,9 @@
 class ProjectLoader {
   projects = new Map();
+  /** @type {String} */
+  previous;
+  /** @type {String} */
+  category;
 
   constructor() {
     this.view_projects();
@@ -23,8 +27,15 @@ class ProjectLoader {
   * Fetches the metaadata for a project group
   * @param {String} project
   */
-  async fetch_data(project) {
-    const page_location = page.get_current_page() + `Projects/Projects/${project}/metadata.json`;
+  async fetch_data(project, sub = false) {
+    let page_location = page.get_current_page();
+    if (!sub) {
+      page_location += `Projects/Projects/${project}/metadata.json`;
+    } else {
+      page_location += `Projects/Projects/${project}.json`;
+    }
+
+    console.log(`Attempting to get data from: ${page_location}`);
     let metadata = await page.__get_content(page_location);
     this.projects.set(project, JSON.parse(metadata));
   }
@@ -36,13 +47,11 @@ class ProjectLoader {
     return this.list;
   }
 
-  async view_projects() {
-    await this.fetch_projects();
-    Object.keys(this.list).forEach((key, index) => {
-      let node = this.get_node(this.elements[index]);
-      node.getElementsByClassName("title")[0].textContent = key;
-    });
-
+  /**
+  * Load the ui
+  * @param {String[]} project_list
+  */
+  async load_ui(project_list, sub = false) {
     const project_node = document.getElementById("projects");
     project_node.insertBefore(this.get_node_index(0), null);
     project_node.insertBefore(this.get_node_index(1), null);
@@ -54,66 +63,109 @@ class ProjectLoader {
     project_node.insertBefore(this.get_node_index(6), null);
     project_node.insertBefore(this.get_node_index(7), null);
 
-    switch (Object.keys(this.list).length) {
+    for (let i = 0; i < 8; i++) {
+      const n = this.get_node_index(i);
+      // project_node.insertBefore(n, null);
+      n.disabled = true;
+      n.classList.add("hidden");
+      n.getElementsByClassName("title")[0].textContent = "";
+      n.getElementsByClassName("description")[0].textContent = "";
+    }
+
+    switch (Object.keys(project_list).length) {
       case 1:
         project_node.insertBefore(this.get_node_index(1), this.get_node_index(0));
-        for (let i = 1; i < 8; i++) {
-          this.get_node_index(i).classList.add("hidden");
-        }
         break;
       case 2:
         project_node.insertBefore(this.get_node_index(7), this.get_node_index(0));
         project_node.insertBefore(this.get_node_index(1), this.get_node_index(6));
-        for (let i = 2; i < 8; i++) {
-          this.get_node_index(i).classList.add("hidden");
-        }
         break;
       case 3:
         project_node.insertBefore(this.get_node_index(7), this.get_node_index(0));
         project_node.insertBefore(this.get_node_index(6), this.get_node_index(1));
         project_node.insertBefore(this.get_node_index(8), this.get_node_index(2));
-        for (let i = 3; i < 8; i++) {
-          this.get_node_index(i).classList.add("hidden");
-        }
         break;
       case 4:
         project_node.insertBefore(this.get_node_index(7), this.get_node_index(0));
         project_node.insertBefore(this.get_node_index(6), this.get_node_index(1));
         project_node.insertBefore(this.get_node_index(8), this.get_node_index(2));
         project_node.insertBefore(this.get_node_index(5), this.get_node_index(3));
-        for (let i = 4; i < 8; i++) {
-          this.get_node_index(i).classList.add("hidden");
-        }
         break;
       case 5:
         project_node.insertBefore(this.get_node_index(7), this.get_node_index(1));
         project_node.insertBefore(this.get_node_index(6), this.get_node_index(2));
         project_node.insertBefore(this.get_node_index(8), this.get_node_index(2));
         project_node.insertBefore(this.get_node_index(5), this.get_node_index(2));
-        for (let i = 5; i < 8; i++) {
-          this.get_node_index(i).classList.add("hidden");
-        }
         break;
       case 6:
         project_node.insertBefore(this.get_node_index(7), this.get_node_index(3));
         project_node.insertBefore(this.get_node_index(8), this.get_node_index(3));
         project_node.insertBefore(this.get_node_index(6), this.get_node_index(3));
-        for (let i = 6; i < 8; i++) {
-          this.get_node_index(i).classList.add("hidden");
-        }
         break;
-      case 7:
-        this.get_node_index(7).classList.add("hidden");
-      case 8:
-        this.get_node_index(8).classList.add("hidden");
       default: break;
     }
 
-    Object.values(this.list).forEach(async (value, index) => {
-      await this.fetch_data(value);
-      let node = this.get_node(this.elements[index]);
-      node.children[1].textContent = this.projects.get(value).description;
-    });
+    Object.entries(project_list).forEach(async (entry, index) => {
+      let fetch = entry[1];
+      if (sub) {
+        console.log(entry[1]);
+        fetch = `${this.list[this.category]}/${entry[1]}`;
+      }
+      await this.fetch_data(fetch, sub);
+
+      const node = this.get_node_index(index);
+      node.getElementsByClassName("title")[0].textContent = entry[0];
+      node.getElementsByClassName("description")[0].textContent = this.projects.get(fetch).description;
+      node.disabled = false;
+      node.classList.remove("hidden");
+    })
+  }
+
+  async view_projects() {
+    await this.fetch_projects();
+    this.load_ui(this.list);
+  }
+
+  load_sub_projects(category) {
+    if (this.list[category] != undefined) {
+      const info = this.projects.get(this.list[category]).projects;
+      this.previous = "";
+      this.category = category;
+      this.get_node_index(8).classList.add("button");
+      this.load_ui(info, true);
+      return;
+    }
+
+    page.params = `?Project=${this.list[this.category]}/${this.projects.get(this.list[this.category]).projects[category]}`;
+    page.load_page("project-description");
+  }
+
+  load_previous() {
+    if (this.previous == "") {
+      this.get_node_index(8).classList.remove("button");
+      this.previous = "";
+      this.category = "";
+      this.load_ui(this.list);
+    }
+    const info = this.projects.get(this.list[this.previous]).projects;
+    const a = this.previous;
+    this.previous = this.category;
+    this.category = a;
+    this.load_ui(info, true)
+  }
+
+  async load_description_from_url() {
+    const url = new URL(location);
+    const info = url.searchParams.get("Project");
+
+    console.log(`Loading project info: ${info}`);
+
+    await this.fetch_data(info, true);
+    const data = this.projects.get(info);
+    document.getElementById("project-title").innerText = data.name;
+    document.getElementById("project-description").innerText = data.website;
+    document.getElementById("project-link").innerText = `Provided link: ${data.url}`;
+    document.getElementById("project-link").href = data.url;
   }
 }
 

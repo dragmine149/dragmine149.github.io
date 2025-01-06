@@ -5,7 +5,8 @@
   grid-template-rows: 33.33% 33.34% 33.34%;
 }
 
-#projects>div:not(.hidden) {
+#projects>div:not(.hidden),
+#projects>button:not(.hidden) {
   border: 1px solid;
   border-radius: 5%;
   width: 50%;
@@ -14,11 +15,22 @@
   justify-self: center;
 }
 
-body.light #projects>div {
+#projects>button {
+  background-color: rgba(0, 0, 0, 0);
+  display: initial;
+}
+
+#projects>button:disabled {
+  cursor: default;
+}
+
+body.light #projects>div,
+body.light #projects>button {
   border-color: white;
 }
 
-body.dark #projects>div {
+body.dark #projects>div,
+body.dark #projects>button {
   border-color: black;
 }
 
@@ -27,24 +39,13 @@ body.dark #projects>div {
   margin: 0; */
   justify-self: center;
   align-self: center;
+  height: 100%;
 }
 
 #projects>*>.title {
   font-size: 25px;
 }
 
-#pro-1 {}
-
-#pro-2 {}
-
-#pro-3 {}
-
-#pro-4 {}
-
-#pro-5 {}
-
-#pro-6 {}
-
-#pro-7 {}
-
-#pro-8 {}
+#projects>*>.description {
+  font-size: 15px;
+}

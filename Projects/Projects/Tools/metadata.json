@@ -1,10 +1,10 @@
 {
   "name": "Tools",
   "description": "Some tools i've made to help me out in certain situtations",
-  "Projects": {
+  "projects": {
     "BitBurner Scripts": "bit-scripts",
-    "Launcher": "Launcher",
-    "In-App Console for Unity projects": "Unity Console",
-    "Godot Input Manager": "InputManager"
+    "Launcher": "launcher",
+    "In-App Console for Unity projects": "unity-console",
+    "Godot Input Manager": "input_manager"
   }
 }

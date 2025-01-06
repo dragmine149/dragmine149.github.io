@@ -14,49 +14,41 @@
 <div id="content" style="width: 100%; height: 100%;">
   <pageTitle hidden>Drag's Projects</pageTitle>
   <script src="Projects/projects.js"></script>
-<link rel="stylesheet" href="Projects/style.css">
+  <link rel="stylesheet" href="Projects/style.css">
 
   <div id="projects">
-    <div id="pro-1">
+    <button id="pro-1" disabled onclick="projects.load_sub_projects(this.children[0].innerText)" class="hidden">
       <div class="title"></div>
       <div class="description"></div>
-      <div class="list"></div>
-    </div>
-    <div id="pro-2">
+    </button>
+    <button id="pro-2" disabled onclick="projects.load_sub_projects(this.children[0].innerText)" class="hidden">
       <div class="title"></div>
       <div class="description"></div>
-      <div class="list"></div>
-    </div>
-    <div id="pro-3">
+    </button>
+    <button id="pro-3" disabled onclick="projects.load_sub_projects(this.children[0].innerText)" class="hidden">
       <div class="title"></div>
       <div class="description"></div>
-      <div class="list"></div>
-    </div>
-    <div id="pro-4">
+    </button>
+    <button id="pro-4" disabled onclick="projects.load_sub_projects(this.children[0].innerText)" class="hidden">
       <div class="title"></div>
       <div class="description"></div>
-      <div class="list"></div>
-    </div>
-    <h1 id="pro-title">Projects</h1>
-    <div id="pro-5">
+    </button>
+    <h1 id="pro-title" onclick="projects.load_previous()">Projects</h1>
+    <button id="pro-5" disabled onclick="projects.load_sub_projects(this.children[0].innerText)" class="hidden">
       <div class="title"></div>
       <div class="description"></div>
-      <div class="list"></div>
-    </div>
-    <div id="pro-6">
+    </button>
+    <button id="pro-6" disabled onclick="projects.load_sub_projects(this.children[0].innerText)" class="hidden">
       <div class="title"></div>
       <div class="description"></div>
-      <div class="list"></div>
-    </div>
-    <div id="pro-7">
+    </button>
+    <button id="pro-7" disabled onclick="projects.load_sub_projects(this.children[0].innerText)" class="hidden">
       <div class="title"></div>
       <div class="description"></div>
-      <div class="list"></div>
-    </div>
-    <div id="pro-8">
+    </button>
+    <button id="pro-8" disabled onclick="projects.load_sub_projects(this.children[0].innerText)" class="hidden">
       <div class="title"></div>
       <div class="description"></div>
-      <div class="list"></div>
-    </div>
+    </button>
   </div>
 </div>
