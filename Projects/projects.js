@@ -121,6 +121,12 @@ class ProjectLoader {
     })
   }
 
+  save_state(name) {
+    page.push_state_to_history(page.get_current_subpage(), {
+      "project": name
+    }, "")
+  }
+
   async view_projects() {
     await this.fetch_projects();
     this.load_ui(this.list);
@@ -133,30 +139,43 @@ class ProjectLoader {
       this.category = category;
       this.get_node_index(8).classList.add("button");
       this.load_ui(info, true);
+      this.save_state(category);
       return;
     }
 
-    page.params = `?Project=${this.list[this.category]}/${this.projects.get(this.list[this.category]).projects[category]}`;
-    page.load_page("project-description");
+    page.push_state_to_history(page.get_current_subpage(), {
+      "project": `${this.list[this.category]}/${this.projects.get(this.list[this.category]).projects[category]}`
+    }, `?Project=${this.list[this.category]}/${this.projects.get(this.list[this.category]).projects[category]}`);
+    this.load_description_from_url();
   }
 
   load_previous() {
+    document.getElementById("projects").hidden = false;
+    document.getElementById("project-description").hidden = true;
+
     if (this.previous == "") {
       this.get_node_index(8).classList.remove("button");
       this.previous = "";
       this.category = "";
       this.load_ui(this.list);
+      this.save_state("");
+      return;
     }
+
     const info = this.projects.get(this.list[this.previous]).projects;
     const a = this.previous;
     this.previous = this.category;
     this.category = a;
+    this.save_state(a);
     this.load_ui(info, true)
   }
 
   async load_description_from_url() {
     const url = new URL(location);
     const info = url.searchParams.get("Project");
+
+    document.getElementById("projects").hidden = true;
+    document.getElementById("project-descriptions").hidden = false;
 
     console.log(`Loading project info: ${info}`);
 
