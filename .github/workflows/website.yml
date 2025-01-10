@@ -22,6 +22,23 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  build_blog_list:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: 'main'
+
+      - name: Generate blog list
+        run: ./tools/tools
+
+      - name: Upload
+        uses: actions/upload-artifact@v4
+        with:
+          name: blog_list.json
+          path: Blog/list.json
+
   # Generate a matrix of all the branches
   build_matrix:
     runs-on: ubuntu-latest
@@ -80,6 +97,7 @@ jobs:
     needs:
       - build_matrix
       - build
+      - build_blog_list
     steps:
       - name: Setup Pages
         uses: actions/configure-pages@v5
@@ -97,6 +115,11 @@ jobs:
         with:
           name: build-all
           path: website/
+
+      - name: Download blog list
+        uses: actions/download-artifact@v4
+        with:
+          name: blog_list.json
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3

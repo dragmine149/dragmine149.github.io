@@ -69,13 +69,13 @@ class Blog {
 
   async load_blog_list() {
     const url = new URL(location);
-    const page_location = url.origin + "/Blog/Pages/1.json";
+    const page_location = url.origin + "/Blog/list.json";
     let list = await page.__get_content(page_location);
     let json_list = JSON.parse(list);
     this.blog_list = json_list;
 
-    Object.entries(json_list).forEach((entry) => {
-      if (document.getElementById(`blog-${entry[0]}`)) {
+    Object.values(json_list).forEach((v) => {
+      if (document.getElementById(`blog-${v.date}`)) {
         return;
       }
 
@@ -84,17 +84,17 @@ class Blog {
       const preview = document.createElement('p');
       const categories = document.createElement('nav');
 
-      elm.id = `blog-${entry[0]}`;
+      elm.id = `blog-${v.date}`;
       elm.appendChild(title);
       elm.appendChild(preview);
       elm.appendChild(categories);
 
-      title.innerText = entry[0];
-      preview.innerText = entry[1].preview;
+      title.innerText = v.date;
+      preview.innerText = v.preview;
 
       document.getElementById('blog_list').appendChild(elm);
 
-      entry[1].categories.forEach((category) => {
+      v.categories.forEach((category) => {
         const fake_btn = document.createElement('a');
         fake_btn.classList.add("button");
         categories.appendChild(fake_btn);
@@ -102,8 +102,8 @@ class Blog {
       });
 
       elm.onclick = () => {
-        console.log(`Clicked elm: ${entry[0]}`);
-        blog.load_blog(entry[0]);
+        console.log(`Clicked elm: ${v.date}`);
+        blog.load_blog(v.date);
       }
     });
 

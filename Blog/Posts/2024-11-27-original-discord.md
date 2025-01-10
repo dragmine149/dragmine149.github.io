@@ -125,3 +125,5 @@ Have i submitted a request about these annoyances, well no.
 1. Using root by default is confusing
 Apparently they plan to rewrite the installer so it doesn't require root, but for the time being root is needed for most of the stuff. See: https://github.com/Vencord/Installer/issues/143
 2. This normally has an issue to do with processing strings and idk if it's possible to fix it in go.
+
+Categories: [hidden discord]
