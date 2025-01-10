@@ -6,6 +6,7 @@
 ^\Q.nojekyll\E$
 ^\Q.well-known/discord\E$
 ^\QBlog/Posts/help.md.bin\E$
+^\Qtools\E$
 \.css
 \.js
 \.html
