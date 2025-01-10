@@ -102,10 +102,20 @@ jobs:
         if: ${{ matrix.branch != 'main' }}
         run: ./temp/Branches/${{ matrix.branch }}/build_branch.sh
 
-      - uses: actions/upload-artifact@v4
+      - name: Upload branches
+        uses: actions/upload-artifact@v4
+        if: ${{ matrix.branch != 'main' }}
+        with:
+          name: build-${{ matrix.branch }}
+          path: Branches/
+
+      - name: Upload main
+        uses: actions/upload-artifact@v4
+        if: ${{ matrix.branch == 'main' }}
         with:
           name: build-${{ matrix.branch }}
           path: .
+
 
   # actually deploy to pages
   deploy:
