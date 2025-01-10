@@ -30,6 +30,7 @@ class Blog {
 
     blog_list.hidden = list;
     blog_content.hidden = !list;
+    blog_content.scrollTo(0, 0);
   }
 
   async load_blog(blog_page, history_push = true) {
