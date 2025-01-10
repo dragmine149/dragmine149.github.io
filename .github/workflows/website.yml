@@ -83,6 +83,8 @@ jobs:
         if: ${{ matrix.branch != 'main' }}
         id: changed-files
         uses: tj-actions/changed-files@v45
+        with:
+          path: temp/Branches/${{ matrix.branch }}
 
       - name: Compress
         if: ${{ matrix.branch != 'main' }}
