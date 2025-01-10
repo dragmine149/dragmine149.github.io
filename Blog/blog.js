@@ -129,3 +129,15 @@ let blog = new Blog();
 function blog_loader() {
   blog.initiate_blog_load();
 }
+
+// Source: https://adventofcode.com/
+// Triple click to select code blocks
+window.addEventListener('click', function (e, s, r) {
+  if (e.target.nodeName === 'CODE' && e.detail === 3) {
+    s = window.getSelection();
+    s.removeAllRanges();
+    r = document.createRange();
+    r.selectNodeContents(e.target);
+    s.addRange(r);
+  }
+});
