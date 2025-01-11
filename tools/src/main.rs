@@ -1,5 +1,4 @@
 use serde::{Deserialize, Serialize};
-use serde_json;
 use std::fs;
 
 #[derive(Debug, Serialize, Deserialize)]
@@ -17,6 +16,7 @@ fn main() {
     for path in paths {
         let p = path.unwrap().path();
         if p.is_dir() {
+            // don't worry about directories
             continue;
         }
         if p.extension().unwrap() != "md" {
@@ -25,14 +25,24 @@ fn main() {
         }
         let date = p.file_stem().unwrap().to_str().unwrap().to_string();
         if date == "next" {
+            // This is mainly just to avoid the next file whilst testing locally.
             continue;
         }
 
         println!("Translating: {:?}", date);
 
+        // read the blog data. Is there a better way of doing this?
         let blog_data = fs::read_to_string(p).unwrap_or(String::new());
         let mut lines = blog_data.lines();
-        let preview = lines.nth(0).unwrap().to_string().replace("#", "");
+        // first line is always preview line with the hash
+        let preview = lines
+            .next()
+            .unwrap()
+            .to_string()
+            .replace("#", "")
+            .trim()
+            .to_string();
+        // categories will be at the end, out of the way
         let categories: Vec<String> = lines
             .last()
             .unwrap()
@@ -44,7 +54,7 @@ fn main() {
         println!("Categories: {:?}", categories);
 
         if categories.contains(&"hidden".to_string()) {
-            // not meant to be include
+            // not meant to be include in the main list
             continue;
         }
 
@@ -57,39 +67,11 @@ fn main() {
 
     println!("{:?}", blogs);
 
+    // convert to json
     let json = serde_json::to_string(&blogs).unwrap();
-    // let json = blogs.iter().fold(String::new(), |acc, b| {
-    //     acc + serde_json::to_string(b).unwrap().as_str() + ","
-    // });
-    // .map(|b| serde_json::to_string(b).unwrap())
-    // .collect::<String>();
     println!("{}", json);
 
+    // save the json
     let result = fs::write("Blog/list.json", json);
     println!("{:?}", result);
 }
-
-// impl<T: fmt::Debug> fmt::Debug for Grid<T> {
-//     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-//         write!(
-//             f,
-//             "{}",
-//             self.iter()
-//                 .map(|y| {
-//                     let mut yy = y.iter().fold(String::new(), |mut output, x| {
-//                         // allow each cell to debug how this wish to debug.
-//                         if f.alternate() {
-//                             let _ = write!(output, "{:#?}", x);
-//                             output
-//                         } else {
-//                             let _ = write!(output, "{:?}", x);
-//                             output
-//                         }
-//                     });
-//                     yy.push('\n');
-//                     yy
-//                 })
-//                 .collect::<String>()
-//         )
-//     }
-// }
