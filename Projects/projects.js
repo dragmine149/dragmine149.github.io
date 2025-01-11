@@ -122,9 +122,10 @@ class ProjectLoader {
   }
 
   save_state(name) {
+    console.log(`saving state: ${name}`);
     page.push_state_to_history(page.get_current_subpage(), {
       "project": name
-    }, "")
+    }, `?project=${name}`)
   }
 
   async view_projects() {
@@ -133,6 +134,8 @@ class ProjectLoader {
   }
 
   load_sub_projects(category) {
+    console.log(`Sub project clicked: ${category}`);
+
     if (this.list[category] != undefined) {
       const info = this.projects.get(this.list[category]).projects;
       this.previous = "";
@@ -145,7 +148,7 @@ class ProjectLoader {
 
     page.push_state_to_history(page.get_current_subpage(), {
       "project": `${this.list[this.category]}/${this.projects.get(this.list[this.category]).projects[category]}`
-    }, `?Project=${this.list[this.category]}/${this.projects.get(this.list[this.category]).projects[category]}`);
+    }, `?project=${this.list[this.category]}/${this.projects.get(this.list[this.category]).projects[category]}`);
     this.load_description_from_url();
   }
 
