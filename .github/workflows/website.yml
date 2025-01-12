@@ -58,10 +58,6 @@ jobs:
   build_main:
     runs-on: ubuntu-latest
     steps:
-      - name: Pre Main Setup
-        run: |
-          mkdir -p root
-          mkdir -p temp
       # Else put it in the main directory
       - name: Main Checkout
         uses: actions/checkout@v4
@@ -75,16 +71,14 @@ jobs:
       #       .well-knowm
       #     path: temp
 
-      - name: Combine
+      - name: Debug
         run: |
           ls -la
-          mv temp/.well-known .
-          rmdir temp
 
       - name: Upload main
         uses: actions/upload-artifact@v4
         with:
-          name: build-${{ matrix.branch }}
+          name: build-main
           path: .
 
 
