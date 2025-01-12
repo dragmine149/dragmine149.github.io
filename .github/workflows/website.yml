@@ -51,9 +51,44 @@ jobs:
       - name: Generate Matrix
         id: generate-matrix
         run: |
-          branches=($(git branch -r | cut -c 3- | sed 's/origin\///g'))
+          branches=($(git branch -r | cut -c 3- | sed 's/origin\///g' | sed 's/main//g'))
           json_branches=$(printf '%s\n' "${branches[@]}" | jq -R . | jq -s -c .)
           echo "json_branches=${json_branches}" >> $GITHUB_OUTPUT
+
+  build_main:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Pre Main Setup
+        run: |
+          mkdir -p root
+          mkdir -p temp
+      # Else put it in the main directory
+      - name: Main Checkout
+        uses: actions/checkout@v4
+        if: ${{ matrix.branch == 'main' }}
+        with:
+          ref: 'main'
+      - name: Main Checkout w/ dot
+        uses: actions/checkout@v4
+        if: ${{ matrix.branch == 'main' }}
+        with:
+          ref: 'main'
+          sparse-checkout: |
+            .well-knowm
+          path: temp
+
+      - name: Combine
+        run: |
+          mv temp/.well-known .
+          rmdir temp
+
+      - name: Upload main
+        uses: actions/upload-artifact@v4
+        if: ${{ matrix.branch == 'main' }}
+        with:
+          name: build-${{ matrix.branch }}
+          path: .
+
 
   # For each branch, make an artifact of said branch
   build:
@@ -68,33 +103,17 @@ jobs:
       # If branch is not main, put under the Branches/<Branch Name> Folder
       - name: Not main checkout
         uses: actions/checkout@v4
-        if: ${{ matrix.branch != 'main' }}
         with:
           ref: ${{ matrix.branch }}
           path: temp/Branches/${{ matrix.branch }}
-      # Else put it in the main directory
-      - name: Main Checkout
-        uses: actions/checkout@v4
-        if: ${{ matrix.branch == 'main' }}
-        with:
-          ref: 'main'
-      - name: Main Checkout w/ dot
-        uses: actions/checkout@v4
-        if: ${{ matrix.branch == 'main' }}
-        with:
-          ref: 'main'
-          sparse-checkout: |
-            .well-knowm
 
       - name: Last successful commit
         uses: nrwl/nx-set-shas@v3
-        if: ${{ matrix.branch != 'main' }}
         id: last_successful_commit_push
         with:
           main-branch-name: main
 
       - name: Run changed-files with the commit of the last successful test workflow run
-        if: ${{ matrix.branch != 'main' }}
         id: changed-files-base-sha-push
         uses: tj-actions/changed-files@v45
         with:
@@ -102,7 +121,6 @@ jobs:
           path: temp/Branches/${{ matrix.branch }}
 
       - name: Compress
-        if: ${{ matrix.branch != 'main' }}
         env:
           ALL_CHANGED_FILES: ${{ steps.changed-markdown-files.outputs.all_changed_files }}
         run: |
@@ -115,22 +133,13 @@ jobs:
           done
 
       - name: Change Paths
-        if: ${{ matrix.branch != 'main' }}
         run: ./temp/Branches/${{ matrix.branch }}/build_branch.sh
 
       - name: Upload branches
         uses: actions/upload-artifact@v4
-        if: ${{ matrix.branch != 'main' }}
         with:
           name: build-${{ matrix.branch }}
           path: Branches/
-
-      - name: Upload main
-        uses: actions/upload-artifact@v4
-        if: ${{ matrix.branch == 'main' }}
-        with:
-          name: build-${{ matrix.branch }}
-          path: .
 
 
   # actually deploy to pages
@@ -142,6 +151,7 @@ jobs:
     needs:
       - build_matrix
       - build
+      - build_main
       - build_blog_list
     steps:
       - name: Setup Pages
