@@ -9,7 +9,7 @@
 [Ll]inux
 [Pp]ippa
 [Rr]eddit
-[S][s]teampunk
+[Ss]teampunk
 [Ss][Mm][Tt][Hh]
 [Tt][Ll][Dd][Rr]
 [Ww]ordpress
