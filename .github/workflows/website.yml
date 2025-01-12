@@ -158,7 +158,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: blog_list.json
-          path: website/Blog/list.json
+          path: website/Blog
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
