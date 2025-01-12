@@ -66,6 +66,7 @@ fn main() {
     }
 
     println!("{:?}", blogs);
+    blogs.sort_by(|a, b| b.date.cmp(&a.date));
 
     // convert to json
     let json = serde_json::to_string(&blogs).unwrap();
