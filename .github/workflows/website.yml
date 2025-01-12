@@ -77,6 +77,8 @@ jobs:
 
       - name: Combine
         run: |
+          ls -la
+          ls -la temp
           mv temp/.well-known .
           rmdir temp
 
