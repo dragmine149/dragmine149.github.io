@@ -101,6 +101,7 @@ jobs:
         run: |
           mkdir -p Branches/${{ matrix.branch }}
           for file in ${ALL_CHANGED_FILES}; do
+            echo "$file"
             basedir=$(dirname $file)
             mkdir -p Branches/${{ matrix.branch }}/$basedir
             mv $file Branches/${{ matrix.branch }}/$basedir;
@@ -157,6 +158,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: blog_list.json
+          path: website/Blog/list.json
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
