@@ -79,11 +79,20 @@ jobs:
         with:
           ref: ${{ matrix.branch }}
 
-      - name: Get changed files
-        if: ${{ matrix.branch != 'main' }}
-        id: changed-files
+      - name: Get branch name
+        id: branch-name
+        uses: tj-actions/branch-names@v6
+
+      - uses: nrwl/nx-set-shas@v3
+        id: last_successful_commit_push
+        with:
+          main-branch-name: ${{ steps.branch-name.outputs.current_branch }} # Get the last successful commit for the current branch.
+
+      - name: Run changed-files with the commit of the last successful test workflow run
+        id: changed-files-base-sha-push
         uses: tj-actions/changed-files@v45
         with:
+          base_sha: ${{ steps.last_successful_commit_push.outputs.base }}
           path: temp/Branches/${{ matrix.branch }}
 
       - name: Compress
