@@ -79,16 +79,15 @@ jobs:
         with:
           ref: ${{ matrix.branch }}
 
-      - name: Get branch name
-        id: branch-name
-        uses: tj-actions/branch-names@v6
-
-      - uses: nrwl/nx-set-shas@v3
+      - name: Last successful commit
+        uses: nrwl/nx-set-shas@v3
+        if: ${{ matrix.branch != 'main' }}
         id: last_successful_commit_push
         with:
-          main-branch-name: ${{ steps.branch-name.outputs.current_branch }} # Get the last successful commit for the current branch.
+          main-branch-name: main
 
       - name: Run changed-files with the commit of the last successful test workflow run
+        if: ${{ matrix.branch != 'main' }}
         id: changed-files-base-sha-push
         uses: tj-actions/changed-files@v45
         with:
