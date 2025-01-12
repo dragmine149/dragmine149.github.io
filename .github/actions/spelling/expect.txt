@@ -8,6 +8,7 @@ beeeep
 bbd
 bron
 cloudflareinsigts
+clippy
 cmp
 cwd
 desmos
@@ -20,6 +21,7 @@ dragonmanialegends
 Dijkstra
 edu
 FAo
+fastfetch
 firefox
 flathub
 Garreau
@@ -37,6 +39,7 @@ hhmg
 hhs
 hgv
 hjafmi
+hotspot
 idk
 img
 inbox
@@ -45,6 +48,7 @@ irl
 JQuery
 kate
 kde
+kdeconnect
 kerbosch
 kinda
 leaderboard
@@ -59,13 +63,16 @@ meh
 minimalistic
 minecraft
 mjs
+mktemp
 modded
 mozilla
-mktemp
 multiplayer
+multiline
 myanimelist
 nojekyll
 noscript
+NGL
+Nvidia
 onsen
 opengenus
 outfile
@@ -94,6 +101,7 @@ timezone
 topicid
 UBlock
 Usagi
+usb
 usize
 usercontent
 website
