@@ -77,7 +77,14 @@ jobs:
         uses: actions/checkout@v4
         if: ${{ matrix.branch == 'main' }}
         with:
-          ref: ${{ matrix.branch }}
+          ref: 'main'
+      - name: Main Checkout w/ dot
+        uses: actions/checkout@v4
+        if: ${{ matrix.branch == 'main' }}
+        with:
+          ref: 'main'
+          sparse-checkout: |
+            .well-knowm
 
       - name: Last successful commit
         uses: nrwl/nx-set-shas@v3
