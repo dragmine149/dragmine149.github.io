@@ -43,14 +43,17 @@ fn main() {
             .trim()
             .to_string();
         // categories will be at the end, out of the way
-        let categories: Vec<String> = lines
-            .last()
-            .unwrap()
-            .replace("Categories: [", "")
-            .replace("]", "")
-            .split_whitespace()
-            .map(|c| c.to_string())
-            .collect();
+        let last_line = lines.last().unwrap();
+        let categories: Vec<String> = if last_line.starts_with("Categories: ") {
+            last_line
+                .replace("Categories: [", "")
+                .replace("]", "")
+                .split_whitespace()
+                .map(|c| c.to_string())
+                .collect()
+        } else {
+            vec![]
+        };
         println!("Categories: {:?}", categories);
 
         if categories.contains(&"hidden".to_string()) {
