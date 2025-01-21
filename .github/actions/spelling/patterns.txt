@@ -1,6 +1,7 @@
 [Bb]it[Bb]urner
 [Bb]logs
 [Cc]loudflare
+[Cc]runcyroll
 [Ff]latpak
 [Gg]ithub
 [Gg]acha
@@ -10,6 +11,7 @@
 [Pp]ippa
 [Rr]eddit
 [Ss]teampunk
+[Ss]enpai
 [Ss][Mm][Tt][Hh]
 [Tt][Ll][Dd][Rr]
 [Ww]ordpress
