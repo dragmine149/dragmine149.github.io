@@ -10,7 +10,6 @@ bbd
 bron
 btw
 Buta
-cloudflareinsigts
 clippy
 cmp
 cwd
@@ -59,10 +58,8 @@ kerbosch
 kinda
 leaderboard
 len
-lvl
 Makeine
 MMO
-manga
 mangas
 mashup
 majorly
