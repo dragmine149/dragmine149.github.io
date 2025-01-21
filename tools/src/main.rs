@@ -49,7 +49,7 @@ fn main() {
                 .replace("Categories: [", "")
                 .replace("]", "")
                 .split_whitespace()
-                .map(|c| c.to_string())
+                .map(|c| c.replace(",", ""))
                 .collect()
         } else {
             vec![]
