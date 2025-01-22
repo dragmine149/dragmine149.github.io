@@ -151,6 +151,7 @@ jobs:
         with:
           name: build-all
           pattern: build-*
+          include-hidden-files: true
 
       # Download the artifact, just so we don't have to worry about making it into the format they want
       - name: Download Artifacts
