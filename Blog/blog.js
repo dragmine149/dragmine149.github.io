@@ -1,3 +1,110 @@
+function markedLocalTime() {
+  function timeSince(date) {
+    var seconds = Math.floor((new Date() - date) / 1000);
+    var interval = seconds / 31536000;
+    if (interval > 1) {
+      return Math.floor(interval) + " years";
+    }
+    interval = seconds / 2592000;
+    if (interval > 1) {
+      return Math.floor(interval) + " months";
+    }
+    interval = seconds / 86400;
+    if (interval > 1) {
+      return Math.floor(interval) + " days";
+    }
+    interval = seconds / 3600;
+    if (interval > 1) {
+      return Math.floor(interval) + " hours";
+    }
+    interval = seconds / 60;
+    if (interval > 1) {
+      return Math.floor(interval) + " minutes";
+    }
+    return Math.floor(seconds) + " seconds";
+  }
+
+  function time_with_0(time) {
+    if (time < 10) {
+      return `0${time}`;
+    }
+    return `${time}`;
+  }
+
+  function format_time(time, format) {
+    const weekDays = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+    const months = ['Janurary', 'Feburary', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+    const t = new Date(time * 1000);
+    switch (format) {
+      case 't':
+        return `${time_with_0(t.getHours())}:${time_with_0(t.getMinutes())}`;
+      case 'T':
+        return `${t.toLocaleTimeString()}`;
+      case 'd':
+        return `${t.toLocaleDateString()}`;
+      case 'D':
+        return `${time_with_0(t.getDate())} ${months[t.getMonth()]} ${t.getFullYear()}`;
+      case 'F':
+        return `${weekDays[t.getDay()]} ${time_with_0(t.getDate())} ${months[t.getMonth()]} ${t.getFullYear()} at ${time_with_0(t.getHours())}:${time_with_0(t.getMinutes())}`;
+      case 'R':
+        return `${timeSince(t)}`;
+      case 'f':
+        return `${time_with_0(t.getDate())} ${months[t.getMonth()]} ${t.getFullYear()} at ${time_with_0(t.getHours())}:${time_with_0(t.getMinutes())}`;
+      default:
+        return t.toLocaleString();
+    }
+  }
+
+  return {
+    extensions: [{
+      name: 'localtime',
+      level: 'inline',
+      start(src) {
+        const start = src.match(/<t:/)?.index;
+        return start === undefined || (start > 0 && src[start - 1] === '`') ? undefined : start;
+      },
+      tokenizer(src, tokens) {
+        const rule = /^<t:(\d*)(:([tTdDfFR]))?>/;
+        const match = rule.exec(src);
+
+        return (match) ? {
+          type: 'localtime',
+          raw: match[0],
+          time: Number(match[1]),
+          format: match[3] == undefined ? 'f' : match[3],
+        } : undefined
+      },
+      renderer(token) {
+        return `<code>${format_time(token.time, token.format)}</code>`;
+      },
+    }],
+  }
+}
+/*
+const description = {
+  name: 'description',
+  level: 'inline',                                 // Is this a block-level or inline-level tokenizer?
+  start(src) { return src.match(/:/)?.index; },    // Hint to Marked.js to stop and check for a match
+  tokenizer(src, tokens) {
+    const rule = /^:([^:\n]+):([^:\n]*)(?:\n|$)/;  // Regex for the complete token, anchor to string start
+    const match = rule.exec(src);
+    if (match) {
+      return {                                         // Token to generate
+        type: 'description',                           // Should match "name" above
+        raw: match[0],                                 // Text to consume from the source
+        dt: this.lexer.inlineTokens(match[1].trim()),  // Additional custom properties, including
+        dd: this.lexer.inlineTokens(match[2].trim())   //   any further-nested inline tokens
+      };
+    }
+  },
+  renderer(token) {
+    return `\n < dt > ${ this.parser.parseInline(token.dt) }</dt > <dd>${this.parser.parseInline(token.dd)}</dd>`;
+  },
+  childTokens: ['dt', 'dd'],                 // Any child tokens to be visited by walkTokens
+};
+
+*/
+
 class Blog {
   constructor() {
     page.listen_to_state_pop("blog", v => this.load_blog(v, false));
@@ -46,6 +153,7 @@ class Blog {
     // using marked, load the blog post into the page
     let marked = window.marked;
     document.getElementById('blog_content').innerHTML = new marked.Marked()
+      .use(markedLocalTime())
       .use(markedCustomHeadingId())
       .use(markedFootnote())
       .use(markedHighlight.markedHighlight({
