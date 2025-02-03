@@ -49,6 +49,7 @@ class Blog {
       .use(markedLocalTime())
       .use(markedCustomHeadingId())
       .use(markedFootnote())
+      .use(markedImprovedImage())
       .use(markedHighlight.markedHighlight({
         emptyLangClass: 'hljs',
         langPrefix: 'hljs language-',

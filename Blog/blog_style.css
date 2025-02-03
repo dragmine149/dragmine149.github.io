@@ -47,3 +47,8 @@
 body.light #blog_list article {
   color: white;
 }
+
+#blog_content div.img {
+  width: 100%;
+  overflow: auto;
+}
