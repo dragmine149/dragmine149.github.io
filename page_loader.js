@@ -170,7 +170,7 @@ function load_page_content(element_id, page_location, page_name) {
 /**
 *
 * @param {String} page The page to laod
-* @param {String} params Search paramaters
+* @param {String} params Search parameters
 */
 function load_page(page, params = null, history_save = true) {
   const page_location = get_current_page() + page;
