@@ -78,4 +78,27 @@ fn main() {
     // save the json
     let result = fs::write("Blog/list.json", json);
     println!("{:?}", result);
+
+    // make the rss feed
+    let mut rss = "<rss version=\"2.0\" xmlns:atom=\"http://www.w3.org/2005/Atom\">\n".to_string();
+    rss.push_str("\t<channel>\n");
+    rss.push_str("\t\t<title>Drag's Blog</title>\n");
+    rss.push_str("\t\t<link>https://dragmine149.github.io/Blog</link>\n");
+    rss.push_str("\t\t<description>Recently updated blog from dragmine149's blog</description>\n");
+
+    for blog in &blogs {
+        rss.push_str(&"\t\t<item>\n");
+        rss.push_str(&format!("\t\t\t<title>{}</title>\n", blog.date));
+        rss.push_str(&format!("\t\t\t<link>https://dragmine149.github.io/Blog?blog={}</link>\n", blog.date));
+        rss.push_str(&format!("\t\t\t<description>{}</description>\n", blog.preview));
+        for category in &blog.categories {
+            rss.push_str(&format!("\t\t\t<category>{}</category>\n", category));
+        }
+        rss.push_str("\t\t</item>\n");
+    }
+
+    rss.push_str("\t</channel>\n</rss>");
+
+    let result = fs::write("Blog/feed.xml", rss);
+    println!("{:?}", result);
 }
