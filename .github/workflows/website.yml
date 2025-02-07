@@ -110,9 +110,9 @@ jobs:
         env:
           ALL_CHANGED_FILES: ${{ steps.changed-markdown-files.outputs.all_changed_files }}
         run: |
-          echo '$ALL_CHANGED_FILES'
+          echo '${{ env.ALL_CHANGED_FILES }}'
           mkdir -p Branches/${{ matrix.branch }}
-          for file in $ALL_CHANGED_FILES; do
+          for file in ${{ env.ALL_CHANGED_FILES }}; do
             echo "$file"
             basedir=$(dirname $file)
             mkdir -p Branches/${{ matrix.branch }}/$basedir
