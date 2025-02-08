@@ -97,7 +97,7 @@ jobs:
           git fetch origin main:main
           git diff --name-only main..HEAD > ../../changed_files.txt
           all_changed_files=$(cat ../../changed_files.txt)
-          echo "all_changed_files=$(echo $all_changed_files | tr '\n' ' ')" >> $GITHUB_OUTPUT
+          echo "all_changed_files=($all_changed_files)"" >> $GITHUB_OUTPUT
           cd ../../
 
       # compress said files
@@ -119,7 +119,7 @@ jobs:
 
       - name: Debug
         run: |
-          tree -L 3
+          tree -L 5
 
       - name: Change Paths
         run: ./temp/Branches/${{ matrix.branch }}/build_branch.sh
