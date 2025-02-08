@@ -97,7 +97,7 @@ jobs:
           git fetch origin main:main
           git diff --name-only main..HEAD > ../../changed_files.txt
           all_changed_files=$(cat ../../changed_files.txt)
-          echo "all_changed_files=$(echo $all_changed_files | tr '\n' ' ')" >> $GITHUB_OUTPUT
+          echo "all_changed_files=($all_changed_files)" >> $GITHUB_OUTPUT
           cd ../../
 
       # compress said files
@@ -107,7 +107,7 @@ jobs:
         run: |
           echo '${{ env.ALL_CHANGED_FILES }}'
           mkdir -p Branches/${{ matrix.branch }}
-          for file in ${{ env.ALL_CHANGED_FILES }}; do
+          for file in $(echo ${{ env.ALL_CHANGED_FILES }} | tr '\n' ' '); do
             if [ -e $file ]
             then
               echo "$file"
