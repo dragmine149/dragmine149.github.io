@@ -107,10 +107,13 @@ jobs:
           echo '${{ env.ALL_CHANGED_FILES }}'
           mkdir -p Branches/${{ matrix.branch }}
           for file in ${{ env.ALL_CHANGED_FILES }}; do
-            echo "$file"
-            basedir=$(dirname $file)
-            mkdir -p Branches/${{ matrix.branch }}/$basedir
-            mv $file Branches/${{ matrix.branch }}/$basedir;
+            if [ -e $file ]
+            then
+              echo "$file"
+              basedir=$(dirname $file)
+              mkdir -p Branches/${{ matrix.branch }}/$basedir
+              mv $file Branches/${{ matrix.branch }}/$basedir;
+            fi
           done
 
       - name: Change Paths
