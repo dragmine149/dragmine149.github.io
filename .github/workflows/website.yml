@@ -90,20 +90,14 @@ jobs:
           ref: ${{ matrix.branch }}
           path: temp/Branches/${{ matrix.branch }}
 
-      # get the last commit of main
-      - name: Last successful commit
-        uses: nrwl/nx-set-shas@v3
-        id: last_successful_commit_push
-        with:
-          main-branch-name: main
-
-      # get changed files
-      - name: Run changed-files with the commit of the last successful test workflow run
-        id: changed-files-base-sha-push
-        uses: tj-actions/changed-files@v45
-        with:
-          base_sha: ${{ steps.last_successful_commit_push.outputs.base }}
-          path: temp/Branches/${{ matrix.branch }}
+      - name: get changed files
+        id: changed-markdown-files
+        run: |
+          cd temp/Branches/${{ matrix.branch }}
+          git fetch origin main:main
+          git diff --name-only main..HEAD > ../../changed_files.txt
+          all_changed_files=$(cat ../../changed_files.txt)
+          echo "all_changed_files=${all_changed_files}" >> $GITHUB_OUTPUT
 
       # compress said files
       - name: Compress
