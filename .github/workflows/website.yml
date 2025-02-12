@@ -36,8 +36,10 @@ jobs:
       - name: Upload
         uses: actions/upload-artifact@v4
         with:
-          name: blog_list.json
-          path: Blog/list.json
+          name: data
+          path: |
+            Blog/list.json
+            Blog/feed.xml
 
   # Generate a matrix of all the branches
   build_matrix:
@@ -161,10 +163,10 @@ jobs:
           name: build-all
           path: website/
 
-      - name: Download blog list
+      - name: Download data
         uses: actions/download-artifact@v4
         with:
-          name: blog_list.json
+          name: data
           path: website/Blog
 
       - name: Upload artifact
