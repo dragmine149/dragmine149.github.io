@@ -14,6 +14,9 @@
     <script src="Scripts/new_loader.js"></script>
     <script src="Modules/modules.js"></script>
 
+    <script src="Scripts/storage.js"></script>
+    <script src="Scripts/Settings/settings.js"></script>
+
     <script src="Scripts/snackbar_hover.js"></script>
 
     <script defer src="Assets/fontawesome-free-6.6.0-web/js/brands.min.js"></script>
@@ -52,13 +55,14 @@
       <div id="Settings" class="snackbar vertical top right">
         <span>Settings</span>
         <label class="switch icon">
-          <input type="checkbox" onclick="snow_toggle(this)" checked="true">
+          <input id="Settings-snow" type="checkbox" onclick="snow_toggle(this)" checked="true">
           <span>
             <i style="padding: 4px 0 0 0;">
               <i class="fa-regular fa-snowflake" style="font-family: 'Font Awesome 6 Free';"></i>
             </i>
           </span>
         </label>
+        <button onclick="settings.visible(true);">More Settings</button>
       </div>
 
       <noscript>
@@ -70,6 +74,20 @@
           </p>
         </div>
       </noscript>
+
+      <div class="snackbar top active" style="padding: 0;">
+        <p>
+          <button style="text-align: center; width: 100%; height: 100%; padding: 0%; background: #0000;" onclick="this.parentElement.parentElement.classList.remove('active')">
+            WARNING: This is the settings branch of the website. This branch is still a WIP branch and might break in locations.<br>.<br>
+
+            This branch will also store data in `localStorage` (browser storage), which will carryy across to the main branch.<br>.<br>
+
+            DO NOTE: I don't know much about legal obligations hence why this is it's own separate branch. Until i can figure out if we need a cookie banner or not.<br>.<br>
+
+            The settings branch has already started to store data within your browser, By clicking this button you are acknowledging that the browser is storing data.
+          </button>
+        </p>
+      </div>
 
       <div id="warnings" class="snackbar top error"></div>
 
@@ -90,13 +108,38 @@
         <div class="max"></div>
       </div>
 
-      <div id="scripts"></div>
+      <div id="scripts">
+        <div class="modules"></div>
+      </div>
 
       <div id="content">
         <h1>Dragmine149</h1>
         <h6>Welcome to the site of dragons</h6>
         <span>Please note that this site is still in development.</span>
       </div>
+
+      <div id="big-settings" hidden>
+      <!-- <div id="big-settings"> -->
+        <h1 class="title">Settings</h1>
+        <button onclick="settings.visible(false);">Close</button>
+        <div>
+          <div id="setting-key">
+          </div>
+          <div id="setting-value">
+            <h1 class="title"></h1>
+            <h3 class="description"></h3>
+            <div class="values">
+              <diV>
+                <span>Enabled</span>
+                <input type="checkbox">
+                <button>Reset</button>
+                <info>e</info>
+              </diV>
+            </div>
+          </div>
+        </div>
+      </div>
+
     </article>
     <div id="particles-js"></div>
   </body>

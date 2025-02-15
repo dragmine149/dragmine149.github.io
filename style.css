@@ -216,3 +216,70 @@ article.main span {
 #button-snacks {
   opacity: 15%;
 }
+
+
+/**
+ * The big seettings ui menu
+ */
+
+#big-settings {
+  opacity: 75%;
+  width: 90%;
+  height: 90%;
+  background-color: #222226;
+  position: fixed;
+  color: white;
+}
+
+#big-settings * {
+  font-size: 1.5rem;
+  text-wrap: nowrap;
+}
+
+#big-settings>.title {
+  font-size: 4rem;
+}
+
+#big-settings>button {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+}
+
+#big-settings>div {
+  display: grid;
+  grid-template-columns: min-content auto;
+}
+
+#big-settings #setting-key {
+  flex-direction: column;
+  display: flex;
+}
+
+#big-settings #setting-key .active {
+  background-color: var(--secondary);
+}
+
+#big-settings #setting-value {
+  /* opacity: 75%; */
+  /* background-color: #222226; */
+  background-color: #000;
+}
+
+#big-settings #setting-value>.title {
+  font-size: 3rem;
+}
+
+#big-settings #setting-value>.description {
+  margin-top: 0;
+}
+
+#big-settings #setting-value>.values {
+  margin: 20px;
+}
+
+#big-settings #setting-value>.values div {
+  background-color: #777;
+  display: grid;
+  grid-template-columns: auto auto auto;
+}

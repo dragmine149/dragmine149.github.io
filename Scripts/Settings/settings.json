@@ -1,0 +1,80 @@
+{
+  "$schema": "../../schema/settings_schema.json",
+  "Particle": {
+    "description": "Settings to do with managing the particles that appear in the background",
+    "options": {
+      "enabled": {
+        "description": "Enables or disables the particles on the background.",
+        "type": "bool",
+        "default": true,
+        "recomened": true,
+        "quick": true
+      },
+      "seasonal": {
+        "description": "To have the particles be based on the current season.",
+        "type": "bool",
+        "default": true,
+        "recomened": true,
+        "quick": false
+      }
+    }
+  },
+  "Date time": {
+    "description": "Settings to do with have the website is displayed during different times of the day.",
+    "options": {
+      "enabled": {
+        "description": "Enables or disables the background automatically changing based on current time of day.",
+        "type": "bool",
+        "default": true,
+        "recomened": true,
+        "quick": true
+      },
+      "realistic": {
+        "description": "To have the background act like the current sky outside instead of a fixed 12 hour day/night.",
+        "type": "bool",
+        "default": true,
+        "recomened": true,
+        "quick": false
+      },
+      "default_state": {
+        "description": "The default time to set when time is not flowing",
+        "type": "number",
+        "range": {
+          "lower": 0,
+          "upper": 23
+        },
+        "default": 4,
+        "recomened": 4,
+        "quick": false
+      }
+    }
+  },
+  "Debug": {
+    "description": "Settings to do with debugging, could cause website to load slower or things to break.",
+    "options": {
+      "verbose": {
+        "description": "Enables all debugging in the console",
+        "type": "bool",
+        "default": false,
+        "recommended": false,
+        "quick": false
+      },
+      "verbose_loader": {
+        "description": "Enables all debugging for the `loader` class",
+        "type": "bool",
+        "default": false,
+        "recommended": false,
+        "quick": false,
+        "requires": "Debug-verbose"
+      },
+      "verbose_Projects": {
+        "description": "Enables all debugging for the `Projects` class",
+        "type": "bool",
+        "default": false,
+        "recommended": false,
+        "quick": false,
+        "requires": "Debug-verbose"
+      }
+    }
+  }
+}
