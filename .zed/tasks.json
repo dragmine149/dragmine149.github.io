@@ -1,0 +1,10 @@
+[
+  {
+    "label": "Start server",
+    "command": "./server.zsh",
+    "use_new_terminal": true,
+    "reveal": "never",
+    "hide": "always",
+    "shell": "system"
+  }
+]
