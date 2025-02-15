@@ -5,3 +5,32 @@ Although i would love you to check out the website instead: [https://dragmine149
 I made this readme just to make it a normal git repo, thats all.
 
 Hint: If you want to check out a specific branch, go to `https://dragmine149.github.io/Branches/<Branch Name>` (replace `<Branch Name>` with the name of the branch).
+
+## Todo list
+- [x] (once again) Improved page loader system.
+- [x] Improved blog system (i want to use the `markdown` stuff elsewhere in the website)
+- [ ] Finished project page
+- [ ] Improved URL (hopefully via the use of `/.htaccess`)
+- [ ] More blog features:
+  - [ ] Back button
+  - [ ] Ability to link to certain parts in the blog
+  - [ ] Ability to jump between blog headings
+  - [x] Better blog formatting (images scroll instead of who blog scroll)
+  - [ ] progress tracker (local storage)
+  - [ ] search
+  - [ ] category sorting
+  - [ ] More time formats
+  - [ ] Separate marked_*.js files to their own repo.
+  - [ ] Improved CSS (links and lists don't really look all that well)
+  - [ ] In-site links (links that show a page on this site will go to that page instead of reloading the site to go to that page).
+  - [X] Fix spelling
+    - [X] and maybe getting a better spelling system?
+- [?] Finished branch system
+- [ ] More seasonal backgrounds
+- [ ] Improved and more realistic day night system.
+- [ ] Figure out a way to "fetch" images from `raw.githubusercontent.com` instead of bundling them with the website.
+- [ ] Mobile site / touch support.
+- [ ] Improve typewritter API
+- [ ] Update beercss to 3.9.3   [https://github.com/beercss/beercss/releases/tag/v3.9.3](https://github.com/beercss/beercss/releases/tag/v3.9.3)
+- [ ] Make a new object just for setting object states
+- [ ] Test to see what happens with slower internet speeds.
