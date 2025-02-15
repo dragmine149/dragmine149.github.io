@@ -1,5 +1,5 @@
 {
-  "name": "Discord Bot",
+  "$schema": "../schema.json",
   "description": "Discord bots i've made in the past for various reasons",
   "projects": {
     "Discord Bot Jam 2": "https://dragmine149.itch.io/run-bot-run",

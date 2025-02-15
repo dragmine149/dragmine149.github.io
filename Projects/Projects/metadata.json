@@ -1,5 +1,10 @@
 {
-  "Games": "Games",
-  "Tools": "Tools",
-  "Other / Random": "Other"
+  "$schema": "schema.json",
+  "description": "The main categories",
+  "projects": {},
+  "categories": {
+    "Games": "Games",
+    "Tools": "Tools",
+    "Other / Random": "Other"
+  }
 }

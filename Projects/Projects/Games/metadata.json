@@ -1,5 +1,5 @@
 {
-  "name": "Games",
+  "$schema": "../schema.json",
   "description": "Games that i have worked on in the past",
   "projects": {
     "Python Battleships": "py_battleships",

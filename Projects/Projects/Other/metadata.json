@@ -1,5 +1,5 @@
 {
-  "name": "Other",
+  "$schema": "../schema.json",
   "description": "Projects that doesn't really have it's own category, but still a project i worked on",
   "projects": {
     "Website (this)": "website",

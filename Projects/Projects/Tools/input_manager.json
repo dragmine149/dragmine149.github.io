@@ -1,6 +1,0 @@
-{
-  "name": "Godot input manager",
-  "url": "https://github.com/dragmine149/InputManager",
-  "description": "An addon for godot for easier management of the user input during gameplay",
-  "website": "An addon made to allow developers to not worry about the user input design to help speed up development process, the tool comes-ish (still a wip) with image support and other features."
-}

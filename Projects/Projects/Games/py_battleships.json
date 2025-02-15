@@ -1,6 +1,0 @@
-{
-  "name": "Python Battleships",
-  "url": "https://github.com/dragmine149/Python_Battleships",
-  "description": "An implementation of battleships in python, with some extra features",
-  "website": "Made during my free spare time during High school (Y11-Y12). A custom made implemenation of battleships in python to run in a terminal environment. And like most of my reimplemnation projects it also has extra features like game saving, multiplayer, etc.."
-}

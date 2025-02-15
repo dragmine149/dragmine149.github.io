@@ -32,6 +32,10 @@
   cursor: default;
 }
 
+#projects>button:disabled:hover {
+  box-shadow: none;
+}
+
 body.light #projects>div,
 body.light #projects>button {
   border-color: white;
@@ -56,4 +60,8 @@ body.dark #projects>button {
 
 #projects>*>.description {
   font-size: 15px;
+}
+
+#project-description-content {
+  text-align: left;
 }

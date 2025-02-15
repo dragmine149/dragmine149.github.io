@@ -1,6 +1,6 @@
 {
-  "name": "Tools",
-  "description": "Some tools i've made to help me out in certain situtations",
+  "$schema": "../schema.json",
+  "description": "Some tools i've made to help me out in certain situations",
   "projects": {
     "BitBurner Scripts": "bit-scripts",
     "Launcher": "launcher",

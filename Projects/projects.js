@@ -1,195 +1,206 @@
 class ProjectLoader {
-  projects = new Map();
-  /** @type {String} */
-  previous;
-  /** @type {String} */
-  category;
+  __levels = {};
+  __path = [];
 
   constructor() {
-    this.view_projects();
+    this.verbose = verbose.add_log("Projects", "#f1a942");
+
+    (async () => {
+      this.__levels[""] = await loader.get_contents_from_server(`Projects/Projects/metadata.json`, true, loader.RETURN_TYPE.json);
+      this.__path = [""];
+      await this.load_ui();
+      await this.load_from_url();
+    })();
+
+    customHistory.add_listener("Projects", (_) => this.load_from_url());
   }
 
   elements = ["pro-1", "pro-2", "pro-3", "pro-4", "pro-5", "pro-6", "pro-7", "pro-8", "pro-title"];
-  get_node(elm_id) {
-    return document.getElementById(elm_id);
-  }
   get_node_index(index) {
     return document.getElementById(this.elements[index]);
   }
 
-  async fetch_projects() {
-    const page_location = page.get_current_page() + `Projects/Projects/metadata.json`;
-    let project_list = await page.__get_content(page_location);
-    this.list = JSON.parse(project_list);
+  __load_markdown() {
+    if (this.markdown) return;
+    if (Markdown) {
+      this.markdown = new Markdown({
+        markedLocalTime: false,
+        markedFootnote: false,
+        markedImprovedImage: true,
+        markedCustomHeadingId: false,
+        markedHighlight: true,
+        markedCenterText: true
+      }, document.getElementById("project-description-content"));
+    }
   }
+
+  __state = {
+    list: 0, viewer: 1
+  }
+
+  __set_state(state) {
+    const list = document.getElementById("projects");
+    const viewer = document.getElementById("project-descriptions");
+
+    list.hidden = true;
+    viewer.hidden = true;
+    switch (state) {
+      case this.__state.viewer:
+        viewer.hidden = false;
+        return;
+
+      default:
+      case this.__state.list:
+        list.hidden = false;
+        return;
+    }
+  }
+
+  __layouts = [
+    [0, 1, 2, 3, 4, 5, 6, 7],
+    [1],
+    [1, 6],
+    [1, 3, 4],
+    [1, 3, 4, 6],
+    [0, 2, 5, 6, 7],
+    [0, 1, 2, 5, 6, 7],
+    [0, 1, 2, 3, 5, 6, 7],
+    [0, 1, 2, 3, 4, 5, 6, 7]
+  ];
 
   /**
-  * Fetches the metaadata for a project group
-  * @param {String} project
+  * Makes all other elements that are not in the layout invisible so they don't cause weird issues in ui.
+  * @param {number[]} layout The layout of numbers that has been loaded
   */
-  async fetch_data(project, sub = false) {
-    let page_location = page.get_current_page();
-    if (!sub) {
-      page_location += `Projects/Projects/${project}/metadata.json`;
-    } else {
-      page_location += `Projects/Projects/${project}.json`;
-    }
+  __clear_rest(layout) {
+    for (let i = 0; i < 8; i++) {
+      if (layout.indexOf(i) === -1) {
+        const node = this.get_node_index(i);
+        node.disabled = true;
+        node.classList.add("hidden");
+        node.removeAttribute("real");
 
-    console.log(`Attempting to get data from: ${page_location}`);
-    let metadata = await page.__get_content(page_location);
-    this.projects.set(project, JSON.parse(metadata));
+        node.getElementsByClassName("title")[0].textContent = "";
+        node.getElementsByClassName("description")[0].textContent = "";
+      }
+    }
   }
 
-  async check_and_fetch() {
-    if (this.list == undefined) {
-      this.fetch_projects();
-    }
-    return this.list;
+  __set_node_details(node_index, title, description, real) {
+    const node = this.get_node_index(node_index);
+    node.getElementsByClassName("title")[0].textContent = title;
+    node.getElementsByClassName("description")[0].textContent = description;
+    node.disabled = false;
+    node.classList.remove("hidden");
+    node.setAttribute("real", real);
+  }
+
+  async __process_element(entry, index, metadata = false) {
+    const path = this.__path.join("/").concat("/" + entry[1]);
+    const data = await loader.get_contents_from_server(`Projects/Projects/${path}${metadata ? '/metadata.json' : '.md'}`, true, metadata ? loader.RETURN_TYPE.json : loader.RETURN_TYPE.text);
+    this.verbose.log(`Processing element '${entry[1]}' at '${this.__path}'`);
+    this.__levels[this.__path.concat(entry[1])] = data;
+    this.__set_node_details(index, entry[0], data.description, entry[1]);
   }
 
   /**
   * Load the ui
   * @param {String[]} project_list
   */
-  async load_ui(project_list, sub = false) {
-    const project_node = document.getElementById("projects");
-    project_node.insertBefore(this.get_node_index(0), null);
-    project_node.insertBefore(this.get_node_index(1), null);
-    project_node.insertBefore(this.get_node_index(2), null);
-    project_node.insertBefore(this.get_node_index(3), null);
-    project_node.insertBefore(this.get_node_index(8), null);
-    project_node.insertBefore(this.get_node_index(4), null);
-    project_node.insertBefore(this.get_node_index(5), null);
-    project_node.insertBefore(this.get_node_index(6), null);
-    project_node.insertBefore(this.get_node_index(7), null);
+  async load_ui() {
+    this.verbose.log(`Loading list of path: ${this.__path}`);
+    this.__set_state(this.__state.list);
+    const project_list = this.__levels[this.__path];
 
-    for (let i = 0; i < 8; i++) {
-      const n = this.get_node_index(i);
-      // project_node.insertBefore(n, null);
-      n.disabled = true;
-      n.classList.add("hidden");
-      n.getElementsByClassName("title")[0].textContent = "";
-      n.getElementsByClassName("description")[0].textContent = "";
-    }
+    const categories = project_list.categories ? Object.entries(project_list.categories) : [];
+    const projects = project_list.projects ? Object.entries(project_list.projects) : [];
+    const total = categories.length + projects.length;
 
-    switch (Object.keys(project_list).length) {
-      case 1:
-        project_node.insertBefore(this.get_node_index(1), this.get_node_index(0));
-        break;
-      case 2:
-        project_node.insertBefore(this.get_node_index(7), this.get_node_index(0));
-        project_node.insertBefore(this.get_node_index(1), this.get_node_index(6));
-        break;
-      case 3:
-        project_node.insertBefore(this.get_node_index(7), this.get_node_index(0));
-        project_node.insertBefore(this.get_node_index(6), this.get_node_index(1));
-        project_node.insertBefore(this.get_node_index(8), this.get_node_index(2));
-        break;
-      case 4:
-        project_node.insertBefore(this.get_node_index(7), this.get_node_index(0));
-        project_node.insertBefore(this.get_node_index(6), this.get_node_index(1));
-        project_node.insertBefore(this.get_node_index(8), this.get_node_index(2));
-        project_node.insertBefore(this.get_node_index(5), this.get_node_index(3));
-        break;
-      case 5:
-        project_node.insertBefore(this.get_node_index(7), this.get_node_index(1));
-        project_node.insertBefore(this.get_node_index(6), this.get_node_index(2));
-        project_node.insertBefore(this.get_node_index(8), this.get_node_index(2));
-        project_node.insertBefore(this.get_node_index(5), this.get_node_index(2));
-        break;
-      case 6:
-        project_node.insertBefore(this.get_node_index(7), this.get_node_index(3));
-        project_node.insertBefore(this.get_node_index(8), this.get_node_index(3));
-        project_node.insertBefore(this.get_node_index(6), this.get_node_index(3));
-        break;
-      default: break;
-    }
-
-    Object.entries(project_list).forEach(async (entry, index) => {
-      let fetch = entry[1];
-      if (sub) {
-        console.log(entry[1]);
-        fetch = `${this.list[this.category]}/${entry[1]}`;
+    for (let i = 0; i < total; i++) {
+      if (i < categories.length) {
+        await this.__process_element(categories[i], this.__layouts[total][i], true);
+      } else {
+        await this.__process_element(projects[i - categories.length], this.__layouts[total][i], false);
       }
-      await this.fetch_data(fetch, sub);
+    }
 
-      const node = this.get_node_index(index);
-      node.getElementsByClassName("title")[0].textContent = entry[0];
-      node.getElementsByClassName("description")[0].textContent = this.projects.get(fetch).description;
-      node.disabled = false;
-      node.classList.remove("hidden");
-    })
+    this.__clear_rest(this.__layouts[total]);
   }
 
-  save_state(name) {
-    page.push_state_to_history(page.get_current_subpage(), {
-      "project": name
-    }, "")
+  load_page() {
+    this.__load_markdown();
+    this.__set_state(this.__state.viewer);
+    this.verbose.log(this.__path);
+    this.verbose.log(this.__levels[this.__path]);
+    this.markdown.parse(this.__levels[this.__path]);
   }
 
-  async view_projects() {
-    await this.fetch_projects();
-    this.load_ui(this.list);
-  }
-
-  load_sub_projects(category) {
-    if (this.list[category] != undefined) {
-      const info = this.projects.get(this.list[category]).projects;
-      this.previous = "";
-      this.category = category;
-      this.get_node_index(8).classList.add("button");
-      this.load_ui(info, true);
-      this.save_state(category);
+  async load_next(text) {
+    if (text === undefined || text === null || text === "") {
+      this.verbose.warn("Invalid text provided");
       return;
     }
 
-    page.push_state_to_history(page.get_current_subpage(), {
-      "project": `${this.list[this.category]}/${this.projects.get(this.list[this.category]).projects[category]}`
-    }, `?Project=${this.list[this.category]}/${this.projects.get(this.list[this.category]).projects[category]}`);
-    this.load_description_from_url();
+    this.verbose.log(`Current path: ${this.__path}, adding: ${text}`);
+    this.__path.push(text);
+    this.verbose.log(`Aiming for ${this.__path}`);
+    customHistory.store_page(new URL(`${page.get_current_root_subpage()}?project=${this.__path.join('/')}`));
+
+    if (typeof this.__levels[this.__path] === 'string') {
+      // this means it's a project.
+      this.verbose.log("Project found!");
+      this.load_page();
+      // this.verbose.warn("Early break for now. TODO: implement");
+      return;
+    }
+
+    await this.load_ui();
+    this.verbose.log(`Finishished loading: ${text} (${this.__path.join('/')}`);
   }
 
   load_previous() {
-    document.getElementById("projects").hidden = false;
-    document.getElementById("project-description").hidden = true;
+    if (this.__path.length > 1) {
+      this.__path.pop();
+    }
 
-    if (this.previous == "") {
-      this.get_node_index(8).classList.remove("button");
-      this.previous = "";
-      this.category = "";
-      this.load_ui(this.list);
-      this.save_state("");
+    customHistory.store_page(new URL(`${page.get_current_root_subpage()}?project=${this.__path.join('/')}`));
+    this.load_ui();
+  }
+
+  async load_from_url() {
+    const url = new URL(location);
+    this.verbose.log(`Attempting to load project page from url: ${location}`);
+    const project = url.searchParams.get("project");
+    if (!project) {
+      this.__path = [""];
+      await this.load_ui();
       return;
     }
 
-    const info = this.projects.get(this.list[this.previous]).projects;
-    const a = this.previous;
-    this.previous = this.category;
-    this.category = a;
-    this.save_state(a);
-    this.load_ui(info, true)
-  }
-
-  async load_description_from_url() {
-    const url = new URL(location);
-    const info = url.searchParams.get("Project");
-
-    document.getElementById("projects").hidden = true;
-    document.getElementById("project-descriptions").hidden = false;
-
-    console.log(`Loading project info: ${info}`);
-
-    await this.fetch_data(info, true);
-    const data = this.projects.get(info);
-    document.getElementById("project-title").innerText = data.name;
-    document.getElementById("project-description").innerText = data.website;
-    document.getElementById("project-link").innerText = `Provided link: ${data.url}`;
-    document.getElementById("project-link").href = data.url;
+    // load the category from the url (converts back into normal form).
+    let new_path = project.split('/');
+    this.verbose.log(`Loading category: '${new_path.join('/')}'`);
+    // for each depth
+    for (let level = new_path.length; level >= 0; level--) {
+      this.verbose.log(`Checking data at '${new_path.slice(0, level).join('/')}'`);
+      // find the depth where we have data for
+      if (this.__levels[new_path.slice(0, level)]) {
+        this.verbose.log(`Found data at '${new_path.slice(0, level).join('/')}', reversing`);
+        // then reverse the depth to include the rest of the elements
+        this.__path = new_path.slice(0, level - 1);
+        for (let depth = level - 1; depth < new_path.length; depth++) {
+          this.verbose.log(`Current path: '${this.__path}'. Heading towards: ${new_path[depth]}`);
+          // probably could do this without updating the UI all the time, but for now oh well.
+          await this.load_next(new_path[depth]);
+        }
+        return;
+      }
+    }
   }
 }
 
-let projects = new ProjectLoader();
+const projects = new ProjectLoader();
 
-function projects_loader() {
-  projects.view_projects();
+function Projects_default_0() {
+  projects.load_from_url();
 }
