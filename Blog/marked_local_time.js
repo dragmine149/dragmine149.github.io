@@ -41,21 +41,21 @@ function markedLocalTime() {
     const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
     const t = new Date(time * 1000);
     switch (format) {
-      case 't':
+      case 't': // 19:32
         return `${time_with_0(t.getHours())}:${time_with_0(t.getMinutes())}`;
-      case 'T':
+      case 'T': // 19:32:45
         return `${t.toLocaleTimeString()}`;
-      case 'd':
+      case 'd': // 15/02/2024, or the equliviant locale
         return `${t.toLocaleDateString()}`;
-      case 'D':
+      case 'D': // 15 Februrary 2024
         return `${time_with_0(t.getDate())} ${months[t.getMonth()]} ${t.getFullYear()}`;
-      case 'F':
-        return `${weekDays[t.getDay()]} ${time_with_0(t.getDate())} ${months[t.getMonth()]} ${t.getFullYear()} at ${time_with_0(t.getHours())}:${time_with_0(t.getMinutes())}`;
-      case 'R':
-        return `${timeSince(t)}`;
-      case 'f':
+      case 'f': // 15 Feburary 2024 at 19:33
         return `${time_with_0(t.getDate())} ${months[t.getMonth()]} ${t.getFullYear()} at ${time_with_0(t.getHours())}:${time_with_0(t.getMinutes())}`;
-      default:
+      case 'F': // Saturday 15 Feburary 2024 at 19:33
+        return `${weekDays[t.getDay()]} ${time_with_0(t.getDate())} ${months[t.getMonth()]} ${t.getFullYear()} at ${time_with_0(t.getHours())}:${time_with_0(t.getMinutes())}`;
+      case 'R': // 2 minutes ago / in 3 years
+        return `${timeSince(t)}`;
+      default: // same as 'f'
         return t.toLocaleString();
     }
   }
