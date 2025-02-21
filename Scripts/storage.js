@@ -1,3 +1,5 @@
+const maxCacheTime = 7 * 24 * 60 * 60 * 1000;
+
 class DragStorage {
   prefix = "";
   /**
@@ -12,9 +14,13 @@ class DragStorage {
    * Sets an item in localStorage with the instance prefix
    * @param {string} name - The name of the storage item
    * @param {string} value - The value to store
+   * @param {number} cache - How long to "cache" the value for (in milliseconds). <= 0 = no cache. Max cache time of 7d
    */
-  setStorage(name, value) {
+  setStorage(name, value, cache = 0) {
     localStorage.setItem(`${this.prefix}-${name}`, value);
+    if (cache <= 0) return;
+    if (cache > maxCacheTime) console.warn(`Cache time for ${name} (${cache}ms) exceeds max cache time of ${maxCacheTime}ms. Setting to max cache time.`);
+    this.setCache(name, Math.max(cache, maxCacheTime));
   }
 
   /**
@@ -23,6 +29,12 @@ class DragStorage {
    * @returns {string|null} The stored value or null if not found
    */
   getStorage(name) {
+    if (!this.validCache(name)) {
+      // the cache is no longer valid, hence remove it.
+      // removing it will cause the next function to return null.
+      this.removeStorage(name);
+    }
+
     return localStorage.getItem(`${this.prefix}-${name}`);
   }
 
@@ -53,5 +65,47 @@ class DragStorage {
         localStorage.removeItem(key);
       }
     }
+  }
+
+  /**
+  * Set a value to be counted as "cache". Cached values automatically expire after a given time.
+  * @param {string} name The name of the cache
+  * @param {number} length How long to store the cache for (in milliseconds)
+  */
+  setCache(name, length) {
+    // get the cache
+    const cache_details = localStorage.getItem(`cache`) ?? compressJSON.compress({});
+    // uncompress the cache
+    const cache = compressJSON.decompress(cache_details);
+    // set the cache
+    cache[`${this.prefix}-${name}`] = new Date().getTime() + length;
+    localStorage.setItem(`cache`, compressJSON.compress(cache));
+  }
+
+  /**
+  * Get the experiiation time (in milliseconds) of the cache.
+  * @param {string} name The name of the cache
+  * @returns {number} The millisecond value of the cache
+  */
+  getCache(name) {
+    // get the cache
+    const cache_details = localStorage.getItem(`cache`) ?? compressJSON.compress({});
+    // uncompress the cache
+    const cache = compressJSON.decompress(cache_details);
+    // get the cached value
+    return cache[`${this.prefix}-${name}`];
+  }
+
+  /**
+  * Check if the cache is valid.
+  * @param {string} name The name of the cache
+  * @returns {boolean} The result of the check. True if no cache or valid cache, false otherwise.
+  */
+  validCache(name) {
+    const date = this.getCache(name);
+    if (!date) return true;
+    const now = new Date();
+    if (now.getTime() < date) return true;
+    return false;
   }
 }

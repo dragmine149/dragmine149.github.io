@@ -90,6 +90,7 @@ class Loader {
         }
       }
       // warning message
+      console.log(`Failed to load data, result:`, result);
       this.__warn_load(`Failed to load data from url: ${server_url} (via: ${result.url}).`);
       return null;
     }
