@@ -12,6 +12,7 @@ Hint: If you want to check out a specific branch, go to `https://dragmine149.git
 - [ ] Finished project page
 - [ ] Improved URL (hopefully via the use of `/.htaccess`)
 - [ ] More blog features:
+  - [ ] Code block detection (`) with keyboard controls -> replace with more better looking things.
   - [ ] Back button
   - [ ] Ability to link to certain parts in the blog
   - [ ] Ability to jump between blog headings
