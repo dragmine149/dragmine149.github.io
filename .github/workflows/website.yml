@@ -128,7 +128,7 @@ jobs:
         run: |
           mv Branches tmpBranches
           mkdir -p Branches/Branches/
-          mv tmpBranches Branches/Branches
+          mv tmpBranches/${{ matrix.branch }} Branches/Branches
 
         # upload again
       - name: Upload branches
