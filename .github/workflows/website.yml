@@ -97,7 +97,6 @@ jobs:
           cd temp/Branches/${{ matrix.branch }}
           git diff --name-only ${{ matrix.branch }}..origin/main > ../../../changed_files.txt
           echo $(cat ../../../changed_files.txt)
-          cd ../../../
 
       - name: Debug
         run: |
@@ -108,9 +107,9 @@ jobs:
         run: |
           mkdir -p Branches/${{ matrix.branch }}
           for file in $(cat changed_files.txt); do
+            echo "$file"
             if [ -e $file ]
             then
-              echo "$file"
               basedir=$(dirname $file)
               mkdir -p Branches/${{ matrix.branch }}/$basedir
               mv $file Branches/${{ matrix.branch }}/$basedir;
