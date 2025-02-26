@@ -124,6 +124,12 @@ jobs:
       - name: Change Paths
         run: ./temp/Branches/${{ matrix.branch }}/build_branch.sh
 
+      - name: Folder for Branches
+        run: |
+          mv Branches tmpBranches
+          mkdir -p Branches/Branches/
+          mv tmpBranches Branches/Branches
+
         # upload again
       - name: Upload branches
         uses: actions/upload-artifact@v4
