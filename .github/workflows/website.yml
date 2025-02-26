@@ -108,11 +108,12 @@ jobs:
           mkdir -p Branches/${{ matrix.branch }}
           for file in $(cat changed_files.txt); do
             echo "$file"
-            if [ -e $file ]
+            if [ -e temp/Branches/${{ matrix.branch }}/$file ]
             then
+              echo "File exists"
               basedir=$(dirname $file)
               mkdir -p Branches/${{ matrix.branch }}/$basedir
-              mv $file Branches/${{ matrix.branch }}/$basedir;
+              mv temp/Branches/${{ matrix.branch }}/$file Branches/${{ matrix.branch }}/$basedir;
             fi
           done
 
