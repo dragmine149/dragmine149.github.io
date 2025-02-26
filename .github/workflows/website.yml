@@ -97,6 +97,11 @@ jobs:
           cd temp/Branches/${{ matrix.branch }}
           git diff --name-only ${{ matrix.branch }}..origin/main > ../../../changed_files.txt
           echo $(cat ../../../changed_files.txt)
+          cd ../../../
+
+      - name: Debug
+        run: |
+          tree -L 5
 
       # compress said files
       - name: Compress
