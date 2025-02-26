@@ -1,8 +1,21 @@
-function load_particles(seasonal = true) {
-  // if (seasonal) {
-  // }
+const seasonal_settings = {
+  "Winter": {
+    "config": "Scripts/Particles/seasons/winter.json",
+    "start_date": dayjs().set('date', 25).set('month', 10).set('year', dayjs().year() - 1),
+    "end_date": dayjs().set('date', 3).set('month', 2)
+  },
+  "Spring": {
+    "config": "Scripts/Particles/seasons/spring.json",
+    "start_date": dayjs().set('date', 3).set('month', 2),
+    "end_date": dayjs().set('date', 20).set('month', 4)
+  }
+};
 
-  particlesJS.load('particles-js', 'Scripts/Particles/seasons/winter.json');
+function load_particles(seasonal = true) {
+  let dm = dayjs();
+  let config = Object.values(seasonal_settings).filter((v) => v.start_date.isBefore(dm) && v.end_date.isAfter(dm)).at(0).config;
+
+  particlesJS.load('particles-js', config);
 }
 
 function disable_particles() {
