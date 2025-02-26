@@ -96,9 +96,8 @@ jobs:
         id: changed
         run: |
           cd temp/Branches/${{ matrix.branch }}
-          git fetch origin main:main
-          git diff --name-only ${{ matrix.branch }}..main > ../../../changed_files.txt
-          echo ../../../changed_files.txt
+          git diff --name-only ${{ matrix.branch }}..origin/main > ../../../changed_files.txt
+          echo $(cat ../../../changed_files.txt)
 
       # compress said files
       - name: Compress
