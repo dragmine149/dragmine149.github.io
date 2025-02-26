@@ -1,165 +1,271 @@
 class DragSettings {
-  /** @type {HTMLButtonElement[]} */
-  options;
-
   /** @type {Map<string, HTMLElement>} */
   cache;
 
-  /** @type {string} */
+  /**
+  * The page currently visible
+  * @type {string}
+  */
   currently_viewing;
 
+  /**
+  * Default templates to avoid having to use code everywhere to make a complex one.
+  * @type {{
+    'main': Document
+  }}
+  */
+  templates;
+
+  /**
+   * @typedef {(boolean|number)} SettingType
+   * @typedef {("bool"|"number")} SettingTypeString
+   *
+   * @typedef {Object} SettingRangeObject
+   * @property {number} lower - The lower bound of the range
+   * @property {number} upper - The upper bound of the range
+   *
+   * @typedef {Object} SettingOptionObject
+   * @property {string} description - Description of the setting option
+   * @property {(SettingTypeString)} type - Type of the setting value
+   * @property {(SettingType)} default - Default value
+   * @property {boolean} quick - Whether this is a quick setting
+   * @property {(SettingType)} value - The value of the setting
+   * @property {SettingRangeObject} [range] - Optional range constraints for number types
+   * @property {string} [requires] - Optional dependency requirement
+   *
+   * @typedef {Object} SettingCategoryObject
+   * @property {string} description - Description of the setting category
+   * @property {Object.<string, SettingOptionObject>} options - Map of setting options
+   */
+
+  /**
+   * Settings data structure
+   * @type {Object.<string, SettingCategoryObject>}
+   */
+  data;
+
+  /** Functions to call upon settings being changed
+   * @type {Map<string, Function>}
+   */
+  listeners;
+
   constructor() {
+    /** @type {Verbose} */
+    this.verbose = verbose.add_log('Settings', '#f5a97e');
+    /** @type {DragStorage} */
     this.settings = new DragStorage("setting");
     // this.data = fetch("Scripts/Settings/Settings.json").then((response) => response.json().then((r) => r));
-    // this.data = fetch("Scripts/Settings/Settings.json").then((r) => console.log(r));
-    this.options = [];
+    // this.data = fetch("Scripts/Settings/Settings.json").then((r) => this.verbose.log(r));
     this.cache = new Map();
+    this.listeners = new Map();
+    this.__initial_load();
+  }
 
-    /** @type {object} */
-    this.data = loader.get_contents_from_server("Scripts/Settings/settings.json", true, loader.RETURN_TYPE.json);
-    (async () => {
-      this.data = await this.data;
+  async __initial_load() {
+    // get settings from server
+    this.data = await loader.get_contents_from_server("Scripts/Settings/settings.json", true, loader.RETURN_TYPE.json);
 
-      Object.entries(this.data).forEach((entry) => {
-        if (entry[0].startsWith("$")) {
-          // ignore stuff starting with "$" as it's just more dev related.
-          return;
-        }
+    // for all possible settings
+    Object.keys(this.data).forEach((key) => {
+      if (key.startsWith("$")) return;
 
-        console.log(entry);
+      // make a category for everything
+      this.__make_category(key);
+      Object.entries(this.data[key].options).forEach((options) => {
+        if (options[0].startsWith("$")) return;
+        this.verbose.info(`Loading ${key}-${options[0]}`);
+        // add to quick, if quick
+        if (options[1].quick) this.__add_quick_elm(key, options[0]);
+        // set the data of the setting
+        this.data[key].options[options[0]].value = this.get_setting(key, options[0]);
+      });
+    });
 
-        Object.entries(entry[1].options).forEach((entry2) => {
-          console.log(`Attempting to load: ${entry[0]}-${entry2[0]}`);
-          this.data[entry[0]].options[entry2[0]].state = this.get_setting(entry[0], entry2[0]);
+    // then, less important, but load the templates.
+    await this.__load_templates();
+  }
 
-          if (this.data[entry[0]].options[entry2[0]].quick) {
-            console.log(`Found quick elm: ${this.data[entry[0]].options[entry2[0]]}`);
-          }
-        })
-      })
+  __make_category(category) {
+    const elements = document.getElementById("setting-key");
+    const button = document.createElement("button");
+    button.innerText = category;
+    button.addEventListener('click', (_) => this.__load_ui(category));
+    elements.appendChild(button);
+  }
 
-      const elements = document.getElementById("setting-key");
-      Object.keys(this.data).forEach((key) => {
-        const button = document.createElement("button");
-        button.innerText = key;
-        button.addEventListener('click', (_) => this.load_ui(key));
-        elements.appendChild(button);
-        this.options.push(button);
-      })
-    })();
+  async __load_templates() {
+    this.verbose.log("Loading templates...");
+    this.templates = {
+      'main': await loader.get_contents_from_server("Scripts/Settings/templates/main.html", true, loader.RETURN_TYPE.document),
+    };
+  }
+
+  /**
+   * Create a ui element for a setting.
+   * @param {string} category The category of the setting.
+   * @param {string} setting The key of the setting.
+   */
+  __create_ui_value(category, setting) {
+    /** @type {HTMLElement} */
+    let value = document.getElementById("setting-value")?.getElementsByClassName('values')?.item(0);
+    if (value == undefined) {
+      this.verbose.error("Failed to find setting-value element");
+      return;
+    }
+
+    // check to see if in cache, if so add and ignore the rest.
+    /** @type {HTMLElement} */
+    let cached = this.cache.get(`${category}-${setting}`);
+    if (cached) {
+      value.appendChild(cached);
+      return;
+    }
+
+    /** @type {SettingOptionObject} */
+    let details = this.data[category].options[setting];
+
+    /** @type {HTMLElement} */
+    let node = this.templates.main.querySelector('[tag="main"]').cloneNode(true);
+
+    /** @type {HTMLElement} */
+    let title = node.querySelector('[tag="title"]');
+    title.innerText = capitalise(setting);
+
+    /** @type {HTMLElement} */
+    let description = node.querySelector('[tag="description"]');
+    description.innerText = details.description;
+
+    /** @type {HTMLInputElement} */
+    // process setting the default value of the input based off data provided
+    let input = node.querySelector('[tag="input"]');
+    input.value = details.value;
+    switch (details.type) {
+      case 'number':
+        input.type = 'range';
+        input.min = details.range?.lower;
+        input.max = details.range?.upper;
+        input.value = details.value;
+        break;
+      case 'bool':
+        input.type = 'checkbox';
+        input.checked = details.value;
+        break;
+      case 'string':
+      default:
+        input.type = 'text';
+        input.value = details.value;
+    }
+
+    // listen and wait for a change
+    input.addEventListener('change', (_) => {
+      let value;
+      switch (details.type) {
+        case 'bool':
+          value = input.checked;
+          break;
+        default:
+          value = input.value;
+      }
+      this.set_setting(category, setting, value);
+    });
+
+    // listen and wait for default reset
+    let default_node = node.querySelector('[tag="default"]');
+    default_node.addEventListener('click', (_) => {
+      switch (details.type) {
+        case 'bool':
+          input.checked = details.default;
+          break;
+        default:
+          input.value = details.default;
+      }
+    });
+
+    // add to cache and to ui.
+    this.cache.set(`${category}-${setting}`, node);
+    value.appendChild(node);
   }
 
   /**
   * Load the settings ui
-  * @param {string} setting The key of the setting to load.
+  * @param {string} category The category of the setting to load.
   */
-  load_ui(setting) {
-    if (this.currently_viewing == setting) {
-      // avoid reloading this page.
+  __load_ui(category) {
+    // check to see if exists, which would be a very big issue if it didn't...
+    /** @type {HTMLElement} */
+    let value = document.getElementById("setting-value");
+    if (value == undefined) {
+      this.verbose.error(`Element with id "setting-value" not found.`);
       return;
     }
-    this.currently_viewing = setting;
 
-    this.options.forEach((btn) => {
-      btn.classList.remove('active')
-      if (btn.innerText == setting) {
-        btn.classList.add('active');
-      }
-    });
+    // set title, description, options, all that stuff
+    let title = value.getElementsByClassName('title').item(0);
+    title.innerHTML = capitalise(category);
 
-    console.log(`Loading setting: ${setting}`);
-    const value = document.getElementById("setting-value");
+    let description = value.getElementsByClassName('description').item(0);
+    description.innerHTML = this.data[category].description;
 
-    const title = value.getElementsByClassName("title").item(0);
-    title.innerText = setting;
+    // clearing the innerhtml to quickly clean out the old stuff.
+    // probably a nicer alternative, but whatever.
+    value.getElementsByClassName('values').item(0).innerHTML = '';
 
-    const description = value.getElementsByClassName("description").item(0);
-    description.innerText = this.data[setting].description;
-
-    const options = value.getElementsByClassName("values").item(0);
-    while (options.firstChild) {
-      options.removeChild(options.firstChild);
-    }
-
-    Object.entries(this.data[setting].options).forEach((entry) => {
-      const setting_name = `${setting}-${entry[0]}`;
-      if (this.cache.has(setting_name)) {
-        options.appendChild(this.cache.get(setting_name));
-        return;
-      }
-
-      const elm = document.createElement("div");
-      const title = document.createElement("span");
-      title.innerText = entry[0];
-
-      const desc = document.createElement("span");
-      desc.innerText = entry[1].description;
-
-      var option;
-      switch (entry[1].type) {
-        case "bool":
-          option = document.createElement("input");
-          option.type = "checkbox";
-          option.checked = entry[1].state;
-          option.addEventListener('click', (_) => this.set_setting(setting_name, option.checked));
-          break;
-
-        case "number":
-          option = document.createElement("span");
-          option.innerText = "WIP";
-
-        default:
-          break;
-      }
-
-      const setDefault = document.createElement("button");
-      setDefault.innerText = "Set to default";
-      setDefault.addEventListener('click', (_) => this.set_setting(setting_name, entry[1].default, (v) => {
-        option.checked = v;
-      }));
-
-      const setRecomened = document.createElement("button");
-      setRecomened.innerText = `Set to recomened (${entry[1].recomened})`;
-      setRecomened.addEventListener('click', (_) => this.set_setting(setting_name, entry[1].recomened, (v) => {
-        option.checked = v;
-      }));
-
-      elm.appendChild(title);
-      elm.appendChild(option);
-      elm.appendChild(document.createElement("span"));
-      elm.appendChild(desc);
-      elm.appendChild(setDefault);
-      elm.appendChild(setRecomened);
-
-      this.cache.set(setting_name, elm);
-      options.appendChild(elm);
+    Object.keys(this.data[category].options).forEach((option) => {
+      this.__create_ui_value(category, option);
     });
   }
 
-  set_setting(setting, value, callback) {
-    console.log(`Saving setting: ${setting} (setting to ${value})`);
-    this.settings.setStorage(setting, value);
-    if (callback !== undefined) {
-      callback(value);
-    }
+  __add_quick_elm(category, setting) {
+    this.verbose.log(`Adding quick element: ${category}-${setting}`);
+    this.verbose.log('TODO');
   }
 
+  add_listener(category, setting, callback) {
+    this.listeners.set(`${category}-${setting}`, callback);
+  }
+  remove_listener(category, setting) {
+    this.listeners.delete(`${category}-${setting}`);
+  }
+
+  /**
+  * Sets any setting to the provided value
+  * @param {string} category The setting category
+  * @param {string} setting The name of the setting
+  * @param {SettingType} value The value to store. (will be saved as string due to localstorage)
+  */
+  set_setting(category, setting, value) {
+    this.verbose.log(`Saving setting: ${category}-${setting} (setting to ${value})`);
+    this.settings.setStorage(`${category}-${setting}`, value);
+    this.listeners.get(`${category}-${setting}`)?.(value);
+  }
+
+  /**
+  * Get any setting and returns it as the proper format.
+  * @param {string} category The setting category
+  * @param {string} setting The name of the setting
+  * @returns {SettingType} The result of the setting, in a format befiting of the setting where possible.
+  */
   get_setting(category, setting) {
-    // return this.settings.getStorage(`${category}-${setting}`);
     const value = this.settings.getStorage(`${category}-${setting}`);
 
     if (value === null || value === undefined) {
-      return null;
+      return this.data[category].options[setting].default;
     }
 
-    if (value === "true") {
-      return true;
-    }
-    if (value === "false") {
-      return false;
-    }
-    if (!isNaN(value)) {
-      return Number(value);
+    // Convert boolean strings
+    if (value.toLowerCase() === "true") return true;
+    if (value.toLowerCase() === "false") return false;
+
+    // Try parsing as number
+    const number = Number(value);
+    if (!isNaN(number)) return number;
+
+    // Try parsing as JSON object/array
+    try {
+      return JSON.parse(value);
+    } catch (e) {
+      // If not JSON parseable, return as string
+      return value;
     }
   }
 
@@ -169,7 +275,7 @@ class DragSettings {
   */
   visible(state) {
     if (typeof state !== 'boolean') {
-      console.warn('Settings visibility value must be boolean');
+      this.verbose.warn('Settings visibility value must be boolean');
       return;
     }
 

@@ -7,14 +7,12 @@
         "description": "Enables or disables the particles on the background.",
         "type": "bool",
         "default": true,
-        "recomened": true,
         "quick": true
       },
       "seasonal": {
         "description": "To have the particles be based on the current season.",
         "type": "bool",
         "default": true,
-        "recomened": true,
         "quick": false
       }
     }
@@ -26,14 +24,12 @@
         "description": "Enables or disables the background automatically changing based on current time of day.",
         "type": "bool",
         "default": true,
-        "recomened": true,
         "quick": true
       },
       "realistic": {
         "description": "To have the background act like the current sky outside instead of a fixed 12 hour day/night.",
         "type": "bool",
         "default": true,
-        "recomened": true,
         "quick": false
       },
       "default_state": {
@@ -44,7 +40,6 @@
           "upper": 23
         },
         "default": 4,
-        "recomened": 4,
         "quick": false
       }
     }
@@ -56,14 +51,12 @@
         "description": "Enables all debugging in the console",
         "type": "bool",
         "default": false,
-        "recommended": false,
         "quick": false
       },
       "verbose_loader": {
         "description": "Enables all debugging for the `loader` class",
         "type": "bool",
         "default": false,
-        "recommended": false,
         "quick": false,
         "requires": "Debug-verbose"
       },
@@ -71,7 +64,13 @@
         "description": "Enables all debugging for the `Projects` class",
         "type": "bool",
         "default": false,
-        "recommended": false,
+        "quick": false,
+        "requires": "Debug-verbose"
+      },
+      "verbose_Settings": {
+        "description": "Enables all debugging for the `Settings` class",
+        "type": "bool",
+        "default": false,
         "quick": false,
         "requires": "Debug-verbose"
       }

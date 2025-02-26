@@ -42,16 +42,6 @@
                 }
               ]
             },
-            "recomened": {
-              "oneOf": [
-                {
-                  "type": "boolean"
-                },
-                {
-                  "type": "number"
-                }
-              ]
-            },
             "quick": {
               "type": "boolean"
             },
