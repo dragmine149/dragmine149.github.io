@@ -2,22 +2,22 @@
 // Triple click to select code blocks
 window.addEventListener('click',
   /**
-  * @param {Event} e
-  * @param {Selection} s
-  * @param {Range} r
+  * @param {Event} event
+  * @param {Selection} selection
+  * @param {Range} range
   */
-  function (e, s, r) {
-    const isCode = e.target.nodeName === 'CODE';
-    const isSpanInCode = e.target.nodeName === 'SPAN' && e.target.parentNode.nodeName === 'CODE';
+  function (event, selection, range) {
+    const isCode = event.target.nodeName === 'CODE';
+    const isSpanInCode = event.target.nodeName === 'SPAN' && event.target.parentNode.nodeName === 'CODE';
 
-    if ((isCode || isSpanInCode) && e.detail === 3) {
-      const target = isSpanInCode ? e.target.parentNode : e.target;
+    if ((isCode || isSpanInCode) && event.detail === 3) {
+      const target = isSpanInCode ? event.target.parentNode : event.target;
 
-      s = window.getSelection();
-      s.removeAllRanges();
-      r = document.createRange();
-      r.selectNodeContents(target);
-      s.addRange(r);
+      selection = window.getSelection();
+      selection.removeAllRanges();
+      range = document.createRange();
+      range.selectNodeContents(target);
+      selection.addRange(range);
     }
   }
 );
