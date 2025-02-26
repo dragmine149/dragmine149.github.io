@@ -275,7 +275,7 @@ class Page {
       return;
     }
 
-    const file = `${this.get_current_page_root()}/${branch}${page}/index.html`;
+    const file = `${this.get_current_page_root()}/${branch}${page}${page.endsWith('.html') ? '' : '/index.html'}`;
     // check the cache for the element
     let data = this.document_cache.get(file);
 
