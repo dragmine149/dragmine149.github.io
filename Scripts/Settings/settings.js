@@ -311,6 +311,9 @@ class DragSettings {
   * @param {boolean} state The state of which to put the settings menu into
   */
   visible(state) {
+    if (state === undefined || state === null) {
+      state = document.getElementById("big-settings").hidden;
+    }
     if (typeof state !== 'boolean') {
       this.verbose.warn('Settings visibility value must be boolean');
       return;
