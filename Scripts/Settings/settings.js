@@ -187,6 +187,41 @@ class DragSettings {
   }
 
   /**
+  * Hides or shows an object based on if the required object is enabled or not
+  * @param {string} category The category of the setting
+  * @param {string} setting The setting in the category
+  */
+  __required(category, setting) {
+    let required = this.data[category].options[setting].requires;
+    // Early return if the required dooes not exist.
+    if (required == undefined) return;
+
+    // split the details up and get the setting
+    let required_details = required.split("-");
+    let parent_enabled = this.get_setting(required_details[0], required_details[1]);
+    this.verbose.log(`Checking required for: `, `${category}-${setting}`);
+    this.verbose.info(`Parent: `, parent_enabled);
+    let node = this.cache.get(`${category}-${setting}`);
+    this.verbose.log(`Node: `, node);
+    if (node == undefined) return;
+
+    // hide or show the node based on the parent's enabled state
+    node.hidden = !parent_enabled;
+  }
+
+  /**
+  * Go through all the settings in a particular category.
+  */
+  __update_required(category) {
+    Object.keys(this.data[category].options).forEach((setting) => {
+      if (setting.startsWith("$")) return;
+      if (this.data[category].options[setting].requires) {
+        this.__required(category, setting);
+      }
+    });
+  }
+
+  /**
   * Load the settings ui
   * @param {string} category The category of the setting to load.
   */
@@ -212,6 +247,7 @@ class DragSettings {
 
     Object.keys(this.data[category].options).forEach((option) => {
       this.__create_ui_value(category, option);
+      this.__required(category, option);
     });
   }
 
@@ -237,6 +273,7 @@ class DragSettings {
     this.verbose.log(`Saving setting: ${category}-${setting} (setting to ${value})`);
     this.settings.setStorage(`${category}-${setting}`, value);
     this.listeners.get(`${category}-${setting}`)?.(value);
+    this.__update_required(category);
   }
 
   /**
