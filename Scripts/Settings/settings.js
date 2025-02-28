@@ -58,6 +58,15 @@ class DragSettings {
     // this.data = fetch("Scripts/Settings/Settings.json").then((r) => this.verbose.log(r));
     this.cache = new Map();
     this.listeners = new Map();
+
+    this.data = {};
+    this.settings.listStorage().forEach((item) => {
+      let [category, key] = item.split("-");
+
+      this.data[category] = { options: { [key]: {} } };
+      this.data[category].options[key].value = this.get_setting(category, key);
+    })
+
     this.__initial_load();
   }
 
@@ -286,7 +295,21 @@ class DragSettings {
     const value = this.settings.getStorage(`${category}-${setting}`);
 
     if (value === null || value === undefined) {
-      return this.data[category].options[setting].default;
+      if (this.data[category].options[setting].default) {
+        return this.data[category].options[setting].default;
+      }
+
+      // if type exists find default value
+      switch (this.data[category].options[setting].type) {
+        case 'bool':
+          return false;
+        case 'number':
+          return 0;
+        case 'string':
+          return '';
+        default:
+          return null;
+      }
     }
 
     // Convert boolean strings
