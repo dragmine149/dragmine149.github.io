@@ -65,6 +65,7 @@ class DragSettings {
 
       this.data[category] = { options: { [key]: {} } };
       this.data[category].options[key].value = this.get_setting(category, key);
+      this.call_listener(category, key, this.data[category].options[key].value);
     })
 
     this.__initial_load();
@@ -87,6 +88,7 @@ class DragSettings {
         if (options[1].quick) this.__add_quick_elm(key, options[0]);
         // set the data of the setting
         this.data[key].options[options[0]].value = this.get_setting(key, options[0]);
+        this.call_listener(key, options[0], this.data[key].options[options[0]].value);
       });
     });
 
@@ -266,10 +268,15 @@ class DragSettings {
   }
 
   add_listener(category, setting, callback) {
+    this.verbose.info(`Adding listener: ${category}-${setting}`);
     this.listeners.set(`${category}-${setting}`, callback);
   }
   remove_listener(category, setting) {
     this.listeners.delete(`${category}-${setting}`);
+  }
+
+  call_listener(category, setting, value) {
+    this.listeners.get(`${category}-${setting}`)?.(value);
   }
 
   /**
@@ -281,7 +288,7 @@ class DragSettings {
   set_setting(category, setting, value) {
     this.verbose.log(`Saving setting: ${category}-${setting} (setting to ${value})`);
     this.settings.setStorage(`${category}-${setting}`, value);
-    this.listeners.get(`${category}-${setting}`)?.(value);
+    this.call_listener(category, setting, value);
     this.__update_required(category);
   }
 

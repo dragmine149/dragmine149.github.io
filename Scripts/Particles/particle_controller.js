@@ -9,6 +9,6 @@ function disable_particles() {
   document.getElementById('particles-js').childNodes.forEach((child) => child.remove());
 }
 
-settings.add_listener("Particle", "Enabled", (v) => {
+settings.add_listener("Particle", "enabled", (v) => {
   v ? load_particles() : disable_particles();
 });
