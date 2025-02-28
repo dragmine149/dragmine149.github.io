@@ -1,7 +1,7 @@
 {
   "$schema": "../../schema/settings_schema.json",
   "Particle": {
-    "description": "Settings to do with managing the particles that appear in the background",
+    "description": "Change how the particles in the background work",
     "options": {
       "enabled": {
         "description": "Enables or disables the particles on the background.",
@@ -18,16 +18,16 @@
     }
   },
   "Date time": {
-    "description": "Settings to do with have the website is displayed during different times of the day.",
+    "description": "Change how the background works in accordance to a day/night cycle",
     "options": {
       "enabled": {
-        "description": "Enables or disables the background automatically changing based on current time of day.",
+        "description": "Allows the background to automatically changing based on current time of day.",
         "type": "bool",
         "default": true,
         "quick": true
       },
       "realistic": {
-        "description": "To have the background act like the current sky outside instead of a fixed 12 hour day/night.",
+        "description": "Make the background sync to an aprox of the current real life day/night cycle",
         "type": "bool",
         "default": true,
         "quick": false
