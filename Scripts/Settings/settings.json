@@ -32,6 +32,13 @@
         "default": true,
         "quick": false
       },
+      "location": {
+        "description": "Enable to use browser based location (You'll have to give us location permission), Disable to use timezone based location (might be slightly less accurate, but no permission granting required)",
+        "type": "bool",
+        "default": false,
+        "quick": false,
+        "requires": "Date time-realistic"
+      },
       "default_state": {
         "description": "The default time to set when time is not flowing",
         "type": "number",
