@@ -278,8 +278,24 @@ article.main span {
   margin: 20px;
 }
 
-#big-settings #setting-value>.values div {
+#big-settings #setting-value>.values>div {
   background-color: #777;
   display: grid;
-  grid-template-columns: auto auto auto;
+  grid-template-columns: 90% 10%;
+}
+
+#big-settings #setting-value>.values>div[hidden] {
+  display: none;
+}
+
+#big-settings #setting-value div[tag="information"] {
+  display: initial;
+}
+
+#big-settings #setting-value div[tag="information"]>span {
+  display: block;
+}
+
+#big-settings #setting-value div[tag="information"]>span[tag="description"] {
+  text-wrap: auto;
 }
