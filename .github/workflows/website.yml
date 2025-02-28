@@ -170,6 +170,23 @@ jobs:
           name: data
           path: website/Blog
 
+      - name: Process website ignore
+        run: |
+          # Find all .websiteignore files
+          find website -name ".websiteignore" | while read -r ignorefile; do
+            basedir=$(dirname "$ignorefile")
+            while IFS= read -r pattern; do
+              if [[ $pattern == \!* ]]; then
+                # Handle negated patterns (files to keep)
+                pattern="${pattern:1}"
+                find "$basedir" -path "$basedir/$pattern" -type f -exec sh -c 'mkdir -p "$(dirname "$1")" && mv "$1" "$(dirname "$1")"' _ {} \;
+              else
+                # Handle patterns for files to ignore
+                find "$basedir" -path "$basedir/$pattern" -type f -delete
+              fi
+            done < "$ignorefile"
+          done
+
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
