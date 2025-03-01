@@ -37,7 +37,8 @@
         "type": "bool",
         "default": false,
         "quick": false,
-        "requires": "Date time-realistic"
+        "requires": "Date time-realistic",
+        "disabled": "Feature not yet implemented"
       },
       "default_state": {
         "description": "The default time to set when time is not flowing",
@@ -55,7 +56,7 @@
     "description": "Settings to do with debugging, could cause website to load slower or things to break.",
     "options": {
       "verbose": {
-        "description": "Enables all debugging in the console",
+        "description": "Enables debugging to the console",
         "type": "bool",
         "default": false,
         "quick": false

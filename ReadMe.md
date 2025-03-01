@@ -31,6 +31,6 @@ Hint: If you want to check out a specific branch, go to `https://dragmine149.git
 - [ ] Figure out a way to "fetch" images from `raw.githubusercontent.com` instead of bundling them with the website.
 - [ ] Mobile site / touch support.
 - [ ] Improve typewritter API
-- [ ] Update beercss to 3.9.3   [https://github.com/beercss/beercss/releases/tag/v3.9.3](https://github.com/beercss/beercss/releases/tag/v3.9.3)
+- [X] Update beercss to 3.9.3   [https://github.com/beercss/beercss/releases/tag/v3.9.3](https://github.com/beercss/beercss/releases/tag/v3.9.3)
 - [ ] Make a new object just for setting object states
 - [ ] Test to see what happens with slower internet speeds.
