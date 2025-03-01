@@ -57,23 +57,26 @@ class DragSettings {
     this.verbose = verbose.add_log('Settings', '#f5a97e');
     /** @type {DragStorage} */
     this.settings = new DragStorage("setting");
-    // this.data = fetch("Scripts/Settings/Settings.json").then((response) => response.json().then((r) => r));
-    // this.data = fetch("Scripts/Settings/Settings.json").then((r) => this.verbose.log(r));
     this.cache = new Map();
     this.listeners = new Map();
 
+    // load the settings from local storage as much as we can.
+    // this allows the website to load to a semi user set up state without having all the data yet.
     this.data = {};
     this.settings.listStorage().forEach((item) => {
       let [category, key] = item.split("-");
 
       this.data[category] = { options: { [key]: {} } };
       this.data[category].options[key].value = this.get_setting(category, key);
-      this.call_listener(category, key, this.data[category].options[key].value);
+      this.__call_listener(category, key, this.data[category].options[key].value);
     })
 
     this.__initial_load();
   }
 
+  /**
+  * Stuff that happens outside of the constructor due to async required.
+  */
   async __initial_load() {
     // get settings from server
     this.data = await loader.get_contents_from_server("Scripts/Settings/settings.json", true, loader.RETURN_TYPE.json);
@@ -95,12 +98,20 @@ class DragSettings {
         if (options[1].quick) this.__add_quick_elm(key, options[0]);
         // set the data of the setting
         this.data[key].options[options[0]].value = this.get_setting(key, options[0]);
-        this.call_listener(key, options[0], options[1].value);
+        this.__call_listener(key, options[0], options[1].value); // important to send out the update upon true load.
       });
     });
   }
 
+  /**
+  * Make a category for the settings
+  * @param {string} category The category to make
+  */
   __make_category(category) {
+    // don't add a category if everything is disabled
+    if (Object.entries(this.data[category].options).filter((entry) => !entry[1].disabled).length === 0) return;
+
+    // create the category element
     const elements = document.getElementById("setting-key");
     const button = document.createElement("button");
     button.innerText = category;
@@ -108,6 +119,9 @@ class DragSettings {
     elements.appendChild(button);
   }
 
+  /**
+   * Load templates for the settings
+   */
   async __load_templates() {
     this.verbose.log("Loading templates...");
     this.templates = {
@@ -156,6 +170,8 @@ class DragSettings {
     let input = node.querySelector('[tag="input"]');
     let inputParent = node.querySelector('[tag="input-parent"]');
     input.value = details.value;
+
+    // depending on the type, some differences are in order.
     switch (details.type) {
       case 'number':
         input.type = 'number';
@@ -197,6 +213,7 @@ class DragSettings {
     default_node.addEventListener('click', (_) => {
       switch (details.type) {
         case 'bool':
+          // annoying checkboxs...
           input.checked = details.default;
           break;
         default:
@@ -238,6 +255,7 @@ class DragSettings {
   __update_required(category) {
     Object.keys(this.data[category].options).forEach((setting) => {
       if (setting.startsWith("$")) return;
+      // only if requires
       if (this.data[category].options[setting].requires) {
         this.__required(category, setting);
       }
@@ -275,35 +293,62 @@ class DragSettings {
     });
   }
 
+  /**
+  * Create a quick setting so the whole ui doesn't need to be opened
+  * @param {string} category Category of setting
+  * @param {string} setting Setting name itself
+  */
   __add_quick_elm(category, setting) {
     this.verbose.log(`Adding quick element: ${category}-${setting}`);
-    this.verbose.log('TODO');
 
     /** @type {HTMLElement} */
     let quick = this.templates.quick.cloneNode(true).getElementsByTagName('label').item(0);
     let input = quick.querySelector('input');
+    // button
     input.addEventListener('click', () => {
       this.set_setting(category, setting, input.checked);
     });
 
+    // icon
     let icon = quick.querySelectorAll("i").item(1);
     this.verbose.log(`Adding icon class:`, ...this.data[category].options[setting].icon?.split(" "));
     icon.classList.add(...this.data[category].options[setting].icon?.split(" "));
 
+    // insert
     let settings = document.getElementById('Settings');
     let more = settings.getElementsByTagName('button').item(0);
     settings.insertBefore(quick, more);
   }
 
+  /**
+  * Add a listener to wait for a setting to be changed before updating stuff
+  * @param {string} category The setting category
+  * @param {string} setting The setting name
+  * @param {Function} callback The function to call upon the setting being changed
+  */
   add_listener(category, setting, callback) {
     this.verbose.info(`Adding listener: ${category}-${setting}`);
     this.listeners.set(`${category}-${setting}`, callback);
   }
+
+  /**
+  * Remove a listener
+  * @param {string} category The setting category
+  * @param {string} setting The setting name
+  */
   remove_listener(category, setting) {
     this.listeners.delete(`${category}-${setting}`);
   }
 
-  call_listener(category, setting, value) {
+
+  /**
+  * Call a listener
+  * @param {string} category The setting category
+  * @param {string} setting The setting name
+  * @param {SettingType} value The value to send to the callback function
+  */
+  __call_listener(category, setting, value) {
+    // `?` is very useful here...
     this.listeners.get(`${category}-${setting}`)?.(value);
   }
 
@@ -316,7 +361,7 @@ class DragSettings {
   set_setting(category, setting, value) {
     this.verbose.log(`Saving setting: ${category}-${setting} (setting to ${value})`);
     this.settings.setStorage(`${category}-${setting}`, value);
-    this.call_listener(category, setting, value);
+    this.__call_listener(category, setting, value);
     this.__update_required(category);
   }
 
@@ -370,6 +415,7 @@ class DragSettings {
   */
   visible(state) {
     if (state === undefined || state === null) {
+      // ability to flip the state if not defined
       state = document.getElementById("big-settings").hidden;
     }
     if (typeof state !== 'boolean') {

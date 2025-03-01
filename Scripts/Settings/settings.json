@@ -26,7 +26,8 @@
         "type": "bool",
         "default": true,
         "quick": true,
-        "icon": "fa fa-clock"
+        "icon": "fa fa-clock",
+        "disabled": "Feature not yet implemented"
       },
       "realistic": {
         "description": "Make the background sync to an approx of the current real life day/night cycle",
@@ -51,7 +52,8 @@
           "upper": 23
         },
         "default": 4,
-        "quick": false
+        "quick": false,
+        "disabled": "Feature not yet implemented"
       }
     }
   },
