@@ -22,7 +22,6 @@ function disable_particles() {
   document.getElementById('particles-js').childNodes.forEach((child) => child.remove());
 }
 
-load_particles();
 
 /** @param {HTMLInputElement} obj */
 function snow_toggle(obj) {
@@ -35,3 +34,7 @@ function snow_toggle(obj) {
       console.error("Somehow a checkbox is not checked or not unchecked?");
   }
 }
+
+setTimeout(() => {
+  load_particles();
+}, 1000);
