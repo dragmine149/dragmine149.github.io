@@ -266,6 +266,7 @@ class DragSettings {
     value.getElementsByClassName('values').item(0).innerHTML = '';
 
     Object.keys(this.data[category].options).forEach((option) => {
+      if (this.data[category].options[option].disabled) return;
       this.__create_ui_value(category, option);
       this.__required(category, option);
     });
