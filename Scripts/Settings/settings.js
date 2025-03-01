@@ -151,6 +151,7 @@ class DragSettings {
     /** @type {HTMLInputElement} */
     // process setting the default value of the input based off data provided
     let input = node.querySelector('[tag="input"]');
+    let inputParent = node.querySelector('[tag="input-parent"]');
     input.value = details.value;
     switch (details.type) {
       case 'number':
@@ -161,6 +162,7 @@ class DragSettings {
         break;
       case 'bool':
         input.type = 'checkbox';
+        inputParent.classList.add('checkbox', 'extra');
         input.checked = details.value;
         break;
       case 'string':
