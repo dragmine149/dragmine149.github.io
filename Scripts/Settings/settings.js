@@ -12,6 +12,7 @@ class DragSettings {
   * Default templates to avoid having to use code everywhere to make a complex one.
   * @type {{
     'main': Document
+    'quick': Document
   }}
   */
   templates;
@@ -33,6 +34,7 @@ class DragSettings {
    * @property {SettingRangeObject} [range] - Optional range constraints for number types
    * @property {string} [requires] - Optional dependency requirement
    * @property {string} [disabled] - Optional none visibility requirement.
+   * @property {string} [icon] - Optional icon, requires quick to be true though.
    *
    * @typedef {Object} SettingCategoryObject
    * @property {string} description - Description of the setting category
@@ -76,6 +78,9 @@ class DragSettings {
     // get settings from server
     this.data = await loader.get_contents_from_server("Scripts/Settings/settings.json", true, loader.RETURN_TYPE.json);
 
+    // templates are tempalates, although should not be as important sometimes they are.
+    await this.__load_templates();
+
     // for all possible settings
     Object.keys(this.data).forEach((key) => {
       if (key.startsWith("$")) return;
@@ -93,9 +98,6 @@ class DragSettings {
         this.call_listener(key, options[0], options[1].value);
       });
     });
-
-    // then, less important, but load the templates.
-    await this.__load_templates();
   }
 
   __make_category(category) {
@@ -110,6 +112,7 @@ class DragSettings {
     this.verbose.log("Loading templates...");
     this.templates = {
       'main': await loader.get_contents_from_server("Scripts/Settings/templates/main.html", true, loader.RETURN_TYPE.document),
+      'quick': await loader.get_contents_from_server("Scripts/Settings/templates/quick.html", true, loader.RETURN_TYPE.document)
     };
   }
 
@@ -275,6 +278,21 @@ class DragSettings {
   __add_quick_elm(category, setting) {
     this.verbose.log(`Adding quick element: ${category}-${setting}`);
     this.verbose.log('TODO');
+
+    /** @type {HTMLElement} */
+    let quick = this.templates.quick.cloneNode(true).getElementsByTagName('label').item(0);
+    let input = quick.querySelector('input');
+    input.addEventListener('click', () => {
+      this.set_setting(category, setting, input.checked);
+    });
+
+    let icon = quick.querySelectorAll("i").item(1);
+    this.verbose.log(`Adding icon class:`, ...this.data[category].options[setting].icon?.split(" "));
+    icon.classList.add(...this.data[category].options[setting].icon?.split(" "));
+
+    let settings = document.getElementById('Settings');
+    let more = settings.getElementsByTagName('button').item(0);
+    settings.insertBefore(quick, more);
   }
 
   add_listener(category, setting, callback) {

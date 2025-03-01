@@ -7,7 +7,8 @@
         "description": "Enables or disables the particles on the background.",
         "type": "bool",
         "default": true,
-        "quick": true
+        "quick": true,
+        "icon": "fa-regular fa-snowflake"
       },
       "seasonal": {
         "description": "To have the particles be based on the current season.",
@@ -24,7 +25,8 @@
         "description": "Allows the background to automatically changing based on current time of day.",
         "type": "bool",
         "default": true,
-        "quick": true
+        "quick": true,
+        "icon": "fa fa-clock"
       },
       "realistic": {
         "description": "Make the background sync to an approx of the current real life day/night cycle",
