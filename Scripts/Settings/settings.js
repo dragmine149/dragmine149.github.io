@@ -32,6 +32,7 @@ class DragSettings {
    * @property {(SettingType)} value - The value of the setting
    * @property {SettingRangeObject} [range] - Optional range constraints for number types
    * @property {string} [requires] - Optional dependency requirement
+   * @property {string} [disabled] - Optional none visibility requirement.
    *
    * @typedef {Object} SettingCategoryObject
    * @property {string} description - Description of the setting category
@@ -83,12 +84,13 @@ class DragSettings {
       this.__make_category(key);
       Object.entries(this.data[key].options).forEach((options) => {
         if (options[0].startsWith("$")) return;
+        if (options[1].disabled) return;
         this.verbose.info(`Loading ${key}-${options[0]}`);
         // add to quick, if quick
         if (options[1].quick) this.__add_quick_elm(key, options[0]);
         // set the data of the setting
         this.data[key].options[options[0]].value = this.get_setting(key, options[0]);
-        this.call_listener(key, options[0], this.data[key].options[options[0]].value);
+        this.call_listener(key, options[0], options[1].value);
       });
     });
 
