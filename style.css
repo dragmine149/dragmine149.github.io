@@ -234,10 +234,9 @@ article.main span {
  */
 
 #big-settings {
-  opacity: 75%;
   width: 90%;
   height: 90%;
-  background-color: #222226;
+  background-color: #222226d6;
   position: fixed;
   color: white;
 }
