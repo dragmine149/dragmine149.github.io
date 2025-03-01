@@ -6,7 +6,7 @@ function load_particles(seasonal = true) {
 }
 
 function disable_particles() {
-  document.getElementById('particles-js').childNodes.forEach((child) => child.remove());
+  pJSDom[0].pJS.fn.vendors.destroypJS();
 }
 
 settings.add_listener("Particle", "enabled", (v) => {
