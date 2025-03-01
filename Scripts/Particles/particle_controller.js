@@ -7,6 +7,7 @@ function load_particles(seasonal = true) {
 
 function disable_particles() {
   pJSDom[0].pJS.fn.vendors.destroypJS();
+  pJSDom = [];
 }
 
 settings.add_listener("Particle", "enabled", (v) => {
