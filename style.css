@@ -133,7 +133,18 @@ article.main span {
   --surface-container-highest: #363438
 }
 
-
+#branch {
+  position: fixed;
+  top: 5%;
+  left: -10%;
+  background-color: var(--tertiary);
+  text-align: center;
+  line-height: 100px;
+  font-size: 3rem;
+  transform: rotate(-45deg);
+  z-index: 100;
+  padding: 0% 10%;
+}
 
 .snackbar.top.left {
   inset: 2rem auto auto 5%;

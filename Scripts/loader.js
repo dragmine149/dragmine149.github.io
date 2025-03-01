@@ -20,3 +20,17 @@ snackbar.set_area('Settings', snackbar.AREA.Top_Right);
 function capitalise(str) {
   return str.charAt(0).toUpperCase() + str.slice(1);
 }
+
+async function set_branch() {
+  let url = new URL(location);
+  if (url.hostname !== 'localhost') return;
+
+  url.pathname = ".git/HEAD";
+  let branch = await loader.get_contents_from_server(url.href, false, loader.RETURN_TYPE.text);
+  branch = branch.replace(/^ref: refs\/heads\//, '');
+  return branch;
+}
+
+(async () => {
+  document.getElementById("branch").innerText = await set_branch();
+})();
