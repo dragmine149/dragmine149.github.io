@@ -2,11 +2,11 @@ const seasonal_settings = {
   "Winter": {
     "config": "Scripts/Particles/seasons/winter.json",
     "start_date": dayjs().set('date', 25).set('month', 10).set('year', dayjs().year() - 1),
-    "end_date": dayjs().set('date', 3).set('month', 2)
+    "end_date": dayjs().set('date', 1).set('month', 2)
   },
   "Spring": {
     "config": "Scripts/Particles/seasons/spring.json",
-    "start_date": dayjs().set('date', 3).set('month', 2),
+    "start_date": dayjs().set('date', 1).set('month', 2),
     "end_date": dayjs().set('date', 20).set('month', 4)
   }
 };
