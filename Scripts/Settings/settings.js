@@ -155,7 +155,8 @@ class DragSettings {
     input.value = details.value;
     switch (details.type) {
       case 'number':
-        input.type = 'range';
+        input.type = 'number';
+        inputParent.classList.add('field', 'border', 'fill')
         input.min = details.range?.lower;
         input.max = details.range?.upper;
         input.value = details.value;
@@ -177,6 +178,10 @@ class DragSettings {
       switch (details.type) {
         case 'bool':
           value = input.checked;
+          break;
+        case 'number':
+          value = Math.min(Math.max(input.value, details.range?.lower), details.range?.upper);
+          input.value = value;
           break;
         default:
           value = input.value;
