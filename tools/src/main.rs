@@ -65,6 +65,12 @@ fn main() {
 
     for path in paths {
         let path = path.unwrap().path();
+        if path.is_dir() {
+            continue;
+        }
+        if path.extension().unwrap() != "md" {
+            continue;
+        }
         blogs.push(Blog::from_path(&path));
     }
 
