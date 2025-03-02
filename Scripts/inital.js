@@ -10,3 +10,5 @@ setTimeout(() => {
 
 snackbar.set_area('navigation', snackbar.AREA.Top_Middle);
 snackbar.set_area('Settings', snackbar.AREA.Top_Right);
+
+modules.load_module('dayjs');

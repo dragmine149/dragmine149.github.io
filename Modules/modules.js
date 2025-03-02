@@ -19,6 +19,15 @@ class Modules {
       "css": [
         "Assets/highlight/styles/tokyo-night-dark.min.css"
       ]
+    },
+    "dayjs": {
+      "main": "",
+      "js": [
+        "https://cdn.jsdelivr.net/npm/dayjs@1.11.13/dayjs.min.js",
+        "https://cdn.jsdelivr.net/npm/dayjs@1.11.13/plugin/relativeTime.js",
+        "https://cdn.jsdelivr.net/npm/dayjs@1.11.13/plugin/localizedFormat.js"
+      ],
+      "css": []
     }
   };
 
