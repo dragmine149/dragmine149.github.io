@@ -311,6 +311,7 @@ class DragSettings {
       this.set_setting(category, setting, input.checked);
       this.cache.get(`${category}-${setting}`).querySelector('input').checked = input.checked;
     });
+    input.checked = this.get_setting(category, setting);
 
     // icon
     let icon = quick.querySelectorAll("i").item(1);
