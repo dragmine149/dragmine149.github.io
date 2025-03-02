@@ -1,5 +1,8 @@
 use serde::{Deserialize, Serialize};
-use std::fs;
+use std::{
+    fs::{self},
+    path::Path,
+};
 
 #[derive(Debug, Serialize, Deserialize)]
 struct Blog {
@@ -8,64 +11,61 @@ struct Blog {
     preview: String,
 }
 
+impl Blog {
+    fn from_path(path: &Path) -> Self {
+        let date = path.file_stem().unwrap().to_str().unwrap().to_string();
+        let data = fs::read_to_string(path).unwrap();
+        let mut lines = data.lines();
+        let preview = lines
+            .next()
+            .unwrap_or("")
+            .replace("#", "")
+            .trim()
+            .to_string();
+        let categories = lines
+            .last()
+            .unwrap_or("")
+            .replace("Categories: [", "")
+            .replace("]", "")
+            .split_whitespace()
+            .map(|c| c.replace(",", ""))
+            .collect();
+
+        Self {
+            date,
+            categories,
+            preview,
+        }
+    }
+
+    fn generate_rss(&self) -> String {
+        let mut rss = String::from("\t\t<item>\n");
+        rss.push_str(&format!("\t\t\t<title>{}</title>\n", self.date));
+        rss.push_str(&format!(
+            "\t\t\t<link>https://dragmine149.github.io/Blog?blog={}</link>\n",
+            self.date
+        ));
+        rss.push_str(&format!(
+            "\t\t\t<description>{}</description>\n",
+            self.preview
+        ));
+        for category in &self.categories {
+            rss.push_str(&format!("\t\t\t<category>{}</category>\n", category));
+        }
+        rss.push_str("\t\t</item>\n");
+
+        rss
+    }
+}
+
 fn main() {
     // assuming we're running this in the root
     let paths = fs::read_dir("Blog/Posts").unwrap();
     let mut blogs: Vec<Blog> = vec![];
 
     for path in paths {
-        let p = path.unwrap().path();
-        if p.is_dir() {
-            // don't worry about directories
-            continue;
-        }
-        if p.extension().unwrap() != "md" {
-            // only do those of markdown files
-            continue;
-        }
-        let date = p.file_stem().unwrap().to_str().unwrap().to_string();
-        if date == "next" {
-            // This is mainly just to avoid the next file whilst testing locally.
-            continue;
-        }
-
-        println!("Translating: {:?}", date);
-
-        // read the blog data. Is there a better way of doing this?
-        let blog_data = fs::read_to_string(p).unwrap_or(String::new());
-        let mut lines = blog_data.lines();
-        // first line is always preview line with the hash
-        let preview = lines
-            .next()
-            .unwrap()
-            .to_string()
-            .replace("#", "")
-            .trim()
-            .to_string();
-        // categories will be at the end, out of the way
-        let last_line = lines.last().unwrap();
-        let categories: Vec<String> = if last_line.starts_with("Categories: ") {
-            last_line
-                .replace("Categories: [", "")
-                .replace("]", "")
-                .split_whitespace()
-                .map(|c| c.replace(",", ""))
-                .collect()
-        } else {
-            vec![]
-        };
-        println!("Categories: {:?}", categories);
-
-        if categories.contains(&"hidden".to_string()) {
-            // not meant to be include in the main list
-            continue;
-        }
-
-        blogs.push(Blog {
-            date,
-            preview,
-            categories,
-        })
+        let path = path.unwrap().path();
+        blogs.push(Blog::from_path(&path));
     }
 
     println!("{:?}", blogs);
@@ -87,14 +87,7 @@ fn main() {
     rss.push_str("\t\t<description>Recently updated blog from dragmine149's blog</description>\n");
 
     for blog in &blogs {
-        rss.push_str(&"\t\t<item>\n");
-        rss.push_str(&format!("\t\t\t<title>{}</title>\n", blog.date));
-        rss.push_str(&format!("\t\t\t<link>https://dragmine149.github.io/Blog?blog={}</link>\n", blog.date));
-        rss.push_str(&format!("\t\t\t<description>{}</description>\n", blog.preview));
-        for category in &blog.categories {
-            rss.push_str(&format!("\t\t\t<category>{}</category>\n", category));
-        }
-        rss.push_str("\t\t</item>\n");
+        rss.push_str(&blog.generate_rss());
     }
 
     rss.push_str("\t</channel>\n</rss>");

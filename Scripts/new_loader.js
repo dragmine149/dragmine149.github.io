@@ -49,6 +49,16 @@ class Loader {
   * @returns {any} Returns data based on the return type provided.
   */
   async get_contents_from_server(server_url, use_branch = true, return_type = this.RETURN_TYPE.text) {
+    if (server_url instanceof URL) {
+      console.warn(`server_url was URL object - converting to string`);
+      server_url = server_url.href;
+    }
+
+    if (typeof server_url !== 'string') {
+      this.__warn_load(`server_url must be string or URL (preferred string), got ${typeof server_url}`);
+      return null;
+    }
+
     if (!server_url.startsWith(page.get_current_page_root()) && !server_url.startsWith("http")) {
       console.log(`'${server_url}' did not contain http elm, adding site http elm`);
       // as we have to add the url, only add the branches section if we are within a branch.

@@ -3,8 +3,8 @@
   <head>
     <meta charset="utf-8">
     <title>Dragmine149</title>
-    <link href="https://cdn.jsdelivr.net/npm/beercss@3.9.4/dist/cdn/beer.min.css" rel="stylesheet">
-    <script type="module" src="https://cdn.jsdelivr.net/npm/beercss@3.9.4/dist/cdn/beer.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/beercss@3.9.6/dist/cdn/beer.min.css" rel="stylesheet">
+    <script type="module" src="https://cdn.jsdelivr.net/npm/beercss@3.9.6/dist/cdn/beer.min.js"></script>
 
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="Scripts/DayNightClycle/background.css">
@@ -14,14 +14,24 @@
     <script src="Scripts/new_loader.js"></script>
     <script src="Modules/modules.js"></script>
 
+    <script src="Scripts/storage.js"></script>
+    <script src="Scripts/Settings/settings.js"></script>
+
     <script src="Scripts/snackbar_hover.js"></script>
 
-    <script defer src="Assets/fontawesome-free-6.6.0-web/js/brands.min.js"></script>
-    <script defer src="Assets/fontawesome-free-6.6.0-web/js/regular.min.js"></script>
-    <script defer src="Assets/fontawesome-free-6.6.0-web/js/fontawesome.min.js"></script>
-    <link href="Assets/fontawesome-free-6.6.0-web/css/brands.min.css" rel="stylesheet">
-    <!-- <link href="Assets/fontawesome-free-6.6.0-web/css/solid.min.css" rel="stylesheet"> -->
-    <link href="Assets/fontawesome-free-6.6.0-web/css/regular.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <script defer src="Assets/fontawesome-free-6.6.0-web/js/all.min.js"></script>
+    <link href="Assets/fontawesome-free-6.6.0-web/css/all.min.css" rel="stylesheet">
+
+    <!-- DayJS -->
+    <script src="https://cdn.jsdelivr.net/npm/dayjs@1.11.13/dayjs.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/dayjs@1.11.13/plugin/relativeTime.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/dayjs@1.11.13/plugin/localizedFormat.js"></script>
+    <script>
+      dayjs.extend(dayjs_plugin_relativeTime);
+      dayjs.extend(dayjs_plugin_localizedFormat);
+      dayjs.locale('en');
+    </script>
 
     <!-- Particles -->
     <script src="Scripts/Particles/particles.js"></script>
@@ -35,8 +45,8 @@
   </head>
   <body class="g0">
     <article class="main no-padding medium center-align middle-align">
-      <script src="Scripts/DayNightClycle/background.js" defer></script>
       <script src="Scripts/inital.js" defer></script>
+      <script src="Scripts/DayNightClycle/background.js" defer></script>
 
       <div id="button-snacks" class="light">
         <div id="snackbar-tl" onclick="snackbar.toggle_area(snackbar.AREA.Top_Left)" class="snackbar button top left"></div>
@@ -50,15 +60,8 @@
       </div>
 
       <div id="Settings" class="snackbar vertical top right">
-        <span>Settings</span>
-        <label class="switch icon">
-          <input type="checkbox" onclick="snow_toggle(this)" checked="true">
-          <span>
-            <i style="padding: 4px 0 0 0;">
-              <i class="fa-regular fa-snowflake" style="font-family: 'Font Awesome 6 Free';"></i>
-            </i>
-          </span>
-        </label>
+        <span>Quick Settings</span>
+        <button onclick="settings.visible();">More Settings</button>
       </div>
 
       <noscript>
@@ -70,6 +73,9 @@
           </p>
         </div>
       </noscript>
+
+      <div id="branch">
+      </div>
 
       <div id="warnings" class="snackbar top error"></div>
 
@@ -98,6 +104,22 @@
         <h6>Welcome to the site of dragons</h6>
         <span>Please note that this site is still in development.</span>
       </div>
+
+      <div id="big-settings" hidden>
+        <h1 class="title">Settings</h1>
+        <button onclick="settings.visible();">Close</button>
+        <div>
+          <div id="setting-key"></div>
+          <div id="setting-value">
+            <h1 class="title"></h1>
+            <h3 class="description"></h3>
+            <div class="values">
+              Please select a category on the left to view possible settings to change.
+            </div>
+          </div>
+        </div>
+      </div>
+
     </article>
     <div id="particles-js"></div>
   </body>
