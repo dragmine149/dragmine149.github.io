@@ -11,7 +11,6 @@ setTimeout(() => {
 snackbar.set_area('navigation', snackbar.AREA.Top_Middle);
 snackbar.set_area('Settings', snackbar.AREA.Top_Right);
 
-
 /**
 * Capitalise a string.... Why does JS not have this already?
 * @param {string} str The string to capitalise
@@ -34,3 +33,5 @@ async function set_branch() {
 (async () => {
   document.getElementById("branch").innerText = await set_branch();
 })();
+
+modules.load_module('dayjs');

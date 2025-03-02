@@ -6,10 +6,10 @@ class Modules {
     "markdown": {
       "main": "Modules/markdown.js",
       "js": [
-        "https://cdn.jsdelivr.net/npm/marked/marked.min.js",
-        "https://cdn.jsdelivr.net/npm/marked-footnote/dist/index.umd.min.js",
-        "https://cdn.jsdelivr.net/npm/marked-custom-heading-id/lib/index.umd.js",
-        "https://cdn.jsdelivr.net/npm/marked-highlight/lib/index.umd.js",
+        "https://cdn.jsdelivr.net/npm/marked@15.0.7/lib/marked.umd.min.js",
+        "https://cdn.jsdelivr.net/npm/marked-footnote@1.2.4/dist/index.umd.min.js",
+        "https://cdn.jsdelivr.net/npm/marked-custom-heading-id@2.0.11/lib/index.umd.min.js",
+        "https://cdn.jsdelivr.net/npm/marked-highlight@2.2.1/lib/index.umd.min.js",
         "Blog/marked_local_time.js",
         "Blog/marked_improved_image.js",
         "Blog/marked_center_text.js",
@@ -19,6 +19,15 @@ class Modules {
       "css": [
         "Assets/highlight/styles/tokyo-night-dark.min.css"
       ]
+    },
+    "dayjs": {
+      "main": "",
+      "js": [
+        "https://cdn.jsdelivr.net/npm/dayjs@1.11.13/dayjs.min.js",
+        "https://cdn.jsdelivr.net/npm/dayjs@1.11.13/plugin/relativeTime.js",
+        "https://cdn.jsdelivr.net/npm/dayjs@1.11.13/plugin/localizedFormat.js"
+      ],
+      "css": []
     }
   };
 

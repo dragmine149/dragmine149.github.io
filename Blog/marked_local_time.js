@@ -1,64 +1,34 @@
 function markedLocalTime() {
-  function timeSince(date) {
-    var seconds = Math.floor((new Date() - date) / 1000);
-    const til = seconds < 0;
-    if (til) {
-      seconds = Math.abs(seconds);
-    }
+  let rule = '';
+  let conditions = {};
 
-    var interval = seconds / 31536000;
-    if (interval > 1) {
-      return (til ? "in " : "") + Math.floor(interval) + " years";
-    }
-    interval = seconds / 2592000;
-    if (interval > 1) {
-      return (til ? "in " : "") + Math.floor(interval) + " months";
-    }
-    interval = seconds / 86400;
-    if (interval > 1) {
-      return (til ? "in " : "") + Math.floor(interval) + " days";
-    }
-    interval = seconds / 3600;
-    if (interval > 1) {
-      return (til ? "in " : "") + Math.floor(interval) + " hours";
-    }
-    interval = seconds / 60;
-    if (interval > 1) {
-      return (til ? "in " : "") + Math.floor(interval) + " minutes";
-    }
-    return (til ? "in " : "") + Math.floor(seconds) + " seconds";
+  /**
+  * Add a rule to the system.
+  * @param {string} condition The condition to listen for
+  * @param {Function} callback The function to call to trigger said condition
+  */
+  function addRule(condition, callback) {
+    rule += condition;
+    conditions[condition] = callback;
   }
 
-  function time_with_0(time) {
-    if (time < 10) {
-      return `0${time}`;
-    }
-    return `${time}`;
-  }
+  addRule('w', (d) => d.format('dddd'));
+  addRule('W', (d) => d.format('dddd HH:mm'));
+  addRule('t', (d) => d.format('HH:mm'));
+  addRule('T', (d) => d.format('HH:mm:ss'));
+  addRule('d', (d) => d.format('L'));
+  addRule('D', (d) => d.format('DD MMMM YYYY'));
+  addRule('f', (d) => d.format('DD MMMM YYYY [at] HH:mm'));
+  addRule('F', (d) => d.format('dddd DD MMMM YYYY [at] HH:mm'));
+  addRule('R', (d) => dayjs().isBefore(d) ? d.fromNow() : d.toNow());
 
-  function format_time(time, format) {
-    const weekDays = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-    const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
-    const t = new Date(time * 1000);
-    switch (format) {
-      case 't':
-        return `${time_with_0(t.getHours())}:${time_with_0(t.getMinutes())}`;
-      case 'T':
-        return `${t.toLocaleTimeString()}`;
-      case 'd':
-        return `${t.toLocaleDateString()}`;
-      case 'D':
-        return `${time_with_0(t.getDate())} ${months[t.getMonth()]} ${t.getFullYear()}`;
-      case 'F':
-        return `${weekDays[t.getDay()]} ${time_with_0(t.getDate())} ${months[t.getMonth()]} ${t.getFullYear()} at ${time_with_0(t.getHours())}:${time_with_0(t.getMinutes())}`;
-      case 'R':
-        return `${timeSince(t)}`;
-      case 'f':
-        return `${time_with_0(t.getDate())} ${months[t.getMonth()]} ${t.getFullYear()} at ${time_with_0(t.getHours())}:${time_with_0(t.getMinutes())}`;
-      default:
-        return t.toLocaleString();
-    }
-  }
+  /**
+   * Formats a timestamp using specified format rule
+   * @param {number} time Unix timestamp in seconds
+   * @param {string} format Format rule to apply
+   * @returns {string} Formatted time string
+   */
+  const format_time = (time, format) => conditions[format] ? conditions[format](time) : conditions.f(time);
 
   return {
     extensions: [{
@@ -68,21 +38,20 @@ function markedLocalTime() {
         const start = src.match(/<t:/)?.index;
         return start === undefined || (start > 0 && src[start - 1] === '`') ? undefined : start;
       },
-      tokenizer(src, tokens) {
-        const rule = /^<t:(\d*)(:([tTdDfFR]))?>/;
-        const match = rule.exec(src);
+      tokenizer(src, _) {
+        let regex = RegExp(`^<t:(\\d*)(:([${rule}]))?>`);
+        let match = regex.exec(src);
 
         return (match) ? {
           type: 'localtime',
           raw: match[0],
-          time: Number(match[1]),
+          time: dayjs(Number(match[1]) * 1000),
           format: match[3] == undefined ? 'f' : match[3],
         } : undefined
       },
       renderer(token) {
         return `<code>${format_time(token.time, token.format)}</code>`;
       },
-    }
-    ]
+    }]
   }
 }
