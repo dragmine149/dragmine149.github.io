@@ -33,5 +33,3 @@ async function set_branch() {
 (async () => {
   document.getElementById("branch").innerText = await set_branch();
 })();
-
-modules.load_module('dayjs');
