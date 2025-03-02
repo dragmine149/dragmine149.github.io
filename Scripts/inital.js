@@ -31,5 +31,9 @@ async function set_branch() {
 }
 
 (async () => {
-  document.getElementById("branch").innerText = await set_branch();
+  let branch = await set_branch();
+  document.getElementById("branch").innerText = branch;
+  if (branch == undefined) {
+    document.getElementById("branch").remove();
+  }
 })();
