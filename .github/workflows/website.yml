@@ -67,6 +67,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           ref: "main"
+          submodules: true
 
       - name: Upload main
         uses: actions/upload-artifact@v4
