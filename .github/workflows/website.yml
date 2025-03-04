@@ -175,21 +175,21 @@ jobs:
           cd website
           chmod +x ./tools/tools
           ./tools/tools website
-          cd ..
-          mkdir -p tmp/IncludeFile
+          mkdir -p ../tmp/IncludeFile
           while IFS= read -r line
           do
-            basedir=$(dirname "$line")
-            mkdir -p "tmp/IncludeFile/$basedir"
-            mv "website/$line" "tmp/IncludeFile/$line"
+            if [ -e "$line" ]
+            then
+              basedir=$(dirname "$line")
+              mkdir -p "../tmp/IncludeFile/$basedir"
+              mv "../website/$line" "../tmp/IncludeFile/$line"
+            fi
           done < website/.include.txt
-          rm -rf website/
-          mv tmp/IncludeFile/* website/
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: website/
+          path: ../tmp/IncludeFile/
 
       - name: Deploy to GitHub Pages
         id: deployment
