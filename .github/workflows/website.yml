@@ -31,7 +31,9 @@ jobs:
           ref: "main"
 
       - name: Generate blog list
-        run: ./tools/tools
+        run: |
+          ./tools/tools json
+          ./tools/tools rss
 
       - name: Upload
         uses: actions/upload-artifact@v4
@@ -170,20 +172,16 @@ jobs:
 
       - name: Process website ignore
         run: |
-          # Find all .websiteignore files
-          find website -name ".websiteignore" | while read -r ignorefile; do
-            basedir=$(dirname "$ignorefile")
-            while IFS= read -r pattern; do
-              if [[ $pattern == \!* ]]; then
-                # Handle negated patterns (files to keep)
-                pattern="${pattern:1}"
-                find "$basedir" -path "$basedir/$pattern" -type f -exec sh -c 'mkdir -p "$(dirname "$1")" && mv "$1" "$(dirname "$1")"' _ {} \;
-              else
-                # Handle patterns for files to ignore
-                find "$basedir" -path "$basedir/$pattern" -type f -delete
-              fi
-            done < "$ignorefile"
-          done
+          ./tools/tools website
+          mkdir -p tmp/IncludeFile
+          while IFS= read -r line
+          do
+            basedir=$(dirname "$line")
+            mkdir -p "tmp/IncludeFile/$basedir"
+            mv "website/$line" "tmp/IncludeFile/$line"
+          done < .include.txt
+          rm -rf website/
+          mv tmp/IncludeFile/* website/
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
