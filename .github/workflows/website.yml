@@ -172,14 +172,16 @@ jobs:
 
       - name: Process website ignore
         run: |
+          cd website
           ./tools/tools website
+          cd ..
           mkdir -p tmp/IncludeFile
           while IFS= read -r line
           do
             basedir=$(dirname "$line")
             mkdir -p "tmp/IncludeFile/$basedir"
             mv "website/$line" "tmp/IncludeFile/$line"
-          done < .include.txt
+          done < website/.include.txt
           rm -rf website/
           mv tmp/IncludeFile/* website/
 
