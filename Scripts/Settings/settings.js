@@ -197,7 +197,10 @@ class DragSettings {
       switch (details.type) {
         case 'bool':
           value = input.checked;
-          document.getElementById('Settings').querySelector(`[tag=${category}-${setting}]`).querySelector('input').checked = value;
+          let quick = document.getElementById('Settings').querySelector(`[tag=${category}-${setting}]`);
+          if (quick) {
+            quick.querySelector('input').checked = value;
+          }
           break;
         case 'number':
           value = Math.min(Math.max(input.value, details.range?.lower), details.range?.upper);
