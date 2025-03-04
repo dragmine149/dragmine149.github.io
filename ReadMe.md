@@ -21,7 +21,7 @@ Hint: If you want to check out a specific branch, go to `https://dragmine149.git
   - [ ] search
   - [ ] category sorting
   - [ ] More time formats
-  - [ ] Separate marked_*.js files to their own repo.
+  - [X] Separate marked_*.js files to their own repo.
   - [ ] Improved CSS (links and lists don't really look all that well)
   - [ ] In-site links (links that show a page on this site will go to that page instead of reloading the site to go to that page).
   - [X] Fix spelling
@@ -29,7 +29,7 @@ Hint: If you want to check out a specific branch, go to `https://dragmine149.git
 - [*] Finished branch system
 - [**] More seasonal backgrounds
 - [R] Improved and more realistic day night system.
-- [ ] Figure out a way to "fetch" images from `raw.githubusercontent.com` instead of bundling them with the website.
+- [X] Figure out a way to "fetch" images from `raw.githubusercontent.com` instead of bundling them with the website.
 - [ ] Mobile site / touch support.
 - [ ] Improve typewritter API
 - [X] Update beercss to 3.9.3   [https://github.com/beercss/beercss/releases/tag/v3.9.3](https://github.com/beercss/beercss/releases/tag/v3.9.3)

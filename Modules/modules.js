@@ -10,9 +10,9 @@ class Modules {
         "https://cdn.jsdelivr.net/npm/marked-footnote@1.2.4/dist/index.umd.min.js",
         "https://cdn.jsdelivr.net/npm/marked-custom-heading-id@2.0.11/lib/index.umd.min.js",
         "https://cdn.jsdelivr.net/npm/marked-highlight@2.2.1/lib/index.umd.min.js",
-        "Blog/marked_local_time.js",
-        "Blog/marked_improved_image.js",
-        "Blog/marked_center_text.js",
+        "Blog/marked/markedLocalTime.js",
+        "Blog/marked/markedImprovedImage.js",
+        "Blog/marked/markedCenterText.js",
         // highlight.js assets required for marked-highlight
         "Assets/highlight/highlight.min.js"
       ],
