@@ -189,7 +189,7 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: ../tmp/IncludeFile/
+          path: tmp/IncludeFile/
 
       - name: Deploy to GitHub Pages
         id: deployment
