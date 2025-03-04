@@ -96,14 +96,10 @@ fn process_dir(path: &Path, mut rules: Vec<String>) -> Vec<String> {
             let mut results = vec![];
             let f = f.unwrap().path();
 
-            // check if path allowed
-            if allow_path(&f, &rules) {
-                results.push(f.to_str().unwrap().to_string());
-            }
-
-            // if dir, we need to go deeper.
             if f.is_dir() {
                 results.extend(process_dir(&f, rules.clone()));
+            } else if allow_path(&f, &rules) {
+                results.push(f.to_str().unwrap().to_string());
             }
 
             results
