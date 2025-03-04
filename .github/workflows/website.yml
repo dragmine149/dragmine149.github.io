@@ -185,6 +185,7 @@ jobs:
               mv "../website/$line" "../tmp/IncludeFile/$line"
             fi
           done < .include.txt
+          mv .include.txt ../tmp/IncludeFile/
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
