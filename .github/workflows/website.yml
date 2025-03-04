@@ -173,6 +173,7 @@ jobs:
       - name: Process website ignore
         run: |
           cd website
+          chmod +x ./tools/tools
           ./tools/tools website
           cd ..
           mkdir -p tmp/IncludeFile
