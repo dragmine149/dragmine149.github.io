@@ -32,10 +32,13 @@ class Verbose {
    * @return {boolean} The current verbosity state
    */
   get verbose() {
-    if (this.__currentLogName) {
-      return this.__getSetting(this.__currentLogName);
+    if (!this.__getSetting()) {
+      return false;
     }
-    return this.__getSetting();
+
+    return this.__currentLogName ?
+      this.__getSetting(this.__currentLogName) :
+      true;
   }
 
   /**
