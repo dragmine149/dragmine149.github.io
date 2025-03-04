@@ -309,7 +309,10 @@ class DragSettings {
     // button
     input.addEventListener('click', () => {
       this.set_setting(category, setting, input.checked);
-      this.cache.get(`${category}-${setting}`)?.querySelector('input')?.checked = input.checked;
+      let cache = this.cache.get(`${category}-${setting}`);
+      if (cache) {
+        cache.querySelector('input').checked = input.checked;
+      }
     });
     input.checked = this.get_setting(category, setting);
 
