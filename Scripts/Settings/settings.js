@@ -159,7 +159,7 @@ class DragSettings {
 
     /** @type {HTMLElement} */
     let title = node.querySelector('[tag="title"]');
-    title.innerText = capitalise(setting);
+    title.innerText = capitalise(setting).replace(/_/g, ' ');
 
     /** @type {HTMLElement} */
     let description = node.querySelector('[tag="description"]');
@@ -197,7 +197,7 @@ class DragSettings {
       switch (details.type) {
         case 'bool':
           value = input.checked;
-          let quick = document.getElementById('Settings').querySelector(`[tag=${category}-${setting}]`);
+          let quick = document.getElementById('Settings').querySelector(`[tag="${category}-${setting}"]`);
           if (quick) {
             quick.querySelector('input').checked = value;
           }
