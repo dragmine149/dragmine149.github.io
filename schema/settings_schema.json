@@ -42,16 +42,6 @@
                 }
               ]
             },
-            "recomened": {
-              "oneOf": [
-                {
-                  "type": "boolean"
-                },
-                {
-                  "type": "number"
-                }
-              ]
-            },
             "quick": {
               "type": "boolean"
             },
@@ -71,6 +61,9 @@
               ]
             },
             "requires": {
+              "type": "string"
+            },
+            "disabled": {
               "type": "string"
             }
           }

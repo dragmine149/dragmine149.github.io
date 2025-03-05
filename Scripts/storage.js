@@ -60,7 +60,7 @@ class DragStorage {
    */
   clearPrefix() {
     for (let item = 0; item < localStorage.length; item++) {
-      const key = localStorage.key(item);
+      let key = localStorage.key(item);
       if (key.startsWith(this.prefix)) {
         localStorage.removeItem(key);
       }
@@ -107,5 +107,16 @@ class DragStorage {
     const now = new Date();
     if (now.getTime() < date) return true;
     return false;
+  }
+
+  listStorage() {
+    let items = [];
+    for (let item = 0; item < localStorage.length; item++) {
+      let key = localStorage.key(item);
+      if (key.startsWith(this.prefix)) {
+        items.push(key.replace(this.prefix + "-", ""));
+      }
+    }
+    return items;
   }
 }

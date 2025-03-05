@@ -1,40 +1,48 @@
 {
   "$schema": "../../schema/settings_schema.json",
   "Particle": {
-    "description": "Settings to do with managing the particles that appear in the background",
+    "description": "Change how the particles in the background work",
     "options": {
       "enabled": {
         "description": "Enables or disables the particles on the background.",
         "type": "bool",
         "default": true,
-        "recomened": true,
-        "quick": true
+        "quick": true,
+        "icon": "fa-regular fa-snowflake"
       },
       "seasonal": {
         "description": "To have the particles be based on the current season.",
         "type": "bool",
         "default": true,
-        "recomened": true,
         "quick": false
       }
     }
   },
   "Date time": {
-    "description": "Settings to do with have the website is displayed during different times of the day.",
+    "description": "Change how the background works in accordance to a day/night cycle",
     "options": {
       "enabled": {
-        "description": "Enables or disables the background automatically changing based on current time of day.",
+        "description": "Allows the background to automatically changing based on current time of day.",
         "type": "bool",
         "default": true,
-        "recomened": true,
-        "quick": true
+        "quick": true,
+        "icon": "fa fa-clock",
+        "disabled": "Feature not yet implemented"
       },
       "realistic": {
-        "description": "To have the background act like the current sky outside instead of a fixed 12 hour day/night.",
+        "description": "Make the background sync to an approx of the current real life day/night cycle",
         "type": "bool",
         "default": true,
-        "recomened": true,
-        "quick": false
+        "quick": false,
+        "disabled": "Feature not yet implemented"
+      },
+      "location": {
+        "description": "Enable to use browser based location (You'll have to give us location permission), Disable to use timezone based location (might be slightly less accurate, but no permission granting required)",
+        "type": "bool",
+        "default": false,
+        "quick": false,
+        "requires": "Date time-realistic",
+        "disabled": "Feature not yet implemented"
       },
       "default_state": {
         "description": "The default time to set when time is not flowing",
@@ -44,8 +52,8 @@
           "upper": 23
         },
         "default": 4,
-        "recomened": 4,
-        "quick": false
+        "quick": false,
+        "disabled": "Feature not yet implemented"
       }
     }
   },
@@ -53,17 +61,15 @@
     "description": "Settings to do with debugging, could cause website to load slower or things to break.",
     "options": {
       "verbose": {
-        "description": "Enables all debugging in the console",
+        "description": "Enables debugging to the console",
         "type": "bool",
         "default": false,
-        "recommended": false,
         "quick": false
       },
       "verbose_loader": {
         "description": "Enables all debugging for the `loader` class",
         "type": "bool",
         "default": false,
-        "recommended": false,
         "quick": false,
         "requires": "Debug-verbose"
       },
@@ -71,7 +77,13 @@
         "description": "Enables all debugging for the `Projects` class",
         "type": "bool",
         "default": false,
-        "recommended": false,
+        "quick": false,
+        "requires": "Debug-verbose"
+      },
+      "verbose_Settings": {
+        "description": "Enables all debugging for the `Settings` class",
+        "type": "bool",
+        "default": false,
         "quick": false,
         "requires": "Debug-verbose"
       }

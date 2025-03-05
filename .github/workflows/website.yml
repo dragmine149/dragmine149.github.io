@@ -31,7 +31,9 @@ jobs:
           ref: "main"
 
       - name: Generate blog list
-        run: ./tools/tools
+        run: |
+          ./tools/tools json
+          ./tools/tools rss
 
       - name: Upload
         uses: actions/upload-artifact@v4
@@ -57,7 +59,7 @@ jobs:
           json_branches=$(printf '%s\n' "${branches[@]}" | jq -R . | jq -s -c .)
           echo "json_branches=${json_branches}" >> $GITHUB_OUTPUT
 
-  # upload main folder, keeps it seperate from the rest and means we don't need conditions everywhere
+  # upload main folder, keeps it separate from the rest and means we don't need conditions everywhere
   build_main:
     runs-on: ubuntu-latest
     steps:
@@ -65,6 +67,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           ref: "main"
+          submodules: true
 
       - name: Upload main
         uses: actions/upload-artifact@v4
@@ -86,36 +89,29 @@ jobs:
     steps:
       # Probably a better way of doing this but..
       # If branch is not main, put under the Branches/<Branch Name> Folder
-      - name: Not main checkout
-        uses: actions/checkout@v4
-        with:
-          ref: ${{ matrix.branch }}
-          path: temp/Branches/${{ matrix.branch }}
+      - name: Get files
+        run: |
+          mkdir -p temp/Branches/${{ matrix.branch }}
+          git clone --branch ${{ matrix.branch }} https://github.com/dragmine149/dragmine149.github.io.git temp/Branches/${{ matrix.branch }}
 
       - name: get changed files
-        id: changed-markdown-files
+        id: changed
         run: |
           cd temp/Branches/${{ matrix.branch }}
-          git fetch origin main:main
-          git diff --name-only main..HEAD > ../../changed_files.txt
-          all_changed_files=$(cat ../../changed_files.txt)
-          echo "$(all_changed_files=$all_changed_files)" >> $GITHUB_OUTPUT
-          cd ../../
+          git diff --name-only ${{ matrix.branch }}..origin/main > ../../../changed_files.txt
 
       # compress said files
       - name: Compress
-        env:
-          ALL_CHANGED_FILES: ${{ steps.changed-markdown-files.outputs.all_changed_files }}
         run: |
-          echo '${{ env.ALL_CHANGED_FILES }}'
           mkdir -p Branches/${{ matrix.branch }}
-          for file in $(echo ${{ env.ALL_CHANGED_FILES }} | tr '\n' ' '); do
-            if [ -e $file ]
+          for file in $(cat changed_files.txt); do
+            echo "$file"
+            if [ -e temp/Branches/${{ matrix.branch }}/$file ]
             then
-              echo "$file"
+              echo "File exists"
               basedir=$(dirname $file)
               mkdir -p Branches/${{ matrix.branch }}/$basedir
-              mv $file Branches/${{ matrix.branch }}/$basedir;
+              mv temp/Branches/${{ matrix.branch }}/$file Branches/${{ matrix.branch }}/$basedir;
             fi
           done
 
@@ -125,6 +121,12 @@ jobs:
 
       - name: Change Paths
         run: ./temp/Branches/${{ matrix.branch }}/build_branch.sh
+
+      - name: Folder for Branches
+        run: |
+          mv Branches tmpBranches
+          mkdir -p Branches/Branches/
+          mv tmpBranches/${{ matrix.branch }} Branches/Branches
 
         # upload again
       - name: Upload branches
@@ -169,10 +171,27 @@ jobs:
           name: data
           path: website/Blog
 
+      - name: Process website ignore
+        run: |
+          cd website
+          chmod +x ./tools/tools
+          ./tools/tools website
+          mkdir -p ../tmp/IncludeFile
+          while IFS= read -r line
+          do
+            if [ -e "$line" ]
+            then
+              basedir=$(dirname "$line")
+              mkdir -p "../tmp/IncludeFile/$basedir"
+              mv "../website/$line" "../tmp/IncludeFile/$line"
+            fi
+          done < .include.txt
+          mv .include.txt ../tmp/IncludeFile/
+
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: website/
+          path: tmp/IncludeFile/
 
       - name: Deploy to GitHub Pages
         id: deployment

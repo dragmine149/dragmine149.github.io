@@ -27,7 +27,8 @@ class Blog {
         markedFootnote: true,
         markedImprovedImage: true,
         markedCustomHeadingId: true,
-        markedHighlight: true
+        markedHighlight: true,
+        markedRemoteImage: true,
       }, document.getElementById("blog_content"));
     }
   }

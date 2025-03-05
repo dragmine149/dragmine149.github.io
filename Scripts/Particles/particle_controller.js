@@ -1,33 +1,31 @@
-function load_particles(seasonal = true) {
-  // if (seasonal) {
-  // }
+const seasonal_settings = {
+  "Winter": {
+    "config": "Scripts/Particles/seasons/winter.json",
+    "start_date": dayjs().set('date', 25).set('month', 10).set('year', dayjs().year() - 1),
+    "end_date": dayjs().set('date', 1).set('month', 2)
+  },
+  "Spring": {
+    "config": "Scripts/Particles/seasons/spring.json",
+    "start_date": dayjs().set('date', 1).set('month', 2),
+    "end_date": dayjs().set('date', 20).set('month', 4)
+  }
+};
 
-  particlesJS.load('particles-js', 'Scripts/Particles/seasons/winter.json');
+function load_particles(seasonal = true) {
+  let dm = dayjs();
+  let config = Object.values(seasonal_settings).filter((v) => v.start_date.isBefore(dm) && v.end_date.isAfter(dm)).at(0).config;
+
+  if (pJSDom.length > 0) return;
+  particlesJS.load('particles-js', config);
 }
 
 function disable_particles() {
-  document.getElementById('particles-js').childNodes.forEach((child) => child.remove());
-}
-
-// load_particles();
-
-/** @param {HTMLInputElement} obj */
-function snow_toggle(obj) {
-  switch (obj.checked) {
-    case true:
-      load_particles();
-      // settings.setStorage("particles", "1");
-      break;
-    case false:
-      disable_particles();
-      // settings.setStorage("particles", "0");
-      break;
-    default:
-      console.error("Somehow a checkbox is not checked or not unchecked?");
-      break;
+  if (pJSDom.length > 0) {
+    pJSDom[0].pJS.fn.vendors.destroypJS();
+    pJSDom = [];
   }
 }
 
-const snow_settings_elm = document.getElementById("Settings-snow");
-snow_settings_elm.checked = settings.get_setting("Particle", "Enabled") ?? true;
-snow_toggle(snow_settings_elm);
+settings.add_listener("Particle", "enabled", (v) => {
+  v ? load_particles() : disable_particles();
+});

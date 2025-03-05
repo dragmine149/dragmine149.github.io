@@ -42,7 +42,7 @@ class Markdown {
       case "markedFootnote":
         return markedFootnote();
       case "markedImprovedImage":
-        return markedImprovedImage();
+        return markedImprovedImage(this.__settings.markedRemoteImage ? 'https://raw.githubusercontent.com/dragmine149/dragmine149.github.io/refs/heads/main' : '');
       case "markedHighlight":
         return markedHighlight.markedHighlight({
           emptyLangClass: 'hljs',
@@ -107,6 +107,7 @@ class Markdown {
  * @property {boolean} markedCustomHeadingId - Enable custom heading IDs
  * @property {boolean} markedFootnote - Enable footnotes
  * @property {boolean} markedImprovedImage - Enable Images rendering inside a <div class="img"> instead of normal rendering.
+ * @property {boolean} markedRemoteImage - Gets images from the server `raw.githubusercontent` instead of our server `dragmine149.github.io`
  * @property {boolean} markedHighlight - Enable code block highlighting.
  */
 const markdownSettings = {
@@ -114,6 +115,7 @@ const markdownSettings = {
   markedCustomHeadingId: false,
   markedFootnote: false,
   markedImprovedImage: false,
+  markedRemoteImage: false,
   markedHighlight: false,
   markedCenterText: false,
 };

@@ -3,8 +3,8 @@
   <head>
     <meta charset="utf-8">
     <title>Dragmine149</title>
-    <link href="https://cdn.jsdelivr.net/npm/beercss@3.7.12/dist/cdn/beer.min.css" rel="stylesheet">
-    <script type="module" src="https://cdn.jsdelivr.net/npm/beercss@3.7.12/dist/cdn/beer.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/beercss@3.9.6/dist/cdn/beer.min.css" rel="stylesheet">
+    <script type="module" src="https://cdn.jsdelivr.net/npm/beercss@3.9.6/dist/cdn/beer.min.js"></script>
 
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="Scripts/DayNightClycle/background.css">
@@ -20,12 +20,19 @@
 
     <script src="Scripts/snackbar_hover.js"></script>
 
-    <script defer src="Assets/fontawesome-free-6.6.0-web/js/brands.min.js"></script>
-    <script defer src="Assets/fontawesome-free-6.6.0-web/js/regular.min.js"></script>
-    <script defer src="Assets/fontawesome-free-6.6.0-web/js/fontawesome.min.js"></script>
-    <link href="Assets/fontawesome-free-6.6.0-web/css/brands.min.css" rel="stylesheet">
-    <!-- <link href="Assets/fontawesome-free-6.6.0-web/css/solid.min.css" rel="stylesheet"> -->
-    <link href="Assets/fontawesome-free-6.6.0-web/css/regular.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <script defer src="Assets/fontawesome-free-6.6.0-web/js/all.min.js"></script>
+    <link href="Assets/fontawesome-free-6.6.0-web/css/all.min.css" rel="stylesheet">
+
+    <!-- DayJS -->
+    <script src="https://cdn.jsdelivr.net/npm/dayjs@1.11.13/dayjs.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/dayjs@1.11.13/plugin/relativeTime.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/dayjs@1.11.13/plugin/localizedFormat.js"></script>
+    <script>
+      dayjs.extend(dayjs_plugin_relativeTime);
+      dayjs.extend(dayjs_plugin_localizedFormat);
+      dayjs.locale('en');
+    </script>
 
     <!-- Particles -->
     <script src="Scripts/Particles/particles.js"></script>
@@ -39,8 +46,8 @@
   </head>
   <body class="g0">
     <article class="main no-padding medium center-align middle-align">
+      <script src="Scripts/inital.js" defer></script>
       <script src="Scripts/DayNightClycle/background.js" defer></script>
-      <script src="Scripts/loader.js" defer></script>
 
       <div id="button-snacks" class="light">
         <div id="snackbar-tl" onclick="snackbar.toggle_area(snackbar.AREA.Top_Left)" class="snackbar button top left"></div>
@@ -54,16 +61,8 @@
       </div>
 
       <div id="Settings" class="snackbar vertical top right">
-        <span>Settings</span>
-        <label class="switch icon">
-          <input id="Settings-snow" type="checkbox" onclick="snow_toggle(this)" checked="true">
-          <span>
-            <i style="padding: 4px 0 0 0;">
-              <i class="fa-regular fa-snowflake" style="font-family: 'Font Awesome 6 Free';"></i>
-            </i>
-          </span>
-        </label>
-        <button onclick="settings.visible(true);">More Settings</button>
+        <span>Quick Settings</span>
+        <button onclick="settings.visible();">More Settings</button>
       </div>
 
       <noscript>
@@ -76,18 +75,7 @@
         </div>
       </noscript>
 
-      <div class="snackbar top active" style="padding: 0;">
-        <p>
-          <button style="text-align: center; width: 100%; height: 100%; padding: 0%; background: #0000;" onclick="this.parentElement.parentElement.classList.remove('active')">
-            WARNING: This is the settings branch of the website. This branch is still a WIP branch and might break in locations.<br>.<br>
-
-            This branch will also store data in `localStorage` (browser storage), which will carryy across to the main branch.<br>.<br>
-
-            DO NOTE: I don't know much about legal obligations hence why this is it's own separate branch. Until i can figure out if we need a cookie banner or not.<br>.<br>
-
-            The settings branch has already started to store data within your browser, By clicking this button you are acknowledging that the browser is storing data.
-          </button>
-        </p>
+      <div id="branch">
       </div>
 
       <div id="warnings" class="snackbar top error"></div>
@@ -97,7 +85,6 @@
         <button onclick="page.load_page('main_page.html')">Home</button>
         <button onclick="page.load_page('Blog')">Blog</button>
         <button onclick="page.load_page('Projects')">Projects</button>
-        <!-- <button onclick="page.params = '?blog=aoc/2024'; page.load_page('Blog')">Advent Of Code 2024</button> -->
         <button onclick="page.load_page('Blog', page.generate_search_params({'blog': 'aoc/2024'}));">Advent of Code 2024</button>
         <button onclick="socials()">Socials</button>
         <div id="socials" class="snackbar top">
@@ -120,22 +107,15 @@
       </div>
 
       <div id="big-settings" hidden>
-      <!-- <div id="big-settings"> -->
         <h1 class="title">Settings</h1>
-        <button onclick="settings.visible(false);">Close</button>
+        <button onclick="settings.visible();">Close</button>
         <div>
-          <div id="setting-key">
-          </div>
+          <div id="setting-key"></div>
           <div id="setting-value">
             <h1 class="title"></h1>
             <h3 class="description"></h3>
             <div class="values">
-              <diV>
-                <span>Enabled</span>
-                <input type="checkbox">
-                <button>Reset</button>
-                <info>e</info>
-              </diV>
+              Please select a category on the left to view possible settings to change.
             </div>
           </div>
         </div>
