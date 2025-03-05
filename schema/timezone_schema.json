@@ -1,0 +1,22 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "patternProperties": {
+    "^.+$": {
+      "type": "object",
+      "properties": {
+        "lat": {
+          "type": "number",
+          "description": "Latitude coordinate of the location"
+        },
+        "long": {
+          "type": "number",
+          "description": "Longitude coordinate of the location"
+        }
+      },
+      "required": ["lat", "long"],
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}
