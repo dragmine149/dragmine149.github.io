@@ -120,7 +120,7 @@ class Stories {
     }
     this.verbose.log(`Loading story ${story} chapter ${chapter}`);
 
-    let data = await loader.get_contents_from_server(`Stories/${story}/${chapter}.txt`);
+    let data = await loader.get_contents_from_server(`Stories/${this.stories[story].chapters[chapter]}`);
 
     // this.__get_story().innerText = data;// Create base table or get existing one
     let container = document.createElement('div');
