@@ -108,7 +108,7 @@ fn process_dir(path: &Path, mut rules: Vec<String>) -> Vec<String> {
         .flatten()
         .collect::<Vec<String>>();
     if path.to_str().unwrap() == "." {
-        files.push("".to_string());
+        files.push("#".to_string());
     }
     files
 }
