@@ -184,6 +184,8 @@ jobs:
               basedir=$(dirname "$line")
               mkdir -p "../tmp/IncludeFile/$basedir"
               mv "../website/$line" "../tmp/IncludeFile/$line"
+            else
+              echo "File not found: $line"
             fi
           done < .include.txt
           mv .include.txt ../tmp/IncludeFile/
