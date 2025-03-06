@@ -192,7 +192,7 @@ jobs:
 
       - name: Debug
         run: |
-          cd /tmp/IncludeFile
+          cd tmp/IncludeFile
           tree -L 5
 
       - name: Upload artifact
