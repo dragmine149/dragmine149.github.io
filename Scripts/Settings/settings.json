@@ -86,6 +86,13 @@
         "default": false,
         "quick": false,
         "requires": "Debug-verbose"
+      },
+      "verbose_Stories": {
+        "description": "Enables all debugging for the `Stories` class",
+        "type": "bool",
+        "default": false,
+        "quick": false,
+        "requires": "Debug-verbose"
       }
     }
   }
