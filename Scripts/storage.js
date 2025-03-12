@@ -1,5 +1,12 @@
 const maxCacheTime = 7 * 24 * 60 * 60 * 1000;
 
+const MiliSeconds = {
+  day: 24 * 60 * 60 * 1000,
+  hour: 60 * 60 * 1000,
+  minute: 60 * 1000,
+  second: 1000
+};
+
 class DragStorage {
   prefix = "";
   /**
@@ -74,12 +81,13 @@ class DragStorage {
   */
   setCache(name, length) {
     // get the cache
-    const cache_details = localStorage.getItem(`cache`) ?? compressJSON.compress({});
+    let cache_details = JSON.parse(localStorage.getItem(`cache`)) ?? JSON.stringify(compressJSON.compress({}));
+    cache_details = JSON.parse(cache_details);
     // uncompress the cache
     const cache = compressJSON.decompress(cache_details);
     // set the cache
     cache[`${this.prefix}-${name}`] = new Date().getTime() + length;
-    localStorage.setItem(`cache`, compressJSON.compress(cache));
+    localStorage.setItem(`cache`, JSON.stringify(compressJSON.compress(cache)));
   }
 
   /**
@@ -89,7 +97,8 @@ class DragStorage {
   */
   getCache(name) {
     // get the cache
-    const cache_details = localStorage.getItem(`cache`) ?? compressJSON.compress({});
+    let cache_details = localStorage.getItem(`cache`) ?? JSON.stringify(compressJSON.compress({}));
+    cache_details = JSON.parse(cache_details);
     // uncompress the cache
     const cache = compressJSON.decompress(cache_details);
     // get the cached value
@@ -113,6 +122,7 @@ class DragStorage {
     let items = [];
     for (let item = 0; item < localStorage.length; item++) {
       let key = localStorage.key(item);
+      if (key == 'cache') continue;
       if (key.startsWith(this.prefix)) {
         items.push(key.replace(this.prefix + "-", ""));
       }
