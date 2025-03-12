@@ -188,65 +188,27 @@ class DateTime {
     this.verbose.info(`Progress: ${progress.progress}`);
     this.verbose.info(`Duration: ${progress.duration} hours`);
 
-    let currentGradient = 0;
-    if (progress.duration > 0) {
-      this.verbose.info(`It's Daytime`);
-      this.verbose.info(`Day progress: ${progress.progress}`);
+    let gradient = `b`;
+    gradient += (progress.duration > 0) ? `d` : `n`;
+    gradient += "_";
+    let progress12 = progress.progress * 12;
+    let progress12f = Math.floor(progress12);
+    gradient += progress12f;
+    gradient += Math.floor((progress12 - progress12f) * 4);
 
-      // calculated by:
-      // - Taking the number of hours that are classified as "day"
-      // - Adding the offset
-      // - timesing by 4 to include the quarter marks.
-      let day_gradient = ((progress.progress * 11) + 7) * 4;
-      // then floored to make it consistent.
-      currentGradient = Math.floor(day_gradient);
+    this.verbose.info(`It's ${(progress.duration > 0) ? 'Daytime' : 'Nighttime'}`);
+    this.verbose.log({ progress12, progress12f })
+    this.verbose.log(`Gradient: ${gradient}`);
 
-      this.verbose.info(`Day gradient: ${day_gradient}`);
-    }
-
-    if (progress.duration < 0) {
-      progress.duration = Math.abs(progress.duration);
-      this.verbose.info(`It's Nighttime`);
-      this.verbose.info(`Night progress: ${progress.progress}`);
-
-      let night_progress;
-      // Convert night_progress (0-1) to the range 72-96/0-27
-      // First scale to 0-24
-      let scaled_progress = progress.progress * 24;
-
-      // Map to 72-96/0-27 range (total 52 values in the circle)
-      // 72-96 is 25 values, 0-27 is 28 values
-      if (scaled_progress < 25) {
-        // First part maps to 72-96
-        night_progress = 72 + scaled_progress;
-      } else {
-        // Second part maps to 0-27
-        night_progress = scaled_progress - 25;
-      }
-
-      currentGradient = Math.floor(night_progress);
-      this.verbose.info(`Night progress: ${night_progress}`);
-      this.verbose.info(`Night gradient: ${currentGradient}`);
-    }
-
-    // Update body class for the gradient
     // Remove all existing gradient classes
-    let previous_gradient = Object.values(document.body.classList).filter((k) => k.startsWith("g"));
+    let previous_gradient = Object.values(document.body.classList).filter((k) => k.startsWith("bd_") || k.startsWith("bn_"));
     previous_gradient.forEach((k) => document.body.classList.remove(k));
 
-    let hour = Math.floor(currentGradient / 4);
-    let quarter = `${60 * ((currentGradient / 4) - Math.floor(currentGradient / 4))}`.padStart(2, "0");
-
     // Add the current gradient class
-    document.body.classList.add(`g${hour}_${quarter}`);
-
-    this.verbose.log(`Setting gradient to g${currentGradient}`);
-    this.verbose.log(`g${hour}_${quarter}`);
-    this.time = currentGradient;
-
-    // Schedule the next update in 15 minutes
-    // setTimeout(() => this.attempt_sync_with_nature(), 15 * 60 * 1000);
+    document.body.classList.add(gradient);
+    this.time = gradient;
   }
 }
+
 const date_time = new DateTime();
 date_time.start_clock();
