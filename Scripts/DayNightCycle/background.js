@@ -7,6 +7,21 @@ class DateTime {
     this.verbose = new Verbose('DateTime', '#8f2a79');
   }
 
+
+  /**
+  * Holds sunrise, sunset, and other sun position data for a specific day.
+  * @typedef {Object} TimesCollection
+  * @property {DayTimes} sunrise The times for when the sun rises
+  * @property {DayTimes} sunset The times for when the sun sets
+  */
+  /**
+  * Collection of time data for consecutive days.
+  * @typedef {Object} DayTimes
+  * @property {number} yesterday - Sun time for the previous day
+  * @property {number} today - Sun time for the current day
+  * @property {number} tomorrow - Sun time for the next day
+  */
+
   /**
   * @typedef {Object} TimeZoneLocation
   * @property {number} lat - Latitude coordinate of the location
@@ -18,7 +33,7 @@ class DateTime {
   */
 
   /**
-  * Gets the list of timezones
+  * Gets a pre-determined list of timezone data.
   * @returns {Promise<TimezoneData>}
   */
   async __get_timezones() {
@@ -26,67 +41,75 @@ class DateTime {
   }
 
   /**
-  * Set the time to now + x hours
-  * @param {number} modifier The amount of time to add or subtract
+  * Update the classes of the body depending on the time given
+  * @param {('d'|'n')} half The half of the day
+  * @param {number} hour The hour in 12h format
+  * @param {number} quarter The quarter in 1->4 format
   */
-  set_time(modifier) {
-    // update class list
-    document.body.classList.remove(`g${this.time}`);
-    this.time = ((this.time + modifier) % 24 + 24) % 24;
-    document.body.classList.add(`g${this.time}`);
+  update_time(half, hour, quarter) {
+    // Remove all existing gradient classes
+    let previous_gradient = Object.values(document.body.classList).filter((k) => k.startsWith("bd_") || k.startsWith("bn_"));
+    previous_gradient.forEach((k) => document.body.classList.remove(k));
+
+    // Add the current gradient class
+    document.body.classList.add(`b${half}_${hour}${quarter}`);
+
+    this.verbose.info(`It's ${half == 'd' ? 'Daytime' : 'Nighttime'}`);
+    this.verbose.log(`Gradient: b${half}_${hour}${quarter}`);
 
     // update rest of website
-    const [website_mode, real_mode] = this.time >= 18 || this.time <= 6 ? ['light', 'dark'] : ['dark', 'light'];
+    const [website_mode, real_mode] = half == 'n' ? ['light', 'dark'] : ['dark', 'light'];
     ui('mode', website_mode);
     document.getElementById("button-snacks").classList.remove(website_mode);
     document.getElementById("button-snacks").classList.add(real_mode);
   }
 
   /**
+  * A quick way to get the half format
+  * @param {number} time The current hour
+  * @returns {('d'|'n')}
+  */
+  __get_half_from_time(time) {
+    return time >= 18 || time <= 6 ? 'n' : 'd';
+  }
+
+  /**
    * Set the time to now
    */
   set_to_now() {
-    const now = new Date();
-    this.set_time(now.getHours() - this.time);
+    let now = new Date();
+    let hours = now.getHours();
+    let displayHours = hours > 12 ? hours - 12 : hours; // we work in 12h format, yeah ik 12h not 24h...
+    let nm = now.getMinutes();
+    let quarter = Math.ceil(nm / 15); // minutes are also a 1->4 range
+    this.update_time(this.__get_half_from_time(hours), displayHours, quarter);
   }
 
   /**
    * Sync the clock to the hour by waiting til the hours
    */
-  __sync_to_hour() {
-    const now = new Date();
-    const minutes_ms_to_hour = 60 - now.getMinutes() * 60 * 1000;
-    const seconds_ms_to_minute = 60 - now.getSeconds() * 1000;
-    const milliseconds_to_second = 1000 - now.getMilliseconds();
-    const time_to_hour = minutes_ms_to_hour + seconds_ms_to_minute + milliseconds_to_second;
-
-    this.verbose.log(time_to_hour);
-    setTimeout(() => {
-      this.__clock();
-    }, time_to_hour);
-  }
-
-  /**
-   * Clock function that updates the time every hour
-   */
-  __clock() {
+  sync_with_quarter() {
     this.set_to_now();
-    setInterval(this.set_to_now, 3_600_000);
-  }
 
-  /**
-   * external api, sync clock.
-   */
-  start_clock() {
-    this.__sync_to_hour();
-  }
+    let now = new Date();
+    let nm = now.getMinutes();
+    let quarter = Math.ceil(nm / 15) * 15; // get the next quarter
+    let minutes_ms_to_quarter = (quarter - nm) * 60 * 1000; // and the milliseconds time to it
 
+    let seconds_ms_to_minute = (60 - now.getSeconds()) * 1000;
+    let milliseconds_to_second = 1000 - now.getMilliseconds();
+    let time_to_quarter = minutes_ms_to_quarter + seconds_ms_to_minute + milliseconds_to_second;
+
+    this.verbose.log({ time_to_quarter });
+    this.clock = setTimeout(this.sync_with_quarter, time_to_quarter);
+  }
 
   /**
   * Gets the location either via the browser geolocation api or timezone decoding.
   * @returns {Promise<[number, number]>}
   */
   async __get_location() {
+    // use stored, as we don't except them to move timezones that quickly...
     if (this.storage.hasStorage("location")) {
       return this.storage.getStorage("location");
     }
@@ -97,7 +120,7 @@ class DateTime {
         navigator.geolocation.getCurrentPosition(resolve, reject);
       });
 
-      // if exists, returns
+      // if exists, returns (and store)
       if (pos) {
         let [latitude, longitude] = [pos.coords.latitude, pos.coords.longitude];
         this.storage.setStorage("location", [latitude, longitude], MiliSeconds.day);
@@ -107,8 +130,7 @@ class DateTime {
 
     // if the above fails (no location access, disabled setting) then call server to get timezone based.
     let timezones = await this.__get_timezones();
-    this.verbose.log(timezones);
-    this.verbose.log(Intl.DateTimeFormat().resolvedOptions().timeZone);
+    this.verbose.log(`User timezone: ${Intl.DateTimeFormat().resolvedOptions().timeZone}`);
     let current = timezones[Intl.DateTimeFormat().resolvedOptions().timeZone];
     let [latitude, longitude] = [current.lat, current.long];
     this.storage.setStorage("location", [latitude, longitude], MiliSeconds.day);
@@ -118,97 +140,127 @@ class DateTime {
   /**
   * Get the progress of days
   * @param {dayjs} now The current time
-  * @param {{"yesterday": dayjs, "today": dayjs, "tomorrow": dayjs}} sunrise The sunrise times
-  * @param {{"yesterday": dayjs, "today": dayjs, "tomorrow": dayjs}} sunset The sunset times
+  * @param {TimesCollection} times
   * @returns {{"duration": number, "progress": number}} The duration of day (+) / night (-), and the progress.
   */
-  get_progress(now, sunrise, sunset) {
-    if (now.isAfter(sunrise.today) && now.isBefore(sunset.today)) {
-      // It's daytime
-      let dayDuration = sunset.today.diff(sunrise.today, 'hours', true);
-      return {
-        duration: dayDuration,
-        progress: now.diff(sunrise.today, 'hours', true) / dayDuration
-      };
-    }
-
-    if (now.isAfter(sunset.today)) {
+  get_progress(now, times) {
+    if (now.isAfter(times.sunset.today)) {
+      this.verbose.log(`Evening`);
       // After sunset but before midnight
-      let nightDuration = sunrise.tomorrow.diff(sunset.today, 'hours', true);
+      let nightDuration = times.sunrise.tomorrow.diff(times.sunset.today, 'hours', true);
       return {
-        duration: nightDuration * -1,
-        progress: now.diff(sunset.today, 'hours', true) / nightDuration
+        duration: -nightDuration,
+        progress: now.diff(times.sunset.today, 'hours', true) / nightDuration
       };
     }
 
-    if (now.isBefore(sunrise.today)) {
+    if (now.isBefore(times.sunrise.today)) {
+      this.verbose.log(`Morning`);
       // After midnight but before sunrise
-      let nightDuration = sunset.yesterday.diff(sunrise.today, 'hours', true);
+      let nightDuration = times.sunset.yesterday.diff(times.sunrise.today, 'hours', true);
       return {
-        duration: nightDuration * -1,
-        progress: now.diff(sunset.yesterday, 'hours', true) / nightDuration
+        duration: -nightDuration,
+        progress: now.diff(times.sunset.yesterday, 'hours', true) / nightDuration
       };
     }
 
-    // if somehow none of the above, assume 0 progress has been made.
+    this.verbose.log(`Day`);
+    // It's daytime
+    let dayDuration = times.sunrise.today.diff(times.sunset.today, 'hours', true);
     return {
-      duration: 0,
-      progress: 0
+      duration: dayDuration,
+      progress: now.diff(times.sunrise.today, 'hours', true) / dayDuration
     };
   }
 
-  async attempt_sync_with_nature() {
+  /**
+    * Calculates the time until the next quarter increment based on progress
+    * @param {{"duration": number, "progress": number}} progress - Current progress value (0-1)
+    * @returns {number} - Time in milliseconds until next quarter increment
+    */
+  calculate_time_to_next_quarter(progress) {
+    progress = {
+      duration: Math.abs(progress.duration),
+      progress: progress.progress
+    }
+
+    let durationMinutes = progress.duration * 60;
+    let quarterDuration = durationMinutes / 48;
+    let quarter = progress.progress * durationMinutes;
+    let currentQuarter = Math.floor(quarter / quarterDuration);
+    let nextQuarterTime = quarterDuration * (currentQuarter + 1);
+    let timeToNextQuarter = nextQuarterTime - quarter;
+
+    this.verbose.info({
+      progress,
+      durationMinutes,
+      quarterDuration,
+      quarter,
+      currentQuarter,
+      nextQuarterTime,
+      timeToNextQuarter
+    });
+
+    let timeToNextQuarterMS = timeToNextQuarter * 1000 * 60;
+
+    this.verbose.log(`Next quarter in ${timeToNextQuarterMS}ms (${timeToNextQuarter}m)`);
+    return timeToNextQuarterMS;
+  }
+
+  async sync_with_nature() {
     let [latitude, longitude] = await this.__get_location();
     this.verbose.log([latitude, longitude]);
 
-    // calculate a lot of times
-    let yesterday = SunCalc.getTimes(new Date().setDate(new Date().getDate() - 1), latitude, longitude);
-    let today = SunCalc.getTimes(new Date(), latitude, longitude);
-    let tomorrow = SunCalc.getTimes(new Date().setDate(new Date().getDate() + 1), latitude, longitude);
-
     // Get the current time
     let now = dayjs();
-    // now = now.hour(0);
+    let yesterday = dayjs().subtract(1, 'day');
+    let tomorrow = dayjs().add(1, 'day');
+
+    let yesterdaySunCalc = SunCalc.getTimes(yesterday.toDate(), latitude, longitude);
+    let todaySunCalc = SunCalc.getTimes(now.toDate(), latitude, longitude);
+    let tomorrowSunCalc = SunCalc.getTimes(tomorrow.toDate(), latitude, longitude);
+
+    /**
+    * calculate a lot of times
+    * @type {TimesCollection}
+    */
+    let times = {
+      sunrise: {
+        yesterday: dayjs(yesterdaySunCalc.sunrise),
+        today: dayjs(todaySunCalc.sunrise),
+        tomorrow: dayjs(tomorrowSunCalc.sunrise)
+      },
+      sunset: {
+        yesterday: dayjs(yesterdaySunCalc.sunset),
+        today: dayjs(todaySunCalc.sunset),
+        tomorrow: dayjs(tomorrowSunCalc.sunset)
+      }
+    }
+
     this.verbose.log(now.format());
 
-    // Get the sunrise and sunset times
-    let sunrise = {
-      "today": dayjs(today.sunrise),
-      "yesterday": dayjs(yesterday.sunrise),
-      "tomorrow": dayjs(tomorrow.sunrise)
-    };
-    let sunset = {
-      "today": dayjs(today.sunset),
-      "tomorrow": dayjs(tomorrow.sunset),
-      "yesterday": dayjs(yesterday.sunset)
-    };
-
     // get the current progress in the day/night cycle. and for how long.
-    let progress = this.get_progress(now, sunrise, sunset);
+    let progress = this.get_progress(now, times);
     this.verbose.info(`Progress: ${progress.progress}`);
     this.verbose.info(`Duration: ${progress.duration} hours`);
 
-    let gradient = `b`;
-    gradient += (progress.duration > 0) ? `d` : `n`;
-    gradient += "_";
-    let progress12 = progress.progress * 12;
-    let progress12f = Math.floor(progress12);
-    gradient += progress12f;
-    gradient += Math.floor((progress12 - progress12f) * 4);
+    let half = (progress.duration > 0) ? `d` : `n`;
+    let hour = Math.ceil(progress.progress * 12);
+    let quarter = Math.floor((progress.progress * 12 - Math.floor(progress.progress * 12)) * 4) + 1;
 
-    this.verbose.info(`It's ${(progress.duration > 0) ? 'Daytime' : 'Nighttime'}`);
-    this.verbose.log({ progress12, progress12f })
-    this.verbose.log(`Gradient: ${gradient}`);
+    this.update_time(half, hour, quarter);
+    this.clock = setTimeout(
+      () => this.sync_with_nature(),
+      this.calculate_time_to_next_quarter(progress)
+    );
+  }
 
-    // Remove all existing gradient classes
-    let previous_gradient = Object.values(document.body.classList).filter((k) => k.startsWith("bd_") || k.startsWith("bn_"));
-    previous_gradient.forEach((k) => document.body.classList.remove(k));
-
-    // Add the current gradient class
-    document.body.classList.add(gradient);
-    this.time = gradient;
+  sync_with_settings() {
+    // todo
+    this.verbose.error(`erm.. what? you were excepting something here? nonono not yet give me some time`);
+    this.sync_with_nature();
   }
 }
 
 const date_time = new DateTime();
-date_time.start_clock();
+date_time.sync_with_settings();

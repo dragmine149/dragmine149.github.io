@@ -66,10 +66,10 @@ body {
   color: white;
 }
 
-.bd_10,
 .bd_11,
 .bd_12,
 .bd_13,
+.bd_14,
 .bd_21,
 .bd_22,
 .bd_23,
@@ -117,19 +117,19 @@ body {
   color: black;
 }
 
-.bd_10 {
+.bd_11 {
   background: linear-gradient(to bottom, #07729f 0%, #042c47 100%);
 }
 
-.bd_11 {
+.bd_12 {
   background: linear-gradient(to bottom, #0980a7 20%, #063956 100%);
 }
 
-.bd_12 {
+.bd_13 {
   background: linear-gradient(to bottom, #0c8eb0 40%, #084664 100%);
 }
 
-.bd_13 {
+.bd_14 {
   background: linear-gradient(to bottom, #12a1c0 0%, #07506e 100%);
 }
 
