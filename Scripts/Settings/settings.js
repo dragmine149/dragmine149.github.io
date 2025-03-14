@@ -237,20 +237,27 @@ class DragSettings {
   */
   __required(category, setting) {
     let required = this.data[category].options[setting].requires;
-    // Early return if the required dooes not exist.
-    if (required == undefined) return;
+    // Early return if the required does not exist.
+    if (required == undefined) return null;
 
     // split the details up and get the setting
     let required_details = required.split("-");
-    let parent_enabled = this.get_setting(required_details[0], required_details[1]);
+
+    // check if the parent also has a required state.
+    let parent_enabled = this.__required(required_details[0], required_details[1]);
+    if (parent_enabled == null) {
+      parent_enabled = this.get_setting(required_details[0], required_details[1]);
+    }
+
     this.verbose.log(`Checking required for: `, `${category}-${setting}`);
     this.verbose.info(`Parent: `, parent_enabled);
     let node = this.cache.get(`${category}-${setting}`);
     this.verbose.log(`Node: `, node);
-    if (node == undefined) return;
+    if (node == undefined) return parent_enabled;
 
     // hide or show the node based on the parent's enabled state
     node.hidden = !parent_enabled;
+    return parent_enabled;
   }
 
   /**

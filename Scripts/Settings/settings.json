@@ -32,7 +32,8 @@
         "description": "Make the background sync to an approx of the current real life day/night cycle.",
         "type": "bool",
         "default": true,
-        "quick": false
+        "quick": false,
+        "requires": "Datetime-enabled"
       },
       "location": {
         "description": "Enable to use browser based location (You'll have to give us location permission), Disable to use timezone based location (might be slightly less accurate, but no permission granting required)",
