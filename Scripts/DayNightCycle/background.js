@@ -5,6 +5,11 @@ class DateTime {
   constructor() {
     this.storage = new DragStorage('datetime');
     this.verbose = new Verbose('DateTime', '#8f2a79');
+
+    settings.add_listener("Datetime", "enabled", this.settings.setting_enable);
+    settings.add_listener("Datetime", "realistic", this.settings.setting_realistic);
+    settings.add_listener("Datetime", "location", this.settings.setting_location);
+    settings.add_listener("Datetime", "default_state", this.settings.setting_default);
   }
 
 
@@ -255,12 +260,66 @@ class DateTime {
     );
   }
 
-  sync_with_settings() {
-    // todo
-    this.verbose.error(`erm.. what? you were excepting something here? nonono not yet give me some time`);
-    this.sync_with_nature();
+  /**
+   * Settings handler for DateTime functionality.
+   * Contains handlers for all date/time related settings.
+   */
+  settings = {
+    /**
+     * Default setting handler that updates the time display based on a static value.
+     * Sets the appearance to a specific time of day rather than using the real time.
+     * @param {number} state - The hour value to set (0-24)
+     */
+    setting_default: (state) => {
+      this.verbose.log("Setting default time to", state);
+      if (state > 0) {
+        let half = date_time.__get_half_from_time(state);
+        this.update_time(half, state, 0);
+        return;
+      }
+
+      ui('mode', "dark");
+      document.getElementById("button-snacks").classList.remove("dark");
+      document.getElementById("button-snacks").classList.add("light");
+    },
+
+    /**
+     * Handler for location setting changes.
+     * When location settings change, reverts to default state.
+     * @param {boolean} _ - Unused parameter (state of location setting)
+     */
+    setting_location: (_) => {
+      this.verbose.log(`Setting location to`, _);
+      return this.settings.setting_default(settings.get_setting("Datetime", "default_state"));
+    },
+
+    /**
+     * Handler for realistic time setting.
+     * Toggles between nature-based time (sun position) and quarter-hour based time.
+     * @param {boolean} state - Whether realistic time is enabled
+     */
+    setting_realistic: (state) => {
+      this.verbose.log(`Setting realistic time to`, state);
+      clearTimeout(this.clock);
+      if (state)
+        return this.sync_with_nature();
+      return this.sync_with_quarter();
+    },
+
+    /**
+     * Main enable/disable handler for datetime functionality.
+     * Controls whether dynamic time features are active.
+     * @param {boolean} state - Whether datetime feature is enabled
+     */
+    setting_enable: (state) => {
+      this.verbose.log(`Setting datetime feature to`, state);
+      clearTimeout(this.clock);
+      if (state)
+        return this.settings.setting_realistic(settings.get_setting("Datetime", "realistic"));
+      return this.settings.setting_default(settings.get_setting("Datetime", "default_state"));
+    }
   }
 }
 
 const date_time = new DateTime();
-date_time.sync_with_settings();
+// date_time.settings.setting_enable(settings.get_setting("Datetime", "enabled"));
