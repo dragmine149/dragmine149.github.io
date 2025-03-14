@@ -9,7 +9,7 @@ class DateTime {
     // listeners for auto updating and stuff.
     settings.add_listener("Datetime", "enabled", this.settings.setting_enable);
     settings.add_listener("Datetime", "realistic", this.settings.setting_realistic);
-    settings.add_listener("Datetime", "location", this.settings.setting_location);
+    settings.add_listener("Datetime", "location", this.settings.setting_enable);
     settings.add_listener("Datetime", "default_state", this.settings.setting_default);
   }
 
@@ -329,15 +329,6 @@ class DateTime {
     },
 
     /**
-     * Handler for location setting changes.
-     * When location settings change, reverts to default state.
-     * @param {boolean} _ - Unused parameter
-     */
-    setting_location: (_) => {
-      return this.settings.setting_enable(settings.get_setting("Datetime", "enabled"));
-    },
-
-    /**
      * Handler for realistic time setting.
      * Toggles between nature-based time (sun position) and quarter-hour based time.
      * @param {boolean} _ - Unused parameter
@@ -354,9 +345,9 @@ class DateTime {
     /**
      * Main enable/disable handler for datetime functionality.
      * Controls whether dynamic time features are active.
-     * @param {boolean} state - Whether datetime feature is enabled
+     * @param {boolean} _ - Unused parameter
      */
-    setting_enable: (state) => {
+    setting_enable: (_) => {
       clearTimeout(this.clock);
       this.settings.setting_realistic();
       this.settings.setting_default(settings.get_setting("Datetime", "default_state"));
