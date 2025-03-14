@@ -311,7 +311,9 @@ class DateTime {
      * @param {number} state - The hour value to set (0-24)
      */
     setting_default: (state) => {
-      this.verbose.log("Setting default time to", state);
+      if (settings.get_setting("Datetime", "enabled")) {
+        return;
+      }
       switch (state) {
         case -2:
           this.set_classes("light", "dark");
@@ -341,6 +343,9 @@ class DateTime {
      * @param {boolean} _ - Unused parameter
      */
     setting_realistic: (_) => {
+      if (!settings.get_setting("Datetime", "enabled")) {
+        return;
+      }
       clearTimeout(this.clock);
       this.sync_with_nature();
       this.sync_with_quarter();
@@ -352,11 +357,9 @@ class DateTime {
      * @param {boolean} state - Whether datetime feature is enabled
      */
     setting_enable: (state) => {
-      this.verbose.log(`Setting datetime feature to`, state);
       clearTimeout(this.clock);
-      if (state)
-        return this.settings.setting_realistic();
-      return this.settings.setting_default(settings.get_setting("Datetime", "default_state"));
+      this.settings.setting_realistic();
+      this.settings.setting_default(settings.get_setting("Datetime", "default_state"));
     }
   }
 }
