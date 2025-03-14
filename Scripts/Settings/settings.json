@@ -43,10 +43,10 @@
         "requires": "Datetime-realistic"
       },
       "default_state": {
-        "description": "The default time to set when time is not flowing (-1 = black background)",
+        "description": "The default time to set when time is not flowing (-2 = light background, -1 = dark background)",
         "type": "number",
         "range": {
-          "lower": -1,
+          "lower": -2,
           "upper": 23
         },
         "default": 4,

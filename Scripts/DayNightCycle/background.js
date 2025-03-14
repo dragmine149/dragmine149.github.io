@@ -45,6 +45,16 @@ class DateTime {
     return await loader.get_contents_from_server('Scripts/DayNightCycle/timezones.json', true, loader.RETURN_TYPE.json);
   }
 
+  set_classes(website_mode, real_mode) {
+    let previous_gradient = Object.values(document.body.classList).filter((k) => k.startsWith("bd_") || k.startsWith("bn_"));
+    previous_gradient.forEach((k) => document.body.classList.remove(k));
+
+    // update rest of website
+    ui('mode', website_mode);
+    document.getElementById("button-snacks").classList.remove(website_mode);
+    document.getElementById("button-snacks").classList.add(real_mode);
+  }
+
   /**
   * Update the classes of the body depending on the time given
   * @param {('d'|'n')} half The half of the day
@@ -53,20 +63,14 @@ class DateTime {
   */
   update_time(half, hour, quarter) {
     // Remove all existing gradient classes
-    let previous_gradient = Object.values(document.body.classList).filter((k) => k.startsWith("bd_") || k.startsWith("bn_"));
-    previous_gradient.forEach((k) => document.body.classList.remove(k));
+    const [website_mode, real_mode] = half == 'n' ? ['light', 'dark'] : ['dark', 'light'];
+    this.set_classes(website_mode, real_mode);
 
     // Add the current gradient class
     document.body.classList.add(`b${half}_${hour}${quarter}`);
 
     this.verbose.info(`It's ${half == 'd' ? 'Daytime' : 'Nighttime'}`);
     this.verbose.log(`Gradient: b${half}_${hour}${quarter}`);
-
-    // update rest of website
-    const [website_mode, real_mode] = half == 'n' ? ['light', 'dark'] : ['dark', 'light'];
-    ui('mode', website_mode);
-    document.getElementById("button-snacks").classList.remove(website_mode);
-    document.getElementById("button-snacks").classList.add(real_mode);
   }
 
   /**
@@ -84,7 +88,7 @@ class DateTime {
   set_to_now() {
     let now = new Date();
     let hours = now.getHours();
-    let displayHours = hours > 12 ? hours - 12 : hours; // we work in 12h format, yeah ik 12h not 24h...
+    let displayHours = hours % 12; // we work in 12h format, yeah ik 12h not 24h...
     let nm = now.getMinutes();
     let quarter = Math.ceil(nm / 15); // minutes are also a 1->4 range
     this.update_time(this.__get_half_from_time(hours), displayHours, quarter);
@@ -272,15 +276,19 @@ class DateTime {
      */
     setting_default: (state) => {
       this.verbose.log("Setting default time to", state);
-      if (state > 0) {
-        let half = date_time.__get_half_from_time(state);
-        this.update_time(half, state, 0);
-        return;
+      switch (state) {
+        case -2:
+          this.set_classes("light", "dark");
+          break;
+        case -1:
+          this.set_classes("dark", "light");
+          break;
+        default:
+          let half = date_time.__get_half_from_time(state);
+          let hour = (state + 5) % 12;
+          this.update_time(half, hour, 1);
+          break;
       }
-
-      ui('mode', "dark");
-      document.getElementById("button-snacks").classList.remove("dark");
-      document.getElementById("button-snacks").classList.add("light");
     },
 
     /**
