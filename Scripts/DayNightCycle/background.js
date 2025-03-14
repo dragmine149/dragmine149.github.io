@@ -79,7 +79,10 @@ class DateTime {
   * @returns {('d'|'n')}
   */
   __get_half_from_time(time) {
-    return time >= 18 || time <= 6 ? 'n' : 'd';
+    let half = time > 18 || time <= 6 ? 'n' : 'd';
+    let class_time = time > 6 && time <= 18 ? time - 6 : time > 18 ? time - 18 : time + 6;
+
+    return [half, class_time];
   }
 
   /**
@@ -88,10 +91,10 @@ class DateTime {
   set_to_now() {
     let now = new Date();
     let hours = now.getHours();
-    let displayHours = hours % 12; // we work in 12h format, yeah ik 12h not 24h...
     let nm = now.getMinutes();
     let quarter = Math.ceil(nm / 15); // minutes are also a 1->4 range
-    this.update_time(this.__get_half_from_time(hours), displayHours, quarter);
+    let [half, class_time] = this.__get_half_from_time(hours);
+    this.update_time(half, class_time, quarter);
   }
 
   /**
@@ -284,9 +287,8 @@ class DateTime {
           this.set_classes("dark", "light");
           break;
         default:
-          let half = date_time.__get_half_from_time(state);
-          let hour = (state + 5) % 12;
-          this.update_time(half, hour, 1);
+          let [half, class_time] = this.__get_half_from_time(state);
+          this.update_time(half, class_time, 1);
           break;
       }
     },
