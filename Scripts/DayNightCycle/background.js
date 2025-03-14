@@ -171,7 +171,7 @@ class DateTime {
 
     this.verbose.log(`Day`);
     // It's daytime
-    let dayDuration = times.sunrise.today.diff(times.sunset.today, 'hours', true);
+    let dayDuration = times.sunset.today.diff(times.sunrise.today, 'hours', true);
     return {
       duration: dayDuration,
       progress: now.diff(times.sunrise.today, 'hours', true) / dayDuration
