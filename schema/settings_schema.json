@@ -61,7 +61,13 @@
               ]
             },
             "requires": {
-              "type": "string"
+              "type": "object",
+              "additionalProperties": {
+                "type": [
+                  "boolean",
+                  "number"
+                ]
+              }
             },
             "disabled": {
               "type": "string"

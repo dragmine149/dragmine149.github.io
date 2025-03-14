@@ -33,14 +33,18 @@
         "type": "bool",
         "default": true,
         "quick": false,
-        "requires": "Datetime-enabled"
+        "requires": {
+          "Datetime-enabled": true
+        }
       },
       "location": {
         "description": "Enable to use browser based location (You'll have to give us location permission), Disable to use timezone based location (might be slightly less accurate, but no permission granting required)",
         "type": "bool",
         "default": false,
         "quick": false,
-        "requires": "Datetime-realistic"
+        "requires": {
+          "Datetime-realistic": true
+        }
       },
       "default_state": {
         "description": "The default time to set when time is not flowing (-2 = light background, -1 = dark background)",
@@ -50,7 +54,10 @@
           "upper": 23
         },
         "default": 4,
-        "quick": false
+        "quick": false,
+        "requires": {
+          "Datetime-enabled": false
+        }
       }
     }
   },
@@ -68,28 +75,36 @@
         "type": "bool",
         "default": false,
         "quick": false,
-        "requires": "Debug-verbose"
+        "requires": {
+          "Debug-verbose": true
+        }
       },
       "verbose_Projects": {
         "description": "Enables all debugging for the `Projects` class",
         "type": "bool",
         "default": false,
         "quick": false,
-        "requires": "Debug-verbose"
+        "requires": {
+          "Debug-verbose": true
+        }
       },
       "verbose_Settings": {
         "description": "Enables all debugging for the `Settings` class",
         "type": "bool",
         "default": false,
         "quick": false,
-        "requires": "Debug-verbose"
+        "requires": {
+          "Debug-verbose": true
+        }
       },
       "verbose_DateTime": {
         "description": "Enables all debugging for the `Datetime` class",
         "type": "bool",
         "default": false,
         "quick": false,
-        "requires": "Debug-verbose"
+        "requires": {
+          "Debug-verbose": true
+        }
       }
     }
   }

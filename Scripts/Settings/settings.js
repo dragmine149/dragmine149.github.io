@@ -25,6 +25,9 @@ class DragSettings {
    * @property {number} lower - The lower bound of the range
    * @property {number} upper - The upper bound of the range
    *
+   * @typedef {Object.<string, boolean|number>} SettingRequiresObject
+   * @description An object where keys are setting identifiers and values are required states (boolean or number)
+   *
    * @typedef {Object} SettingOptionObject
    * @property {string} description - Description of the setting option
    * @property {(SettingTypeString)} type - Type of the setting value
@@ -32,7 +35,7 @@ class DragSettings {
    * @property {boolean} quick - Whether this is a quick setting
    * @property {(SettingType)} value - The value of the setting
    * @property {SettingRangeObject} [range] - Optional range constraints for number types
-   * @property {string} [requires] - Optional dependency requirement
+   * @property {SettingRequiresObject} [requires] - Optional dependency requirement
    * @property {string} [disabled] - Optional none visibility requirement.
    * @property {string} [icon] - Optional icon, requires quick to be true though.
    *
@@ -240,30 +243,35 @@ class DragSettings {
     // Early return if the required does not exist.
     if (required == undefined) return null;
 
-    // split the details up and get the setting
-    let required_details = required.split("-");
-
-    // check if the parent also has a required state.
-    let parent_enabled = this.__required(required_details[0], required_details[1]);
-    if (parent_enabled == null) {
-      parent_enabled = this.get_setting(required_details[0], required_details[1]);
-    }
-
+    // loop through all the requires to check everything is right
     this.verbose.log(`Checking required for: `, `${category}-${setting}`);
-    this.verbose.info(`Parent: `, parent_enabled);
+    let allowed = Object.entries(required).every(([key, value]) => {
+      // get the details
+      let details = key.split("-");
+      this.verbose.log(`(Sub) check required for: `, key);
+      // check the parent for requirements
+      let parent_success = this.__required(details[0], details[1]);
+      this.verbose.log(`(Sub) parent success: `, parent_success);
+
+      let parent = this.get_setting(details[0], details[1]);
+      let parent_value = parent == value;
+      return parent_value && (parent_success == null || parent_success);
+    });
+    this.verbose.log(`Allowed: `, allowed);
+
     let node = this.cache.get(`${category}-${setting}`);
-    this.verbose.log(`Node: `, node);
-    if (node == undefined) return parent_enabled;
+    if (node == undefined) return allowed;
 
     // hide or show the node based on the parent's enabled state
-    node.hidden = !parent_enabled;
-    return parent_enabled;
+    node.hidden = !allowed;
+    return allowed;
   }
 
   /**
   * Go through all the settings in a particular category.
   */
   __update_required(category) {
+    // still have to check all of the category though.
     Object.keys(this.data[category].options).forEach((setting) => {
       if (setting.startsWith("$")) return;
       // only if requires
@@ -379,7 +387,7 @@ class DragSettings {
     this.verbose.log(`Saving setting: ${category}-${setting} (setting to ${value})`);
     this.settings.setStorage(`${category}-${setting}`, value);
     this.__call_listener(category, setting, value);
-    this.__update_required(category);
+    this.__update_required(category, setting);
   }
 
   /**
