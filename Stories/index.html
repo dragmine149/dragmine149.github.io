@@ -1,0 +1,26 @@
+<head>
+  <noscript>
+    <meta http-equiv="refresh" content="0; url=https://dragmine149.github.io"/>
+  </noscript>
+  <script>
+    const url = new URL(location);
+    const query = url.searchParams;
+    query.append("load", location.pathname.replaceAll('/', ''));
+    console.log(`Redirect to ${location.origin}${url.search}`);
+    location.href = `${location.origin}${url.search}`;
+  </script>
+</head>
+
+<div id="content" style="width: 100%;">
+  <!-- <module hidden>markdown</module> -->
+  <pageTitle hidden>Stories</pageTitle>
+  <script src="Stories/stories.js"></script>
+  <link rel="stylesheet" href="Stories/stories.css">
+  <h1 id="title">Stories</h1>
+
+  <div id="stories">
+    <h3>Writing stories is a mini hobby of mine.</h3>
+    <p>Hence, please enjoy the ones i've written.</p>
+  </div>
+  <div id="story"></div>
+</div>
