@@ -150,7 +150,7 @@ class DateTime {
       return this.storage.getStorage("location");
     }
 
-    if (loc) {
+    if (settings.get_setting("Datetime", "location")) {
       // attempts to get the location via the geolocation api
       let pos = await new Promise((resolve, reject) => {
         navigator.geolocation.getCurrentPosition(resolve, reject);
