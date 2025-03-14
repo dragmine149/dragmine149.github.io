@@ -253,6 +253,7 @@ class DragSettings {
       let parent_success = this.__required(details[0], details[1]);
       this.verbose.log(`(Sub) parent success: `, parent_success);
 
+      // Parent can only successded if the parent value is what we except.
       let parent = this.get_setting(details[0], details[1]);
       let parent_value = parent == value;
       return parent_value && (parent_success == null || parent_success);

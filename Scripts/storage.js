@@ -81,7 +81,7 @@ class DragStorage {
   */
   setCache(name, length) {
     // get the cache
-    let cache_details = JSON.parse(localStorage.getItem(`cache`)) ?? JSON.stringify(compressJSON.compress({}));
+    let cache_details = localStorage.getItem(`cache`) ?? JSON.stringify(compressJSON.compress({}));
     cache_details = JSON.parse(cache_details);
     // uncompress the cache
     const cache = compressJSON.decompress(cache_details);
