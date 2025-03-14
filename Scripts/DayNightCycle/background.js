@@ -159,8 +159,8 @@ class DateTime {
       // After midnight but before sunrise
       let nightDuration = times.sunset.yesterday.diff(times.sunrise.today, 'hours', true);
       return {
-        duration: -nightDuration,
-        progress: now.diff(times.sunset.yesterday, 'hours', true) / nightDuration
+        duration: nightDuration,
+        progress: times.sunset.yesterday.diff(now, 'hours', true) / nightDuration
       };
     }
 
