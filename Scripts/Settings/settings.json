@@ -105,6 +105,17 @@
         "requires": {
           "Debug-verbose": true
         }
+      },
+      "Wipe Storage": {
+        "description": "Wipes the localStorage clean. This removes all persistent cache, settings. Basically the same as clearing the website data in the browser",
+        "type": "button",
+        "default": "",
+        "quick": false,
+        "disabled": "Not yet implemented",
+        "confirmation": {
+          "message": "Are you sure you want to wipe the storage?",
+          "confirmation": true
+        }
       }
     }
   }
