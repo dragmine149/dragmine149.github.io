@@ -51,6 +51,10 @@ class DragStorage {
    * @returns {boolean} True if the item exists, false otherwise
    */
   hasStorage(name) {
+    if (!this.validCache(name)) {
+      // if the cache has expired, then we have no storage technically.
+      return false;
+    }
     return localStorage.getItem(`${this.prefix}-${name}`) != null;
   }
 
