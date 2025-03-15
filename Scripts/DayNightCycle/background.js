@@ -136,20 +136,6 @@ class DateTime {
   * @returns {Promise<[number, number]>}
   */
   async __get_location() {
-    // checks if we can bypass the storage check or not.
-    // The bypass is for when changing settings, hence we don't have to wait a whole day to get the new values.
-    let bypass_storage = false;
-    if (this.storage.hasStorage("lvia")) {
-      let previous_access = this.storage.getStorage("lvia");
-      let loc = settings.get_setting("Datetime", "location");
-      bypass_storage = loc ? previous_access != "api" : previous_access != "timezone";
-    }
-
-    // use stored, as we don't except them to move timezones that quickly...
-    if (this.storage.hasStorage("location") && !bypass_storage) {
-      return this.storage.getStorage("location");
-    }
-
     if (settings.get_setting("Datetime", "location")) {
       // attempts to get the location via the geolocation api
       let pos = await new Promise((resolve, reject) => {
@@ -159,7 +145,6 @@ class DateTime {
       // if exists, returns (and store)
       if (pos) {
         let [latitude, longitude] = [pos.coords.latitude, pos.coords.longitude];
-        this.storage.setStorage("location", [latitude, longitude], MiliSeconds.day);
         this.storage.setStorage("lvia", "api", MiliSeconds.day);
         return [latitude, longitude];
       }
@@ -170,9 +155,66 @@ class DateTime {
     this.verbose.log(`User timezone: ${Intl.DateTimeFormat().resolvedOptions().timeZone}`);
     let current = timezones[Intl.DateTimeFormat().resolvedOptions().timeZone]; // from a pre-deteminded list
     let [latitude, longitude] = [current.lat, current.long];
-    this.storage.setStorage("location", [latitude, longitude], MiliSeconds.day);
     this.storage.setStorage("lvia", "timezone", MiliSeconds.day);
     return [latitude, longitude];
+  }
+
+  /**
+  * Get the times for a given location
+  * @returns {Promise<TimesCollection>} A list of times in dayjs format.
+  */
+  async __get_times() {
+    // checks if we can bypass the storage check or not.
+    // The bypass is for when changing settings, hence we don't have to wait a whole day to get the new values.
+    let bypass_storage = false;
+    if (this.storage.hasStorage("lvia")) {
+      let previous_access = this.storage.getStorage("lvia");
+      let loc = settings.get_setting("Datetime", "location");
+      bypass_storage = loc ? previous_access != "api" : previous_access != "timezone";
+    }
+
+    // If we can't bypass storage, and we have storage. prefer that instead.
+    if (!bypass_storage && this.storage.hasStorage("times")) {
+      let data = JSON.parse(this.storage.getStorage("times"));
+      data.sunrise.yesterday = dayjs(data.sunrise.yesterday);
+      data.sunrise.today = dayjs(data.sunrise.today);
+      data.sunrise.tomorrow = dayjs(data.sunrise.tomorrow);
+      data.sunset.yesterday = dayjs(data.sunset.yesterday);
+      data.sunset.today = dayjs(data.sunset.today);
+      data.sunset.tomorrow = dayjs(data.sunset.tomorrow);
+      return data;
+    }
+
+    let [latitude, longitude] = await this.__get_location();
+
+    // Get the current time
+    let now = dayjs();
+    let yesterday = now.subtract(1, 'day');
+    let tomorrow = now.add(1, 'day');
+
+    let yesterdaySunCalc = SunCalc.getTimes(yesterday.toDate(), latitude, longitude);
+    let todaySunCalc = SunCalc.getTimes(now.toDate(), latitude, longitude);
+    let tomorrowSunCalc = SunCalc.getTimes(tomorrow.toDate(), latitude, longitude);
+
+    /**
+    * calculate a lot of times
+    * @type {TimesCollection}
+    */
+    let times = {
+      sunrise: {
+        yesterday: dayjs(yesterdaySunCalc.sunrise),
+        today: dayjs(todaySunCalc.sunrise),
+        tomorrow: dayjs(tomorrowSunCalc.sunrise)
+      },
+      sunset: {
+        yesterday: dayjs(yesterdaySunCalc.sunset),
+        today: dayjs(todaySunCalc.sunset),
+        tomorrow: dayjs(tomorrowSunCalc.sunset)
+      }
+    }
+
+    this.storage.setStorage("times", JSON.stringify(times), MiliSeconds.day);
+    return times;
   }
 
   /**
@@ -249,40 +291,17 @@ class DateTime {
   * Using Suncalc, sunc the current day/night cycle to one as close as possible to real life.
   */
   async sync_with_nature() {
+    // this.verbose.trace(`Tracing of nature sync`);
+
     if (!settings.get_setting("Datetime", "realistic")) {
       return;
     }
 
-    let [latitude, longitude] = await this.__get_location();
-    this.verbose.log([latitude, longitude]);
-
-    // Get the current time
+    // get the times to do calculations with
     let now = dayjs();
-    let yesterday = dayjs().subtract(1, 'day');
-    let tomorrow = dayjs().add(1, 'day');
-
-    let yesterdaySunCalc = SunCalc.getTimes(yesterday.toDate(), latitude, longitude);
-    let todaySunCalc = SunCalc.getTimes(now.toDate(), latitude, longitude);
-    let tomorrowSunCalc = SunCalc.getTimes(tomorrow.toDate(), latitude, longitude);
-
-    /**
-    * calculate a lot of times
-    * @type {TimesCollection}
-    */
-    let times = {
-      sunrise: {
-        yesterday: dayjs(yesterdaySunCalc.sunrise),
-        today: dayjs(todaySunCalc.sunrise),
-        tomorrow: dayjs(tomorrowSunCalc.sunrise)
-      },
-      sunset: {
-        yesterday: dayjs(yesterdaySunCalc.sunset),
-        today: dayjs(todaySunCalc.sunset),
-        tomorrow: dayjs(tomorrowSunCalc.sunset)
-      }
-    }
-
+    let times = await this.__get_times();
     this.verbose.log(now.format());
+    this.verbose.log(times);
 
     // get the current progress in the day/night cycle. and for how long.
     let progress = this.get_progress(now, times);
