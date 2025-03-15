@@ -9,7 +9,7 @@ class DateTime {
     // listeners for auto updating and stuff.
     settings.add_listener("Datetime", "enabled", this.settings.setting_enable);
     settings.add_listener("Datetime", "realistic", this.settings.setting_realistic);
-    settings.add_listener("Datetime", "location", this.settings.setting_enable);
+    settings.add_listener("Datetime", "location", this.settings.setting_realistic);
     settings.add_listener("Datetime", "default_state", this.settings.setting_default);
   }
 
@@ -356,4 +356,3 @@ class DateTime {
 }
 
 const date_time = new DateTime();
-// date_time.settings.setting_enable(settings.get_setting("Datetime", "enabled"));
