@@ -29,7 +29,8 @@
               "type": "string",
               "enum": [
                 "bool",
-                "number"
+                "number",
+                "button"
               ]
             },
             "default": {
@@ -39,6 +40,12 @@
                 },
                 {
                   "type": "number"
+                },
+                {
+                  "type": "string",
+                  "enum": [
+                    ""
+                  ]
                 }
               ]
             },
@@ -61,10 +68,31 @@
               ]
             },
             "requires": {
-              "type": "string"
+              "type": "object",
+              "additionalProperties": {
+                "type": [
+                  "boolean",
+                  "number"
+                ]
+              }
             },
             "disabled": {
               "type": "string"
+            },
+            "confirmation": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string"
+                },
+                "confirmation": {
+                  "type": "boolean"
+                }
+              },
+              "required": [
+                "message",
+                "confirmation"
+              ]
             }
           }
         }

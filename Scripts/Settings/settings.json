@@ -18,7 +18,7 @@
       }
     }
   },
-  "Date time": {
+  "Datetime": {
     "description": "Change how the background works in accordance to a day/night cycle",
     "options": {
       "enabled": {
@@ -26,34 +26,38 @@
         "type": "bool",
         "default": true,
         "quick": true,
-        "icon": "fa fa-clock",
-        "disabled": "Feature not yet implemented"
+        "icon": "fa fa-clock"
       },
       "realistic": {
-        "description": "Make the background sync to an approx of the current real life day/night cycle",
+        "description": "Make the background sync to an approx of the current real life day/night cycle.",
         "type": "bool",
         "default": true,
         "quick": false,
-        "disabled": "Feature not yet implemented"
+        "requires": {
+          "Datetime-enabled": true
+        }
       },
       "location": {
-        "description": "Enable to use browser based location (You'll have to give us location permission), Disable to use timezone based location (might be slightly less accurate, but no permission granting required)",
+        "description": "Enable to use browser based location (You'll have to give us location permission)\nDisable to use timezone based location (might be slightly less accurate, but no permission granting required)",
         "type": "bool",
         "default": false,
         "quick": false,
-        "requires": "Date time-realistic",
-        "disabled": "Feature not yet implemented"
+        "requires": {
+          "Datetime-realistic": true
+        }
       },
       "default_state": {
-        "description": "The default time to set when time is not flowing",
+        "description": "The default time to set when time is not flowing (-2 = light background, -1 = dark background)",
         "type": "number",
         "range": {
-          "lower": 0,
+          "lower": -2,
           "upper": 23
         },
         "default": 4,
         "quick": false,
-        "disabled": "Feature not yet implemented"
+        "requires": {
+          "Datetime-enabled": false
+        }
       }
     }
   },
@@ -71,28 +75,56 @@
         "type": "bool",
         "default": false,
         "quick": false,
-        "requires": "Debug-verbose"
+        "requires": {
+          "Debug-verbose": true
+        }
       },
       "verbose_Projects": {
         "description": "Enables all debugging for the `Projects` class",
         "type": "bool",
         "default": false,
         "quick": false,
-        "requires": "Debug-verbose"
+        "requires": {
+          "Debug-verbose": true
+        }
       },
       "verbose_Settings": {
         "description": "Enables all debugging for the `Settings` class",
         "type": "bool",
         "default": false,
         "quick": false,
-        "requires": "Debug-verbose"
+        "requires": {
+          "Debug-verbose": true
+        }
+      },
+      "verbose_DateTime": {
+        "description": "Enables all debugging for the `Datetime` class",
+        "type": "bool",
+        "default": false,
+        "quick": false,
+        "requires": {
+          "Debug-verbose": true
+        }
       },
       "verbose_Stories": {
         "description": "Enables all debugging for the `Stories` class",
         "type": "bool",
         "default": false,
         "quick": false,
-        "requires": "Debug-verbose"
+        "requires": {
+          "Debug-verbose": true
+        }
+      },
+      "Wipe Storage": {
+        "description": "Wipes the localStorage clean. This removes all persistent cache, settings. Basically the same as clearing the website data in the browser",
+        "type": "button",
+        "default": "",
+        "quick": false,
+        "disabled": "Not yet implemented",
+        "confirmation": {
+          "message": "Are you sure you want to wipe the storage?",
+          "confirmation": true
+        }
       }
     }
   }

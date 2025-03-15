@@ -28,7 +28,7 @@ Hint: If you want to check out a specific branch, go to `https://dragmine149.git
     - [X] and maybe getting a better spelling system?
 - [*] Finished branch system
 - [**] More seasonal backgrounds
-- [R] Improved and more realistic day night system.
+- [***] Improved and more realistic day night system.
 - [X] Figure out a way to "fetch" images from `raw.githubusercontent.com` instead of bundling them with the website.
 - [ ] Mobile site / touch support.
 - [ ] Improve typewritter API
@@ -39,5 +39,6 @@ Hint: If you want to check out a specific branch, go to `https://dragmine149.git
 ### Notes:
 - `*` -> It's in a state now where you can technically go to the branch (`/Branch/{BRANCH_NAME}`), however the end result is broken in more ways than one.
 - `**` -> Winter, Spring have seasonal backgrounds. Summer, Autumn currently do not.
+- `***` -> It's nearly there. Most of it is out on main branch, however a tiny bit needs to be finished off for it to be completed.
 - `R` -> In research
 - `?` -> Work has been done on it, but the completion is unknown
