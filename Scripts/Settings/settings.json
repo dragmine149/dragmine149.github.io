@@ -38,7 +38,7 @@
         }
       },
       "location": {
-        "description": "Enable to use browser based location (You'll have to give us location permission), Disable to use timezone based location (might be slightly less accurate, but no permission granting required)",
+        "description": "Enable to use browser based location (You'll have to give us location permission)\nDisable to use timezone based location (might be slightly less accurate, but no permission granting required)",
         "type": "bool",
         "default": false,
         "quick": false,
