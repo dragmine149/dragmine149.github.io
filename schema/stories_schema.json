@@ -1,0 +1,47 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "additionalProperties": {
+    "type": "object",
+    "properties": {
+      "description": {
+        "type": "string",
+        "description": "A brief description of the story"
+      },
+      "author": {
+        "type": "string",
+        "description": "The author of the story"
+      },
+      "tags": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        },
+        "description": "Tags categorizing the story"
+      },
+      "status": {
+        "type": "string",
+        "enum": [
+          "in-progress",
+          "completed",
+          "abandoned"
+        ],
+        "description": "Current status of the story"
+      },
+      "chapters": {
+        "type": "object",
+        "additionalProperties": {
+          "type": "string",
+          "description": "Path to the chapter file"
+        },
+        "description": "Map of chapter numbers to their file paths"
+      }
+    },
+    "required": [
+      "description",
+      "author",
+      "status"
+    ],
+    "additionalProperties": false
+  }
+}

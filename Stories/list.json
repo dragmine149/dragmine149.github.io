@@ -1,0 +1,15 @@
+{
+  "$schema": "../schema/stories.json",
+  "Project1": {
+    "description": "A story about multiple worlds, driving or something... This is still a WIP story to the point where i haven't worked out the title/description yet.",
+    "author": "dragmine149",
+    "tags": [
+      "fantasy",
+      "adventure"
+    ],
+    "status": "in-progress",
+    "chapters": {
+      "1": "Project1/Chapter1.txt"
+    }
+  }
+}

@@ -106,6 +106,15 @@
           "Debug-verbose": true
         }
       },
+      "verbose_Stories": {
+        "description": "Enables all debugging for the `Stories` class",
+        "type": "bool",
+        "default": false,
+        "quick": false,
+        "requires": {
+          "Debug-verbose": true
+        }
+      },
       "Wipe Storage": {
         "description": "Wipes the localStorage clean. This removes all persistent cache, settings. Basically the same as clearing the website data in the browser",
         "type": "button",

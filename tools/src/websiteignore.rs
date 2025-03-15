@@ -90,7 +90,7 @@ fn process_dir(path: &Path, mut rules: Vec<String>) -> Vec<String> {
 
     // println!("Rules: {:?}", rules);
 
-    fs::read_dir(path)
+    let mut files = fs::read_dir(path)
         .unwrap()
         .map(|f| {
             let mut results = vec![];
@@ -106,7 +106,11 @@ fn process_dir(path: &Path, mut rules: Vec<String>) -> Vec<String> {
         })
         .filter(|s| !s.is_empty()) // if empty, not worth keeping extra data
         .flatten()
-        .collect::<Vec<String>>()
+        .collect::<Vec<String>>();
+    if path.to_str().unwrap() == "." {
+        files.push("#".to_string());
+    }
+    files
 }
 
 pub fn main() {

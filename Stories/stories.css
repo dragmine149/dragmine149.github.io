@@ -1,0 +1,22 @@
+#story {
+  font-size: 32px;
+  overflow: auto;
+  height: calc(100vh - 150px);
+}
+
+.character-name {
+  font-weight: bold;
+  width: 5%;
+  font-size: 1.1rem;
+}
+
+.dialogue-text {
+  font-style: italic;
+  width: 94%;
+  font-size: 1.1rem;
+}
+
+.narration {
+  font-size: 1.1rem;
+  color: #ccc;
+}
