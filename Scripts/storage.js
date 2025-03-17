@@ -4,7 +4,12 @@ const MiliSeconds = {
   day: 24 * 60 * 60 * 1000,
   hour: 60 * 60 * 1000,
   minute: 60 * 1000,
-  second: 1000
+  second: 1000,
+  get midnight() {
+    const now = new Date();
+    const midnight = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);
+    return midnight.getTime() - now.getTime();
+  }
 };
 
 class DragStorage {

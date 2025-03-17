@@ -90,7 +90,7 @@ class DateTime {
     // if morning (0->6), then time is +6 as it's the other half of night
     // if day (6->18), then time is -6 as day starts at 6 not 0
     // if evening (18->23) then time is -18 to offset the end of the day.
-    let class_time = time > 6 && time <= 18 ? time - 6 : time > 18 ? time - 18 : time + 6;
+    let class_time = time > 6 && time <= 18 ? time - 6 : (time > 18 ? time - 18 : time + 6);
 
     return [half, class_time];
   }
@@ -213,7 +213,7 @@ class DateTime {
       }
     }
 
-    this.storage.setStorage("times", JSON.stringify(times), MiliSeconds.day);
+    this.storage.setStorage("times", JSON.stringify(times), MiliSeconds.midnight);
     return times;
   }
 
