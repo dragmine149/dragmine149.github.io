@@ -32,7 +32,7 @@ class DragStorage {
     localStorage.setItem(`${this.prefix}-${name}`, value);
     if (cache <= 0) return;
     if (cache > maxCacheTime) console.warn(`Cache time for ${name} (${cache}ms) exceeds max cache time of ${maxCacheTime}ms. Setting to max cache time.`);
-    this.setCache(name, Math.max(cache, maxCacheTime));
+    this.setCache(name, Math.min(cache, maxCacheTime));
   }
 
   /**

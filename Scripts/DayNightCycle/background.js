@@ -217,6 +217,16 @@ class DateTime {
     return times;
   }
 
+  format_times(times) {
+    times.sunrise.yesterday = times.sunrise.yesterday.format();
+    times.sunrise.today = times.sunrise.today.format();
+    times.sunrise.tomorrow = times.sunrise.tomorrow.format();
+    times.sunset.yesterday = times.sunset.yesterday.format();
+    times.sunset.today = times.sunset.today.format();
+    times.sunset.tomorrow = times.sunset.tomorrow.format();
+    return times;
+  }
+
   /**
   * Get the progress of days
   * @param {dayjs} now The current time
