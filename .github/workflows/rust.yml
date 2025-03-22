@@ -23,29 +23,6 @@ jobs:
           echo "$LAST_BIN_COMMIT"
 
           if [ $LAST_SRC_COMMIT -gt $LAST_BIN_COMMIT ]; then
-            echo "::warning::Tools source updated but binary not rebuilt"
-            echo "needs_rebuild=true" >> "$GITHUB_ENV"
+            echo "::error::Tools source updated but binary not rebuilt"
+            exit 1
           fi
-
-      - name: Setup Rust
-        if: env.needs_rebuild == 'true'
-        uses: actions-rs/toolchain@v1
-        with:
-          toolchain: stable
-
-      - name: Build tools
-        if: env.needs_rebuild == 'true'
-        run: |
-          cd tools
-          cargo build --release
-          cp target/release/tools .
-
-      - name: Create auto-merge PR
-        if: env.needs_rebuild == 'true'
-        uses: peter-evans/create-pull-request@v5
-        with:
-          title: "Auto-rebuild tools binary"
-          branch: "auto-rebuild-tools"
-          commit-message: "Auto-rebuild tools binary"
-          delete-branch: true
-          labels: automerge
