@@ -41,7 +41,7 @@ jobs:
           cp target/release/tools .
 
       - name: Create auto-merge PR
-        if: env.needs_rebuild == 'true' && failure()
+        if: env.needs_rebuild == 'true'
         uses: peter-evans/create-pull-request@v5
         with:
           title: "Auto-rebuild tools binary"
