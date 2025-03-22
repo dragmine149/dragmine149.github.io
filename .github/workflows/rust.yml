@@ -21,24 +21,24 @@ jobs:
         run: |
           if git diff --name-only HEAD~1 HEAD | grep -q "tools/src/" && ! git diff --name-only HEAD~1 HEAD | grep -q "tools/tools"; then
             echo "::warning::Tools source updated but binary not rebuilt"
-            echo "needs_rebuild=true" >> $GITHUB_OUTPUT
+            echo "needs_rebuild=true" >> "$GITHUB_ENV"
           fi
 
       - name: Setup Rust
-        if: steps.check-tools.outputs.needs_rebuild == 'true'
+        if: env.needs_rebuild == 'true'
         uses: actions-rs/toolchain@v1
         with:
           toolchain: stable
 
       - name: Build tools
-        if: steps.check-tools.outputs.needs_rebuild == 'true'
+        if: env.needs_rebuild == 'true'
         run: |
           cd tools
           cargo build --release
           cp target/release/tools .
 
       - name: Create auto-merge PR
-        if: steps.check-tools.outputs.needs_rebuild == 'true' && failure()
+        if: env.needs_rebuild == 'true' && failure()
         uses: peter-evans/create-pull-request@v5
         with:
           title: "Auto-rebuild tools binary"
