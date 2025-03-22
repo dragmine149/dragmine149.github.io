@@ -10,19 +10,21 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
-          fetch-depth: 2
+          sparse-checkout: |
+            tools/*
 
       - name: Check if tools binary updated
         id: check-tools
         run: |
-          SRC_MTIME=$(stat -c %Y tools/src/)
-          BIN_MTIME=$(stat -c %Y tools/tools)
           LAST_SRC_COMMIT=$(git log -1 --format=%ct tools/src/)
           LAST_BIN_COMMIT=$(git log -1 --format=%ct tools/tools)
 
-          if [ $SRC_MTIME -gt $BIN_MTIME ] || [ $LAST_SRC_COMMIT -gt $LAST_BIN_COMMIT ]; then
+          echo "$LAST_SRC_COMMIT"
+          echo "$LAST_BIN_COMMIT"
+
+          if [ $LAST_SRC_COMMIT -gt $LAST_BIN_COMMIT ]; then
             echo "::warning::Tools source updated but binary not rebuilt"
             echo "needs_rebuild=true" >> "$GITHUB_ENV"
           fi
