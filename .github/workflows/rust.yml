@@ -4,8 +4,6 @@ on:
   push:
     branches:
       - main
-    paths:
-      - "tools/src/**/*.rs"
 
 jobs:
   check-tools:
