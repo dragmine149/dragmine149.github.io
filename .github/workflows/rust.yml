@@ -14,6 +14,7 @@ jobs:
         with:
           sparse-checkout: |
             tools/*
+          sparse-checkout-cone-mode: false
 
       - name: Check if tools binary updated
         id: check-tools
