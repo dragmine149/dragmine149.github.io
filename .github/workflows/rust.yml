@@ -1,0 +1,58 @@
+name: Tools Update Workflow
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "tools/src/**/*.rs"
+
+jobs:
+  check-tools:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 2
+
+      - name: Check if tools binary updated
+        id: check-tools
+        run: |
+          if git diff --name-only HEAD~1 HEAD | grep -q "tools/src/" && ! git diff --name-only HEAD~1 HEAD | grep -q "tools/tools"; then
+            echo "::warning::Tools source updated but binary not rebuilt"
+            echo "needs_rebuild=true" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Setup Rust
+        if: steps.check-tools.outputs.needs_rebuild == 'true'
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+
+      - name: Build tools
+        if: steps.check-tools.outputs.needs_rebuild == 'true'
+        run: |
+          cd tools
+          cargo build --release
+          cp target/release/tools .
+
+      - name: Try force push
+        if: steps.check-tools.outputs.needs_rebuild == 'true'
+        continue-on-error: true
+        run: |
+          git config user.name "GitHub Actions Bot"
+          git config user.email "actions@github.com"
+          git add tools/tools
+          git commit -m "Auto-rebuild tools binary"
+          git push origin HEAD:${{ github.head_ref }} --force
+
+      - name: Create auto-merge PR
+        if: steps.check-tools.outputs.needs_rebuild == 'true' && failure()
+        uses: peter-evans/create-pull-request@v5
+        with:
+          title: "Auto-rebuild tools binary"
+          branch: "auto-rebuild-tools"
+          commit-message: "Auto-rebuild tools binary"
+          delete-branch: true
+          labels: automerge

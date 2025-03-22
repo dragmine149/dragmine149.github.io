@@ -25,14 +25,17 @@ impl Blog {
             .to_string();
 
         // with last being the categories
-        let categories = lines
-            .last()
-            .unwrap_or("")
-            .replace("Categories: [", "")
-            .replace("]", "")
-            .split_whitespace()
-            .map(|c| c.replace(",", ""))
-            .collect();
+        let last_line = lines.last().unwrap_or("");
+
+        let mut categories: Vec<String> = vec![];
+        if last_line.starts_with("Categories: [") {
+            categories = last_line
+                .replace("Categories: [", "")
+                .replace("]", "")
+                .split_whitespace()
+                .map(|c| c.replace(",", ""))
+                .collect();
+        }
 
         Self {
             date,
