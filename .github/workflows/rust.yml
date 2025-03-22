@@ -37,16 +37,6 @@ jobs:
           cargo build --release
           cp target/release/tools .
 
-      - name: Try force push
-        if: steps.check-tools.outputs.needs_rebuild == 'true'
-        continue-on-error: true
-        run: |
-          git config user.name "GitHub Actions Bot"
-          git config user.email "actions@github.com"
-          git add tools/tools
-          git commit -m "Auto-rebuild tools binary"
-          git push origin HEAD:${{ github.head_ref }} --force
-
       - name: Create auto-merge PR
         if: steps.check-tools.outputs.needs_rebuild == 'true' && failure()
         uses: peter-evans/create-pull-request@v5
