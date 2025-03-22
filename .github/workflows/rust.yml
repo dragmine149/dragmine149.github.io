@@ -17,7 +17,12 @@ jobs:
       - name: Check if tools binary updated
         id: check-tools
         run: |
-          if git diff --name-only HEAD~1 HEAD | grep -q "tools/src/" && ! git diff --name-only HEAD~1 HEAD | grep -q "tools/tools"; then
+          SRC_MTIME=$(stat -c %Y tools/src/)
+          BIN_MTIME=$(stat -c %Y tools/tools)
+          LAST_SRC_COMMIT=$(git log -1 --format=%ct tools/src/)
+          LAST_BIN_COMMIT=$(git log -1 --format=%ct tools/tools)
+
+          if [ $SRC_MTIME -gt $BIN_MTIME ] || [ $LAST_SRC_COMMIT -gt $LAST_BIN_COMMIT ]; then
             echo "::warning::Tools source updated but binary not rebuilt"
             echo "needs_rebuild=true" >> "$GITHUB_ENV"
           fi
