@@ -77,7 +77,22 @@
               }
             },
             "disabled": {
-              "type": "string"
+              "type": "object",
+              "properties": {
+                "reason": {
+                  "type": "string",
+                  "enum": [
+                    "NotYetImplemented",
+                    "Other"
+                  ]
+                },
+                "message": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "reason"
+              ]
             },
             "confirmation": {
               "type": "object",

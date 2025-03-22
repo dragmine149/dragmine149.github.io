@@ -70,13 +70,49 @@
         "default": false,
         "quick": false
       },
-      "verbose_loader": {
-        "description": "Enables all debugging for the `loader` class",
+      "verbose_Loader": {
+        "description": "Enables all debugging for the Loader modules (Things that control the backend of the page, such as loading page, displaying page, updating history, blah de blah de blah)",
         "type": "bool",
         "default": false,
         "quick": false,
         "requires": {
           "Debug-verbose": true
+        }
+      },
+      "verbose_Loader_Loader": {
+        "description": "Enables all debugging for the `Loader` class",
+        "type": "bool",
+        "default": false,
+        "quick": false,
+        "requires": {
+          "Debug-verbose_Loader": true
+        }
+      },
+      "verbose_Loader_Page": {
+        "description": "Enables all debugging for the `Page` class",
+        "type": "bool",
+        "default": false,
+        "quick": false,
+        "requires": {
+          "Debug-verbose_Loader": true
+        }
+      },
+      "verbose_Loader_Script": {
+        "description": "Enables all debugging for the `Script` class",
+        "type": "bool",
+        "default": false,
+        "quick": false,
+        "requires": {
+          "Debug-verbose_Loader": true
+        }
+      },
+      "verbose_Loader_History": {
+        "description": "Enables all debugging for the `History` class",
+        "type": "bool",
+        "default": false,
+        "quick": false,
+        "requires": {
+          "Debug-verbose_Loader": true
         }
       },
       "verbose_Projects": {
@@ -120,10 +156,21 @@
         "type": "button",
         "default": "",
         "quick": false,
-        "disabled": "Not yet implemented",
+        "disabled": {
+          "reason": "NotYetImplemented"
+        },
         "confirmation": {
           "message": "Are you sure you want to wipe the storage?",
           "confirmation": true
+        }
+      },
+      "Wipe Cache": {
+        "description": "Clears the cache, this is data that is stored for a limited time. Will not break anything but might fix some broken things quicker",
+        "type": "button",
+        "quick": false,
+        "default": "",
+        "disabled": {
+          "reason": "NotYetImplemented"
         }
       }
     }
