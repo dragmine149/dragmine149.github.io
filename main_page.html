@@ -3,19 +3,15 @@
     <meta http-equiv="refresh" content="0; url=https://dragmine149.github.io"/>
   </noscript>
   <script>
-    // const url = new URL(location);
-    // const query = url.searchParams;
-    // query.append("load", location.pathname.replace('/', ''));
-    // location.href = `${location.origin}${url.search}`;
     location.href = location.origin;
   </script>
 </head>
 
-<div id="content">
+<div id="content" style="width: 100%;">
   <pageTitle hidden>Dragmine149</pageTitle>
   <script>
     let obj = document.getElementById('name');
-    let writer = new typewritter(obj);
+    let writer = new typewriter(obj);
     function start_writer() {
       writer.start('Dragmine149', 1250);
     }

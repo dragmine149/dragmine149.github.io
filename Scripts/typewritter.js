@@ -1,7 +1,14 @@
-class typewritter {
+let writers = [];
+
+class typewriter {
   constructor(elm) {
+    if (writers.map(w => w.elm).includes(elm)) {
+      return writers.find(w => w.elm === elm);
+    }
+
     this.elm = elm;
     this.in_progress = false;
+    writers.push(this);
   }
 
   /**
