@@ -259,6 +259,7 @@ article.main span {
 #big-settings>div {
   display: grid;
   grid-template-columns: min-content auto;
+  height: inherit;
 }
 
 #big-settings #setting-key {
@@ -271,8 +272,8 @@ article.main span {
 }
 
 #big-settings #setting-value {
-  /* opacity: 75%; */
-  /* background-color: #222226; */
+  overflow: auto;
+  height: inherit;
   background-color: #000;
 }
 
@@ -292,6 +293,7 @@ article.main span {
   background-color: #777;
   display: grid;
   grid-template-columns: 90% 10%;
+  margin: 10px;
 }
 
 #big-settings #setting-value>.values>div[hidden] {
@@ -307,6 +309,7 @@ article.main span {
 }
 
 #big-settings #setting-value div[tag="information"]>span[tag="description"] {
+  margin-top: 5px;
   text-wrap: auto;
 }
 
