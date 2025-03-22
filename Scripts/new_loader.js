@@ -14,6 +14,7 @@ class Loader {
   constructor() {
     Object.freeze(this.RETURN_TYPE);
     this.cache = new Map();
+    this.verbose = new Verbose("Loader_Loader", "#edd29e");
   }
 
   /**
@@ -23,7 +24,7 @@ class Loader {
   __warn_load(message) {
     const warnings = document.getElementById("warnings");
     if (warnings === null) {
-      console.log(`Failed to get warnings element whilst trying to display: ${message}`);
+      this.verbose.log(`Failed to get warnings element whilst trying to display: ${message}`);
       return;
     }
 
@@ -50,7 +51,7 @@ class Loader {
   */
   async get_contents_from_server(server_url, use_branch = true, return_type = this.RETURN_TYPE.text) {
     if (server_url instanceof URL) {
-      console.warn(`server_url was URL object - converting to string`);
+      this.verbose.warn(`server_url was URL object - converting to string`);
       server_url = server_url.href;
     }
 
@@ -60,15 +61,20 @@ class Loader {
     }
 
     if (!server_url.startsWith(page.get_current_page_root()) && !server_url.startsWith("http")) {
-      console.log(`'${server_url}' did not contain http elm, adding site http elm`);
+      this.verbose.log(`'${server_url}' did not contain http elm, adding site http elm`);
       // as we have to add the url, only add the branches section if we are within a branch.
       const branch_name = page.get_current_branch();
       const branch = use_branch && branch_name != '' ? `Branches/${branch_name}/` : '';
       server_url = `${page.get_current_page_root()}/${branch}${server_url}`;
     }
 
-    console.log(`Attempting to get data from '${server_url}' with: {'use_branch': ${use_branch}, 'return_type': ${return_type}}`);
     const cache_name = `${server_url}-${return_type}`;
+
+    // forceable overwrite the main page with well the main page as the main page is already loaded by the browser.
+    if (server_url === `${page.get_current_page_root()}//index.html`) {
+      server_url = `${page.get_current_page_root()}/main_page.html`
+    }
+    this.verbose.log(`Attempting to get data from '${server_url}' with: {'use_branch': ${use_branch}, 'return_type': ${return_type}}`);
 
     if (!use_branch) {
       // If we can't find it on the sub branch, then remove the branch as it might be on the main url.
@@ -78,7 +84,7 @@ class Loader {
     // get the results from cache, always better.
     const stored_data = this.__get_from_cache(cache_name);
     if (stored_data !== undefined) {
-      console.log(`Found cache. Returning early`);
+      this.verbose.log(`Found cache. Returning early`);
       // we have a cache, hence we don't need to worry about anything else.
       return stored_data;
     }
@@ -100,7 +106,7 @@ class Loader {
         }
       }
       // warning message
-      console.log(`Failed to load data, result:`, result);
+      this.verbose.log(`Failed to load data, result:`, result);
       this.__warn_load(`Failed to load data from url: ${server_url} (via: ${result.url}).`);
       return null;
     }
@@ -236,6 +242,7 @@ class Page {
 
   constructor() {
     this.document_cache = new Map();
+    this.verbose = new Verbose("Loader_Page", "#f01e94");
   }
 
   /**
@@ -261,7 +268,7 @@ class Page {
     * @param {string} branch_name The branch of the website to get the data from. Default to no branch
     */
   async load_page(page, search = null, sub = '', branch_name = '') {
-    console.log(`Attempting to load page with data:`, { page, search, sub, branch_name });
+    this.verbose.log(`Attempting to load page with data:`, { page, search, sub, branch_name });
 
     // sort out the data so that they are either empty or in a special form.
     let branch = branch_name == '' ? '' : `Branches/${branch_name}/`
@@ -278,7 +285,7 @@ class Page {
     };
     const destination_url = customHistory.convert_pagedata_to_url(looking_data);
     if (!customHistory.is_new_page(looking_data)) {
-      console.log(`Cancelling page load as changes aren't big enough to warrant change`);
+      this.verbose.log(`Cancelling page load as changes aren't big enough to warrant change`);
       // if so, we're still going to that page
       customHistory.store_page(destination_url);
       // just call all scripts defaults instead.
@@ -304,7 +311,7 @@ class Page {
     // going lower would just cause stability errors, hence 30ms
     await new Promise(resolve => setTimeout(resolve, 30));
 
-    console.log(`New destination: ${destination_url} ({branch: ${branch}, page: ${page}, search: ${search}, sub: ${sub}})`);
+    this.verbose.log(`New destination: ${destination_url} ({branch: ${branch}, page: ${page}, search: ${search}, sub: ${sub}})`);
     this.load_page_contents(destination_url, data);
     script.load_scripts(page, data);
   }
@@ -315,11 +322,11 @@ class Page {
   */
   load_page_from_url() {
     const url = new URL(location);
-    console.log(`Attempting to load page from url: `, url);
+    this.verbose.log(`Attempting to load page from url: `, url);
 
     const branch = this.get_branch_from_url(url);
     let page = this.get_subpage_from_url(url);
-    console.log(`page from url: ${page}`);
+    this.verbose.log(`page from url: ${page}`);
 
     // load the page from the url provided if we have said url.
     if (url.searchParams.has('load')) {
@@ -354,6 +361,7 @@ class Page {
 class Script {
   constructor() {
     this.__reload_self();
+    this.verbose = new Verbose("Loader_Script", "#a9f831");
   }
 
   __reload_self() {
@@ -380,14 +388,14 @@ class Script {
   load_scripts(category, page_data) {
     this.__reload_self();
     if (page_data == null) {
-      console.error(`Failed to load page with category '${category}' as there was no page data...`);
+      this.verbose.error(`Failed to load page with category '${category}' as there was no page data...`);
       return;
     }
 
     // check to see if a category exists, if so call that instead of trying to add new scripts.
     // the page data should be cached anyway, and if it's not well tough.
     if (this.scripts.querySelector(`script[category="${category}"]`) !== null) {
-      console.log(`Found script with category: ${category}, skipping...`);
+      this.verbose.log(`Found script with category: ${category}, skipping...`);
       this.call_defaults_in_category(category);
       return;
     }
@@ -396,10 +404,10 @@ class Script {
     const new_scripts = page_data.getElementsByTagName("script");
     for (let script_id = 0; script_id < new_scripts.length; script_id++) {
       const script = new_scripts.item(script_id);
-      console.log(`Attempting to add new script: ${script.attributes.src?.value}`);
+      this.verbose.log(`Attempting to add new script: ${script.attributes.src?.value}`);
       if (script.src && this.__has_loaded(script.attributes.src?.value)) {
-        console.warn(`Found already loaded script, continuing... (category was not picked up)`);
-        console.trace();
+        this.verbose.warn(`Found already loaded script, continuing... (category was not picked up)`);
+        this.verbose.trace();
         // this should RARLEY be hit, but it's to avoid cases like "redeclaration of variable", etc..
         continue;
       }
@@ -424,7 +432,7 @@ class Script {
   * @param {string} category The category to call the scripts in.
   */
   call_defaults_in_category(category) {
-    console.log(`Calling defaults on scripts of category: ${category}`);
+    this.verbose.log(`Calling defaults on scripts of category: ${category}`);
 
     // filter out all of those in difference categories
     const children = Array.from(this.scripts.children).filter(child => child.attributes.category?.value === category);
@@ -435,7 +443,7 @@ class Script {
         continue;
       }
       // and call it.
-      console.log(`Calling default function: ${func_name}`);
+      this.verbose.log(`Calling default function: ${func_name}`);
       window[func_name]();
     }
   }
@@ -456,8 +464,7 @@ class CustomHistory {
 
   constructor() {
     this.listeners = new Map();
-    // verbose.add_log("customHistory", "#4f4f4f");
-    // verbose.customHistory.log('test');
+    this.verbose = new Verbose("Loader_History", "#a1b2c3")
 
     // the event handler for dealing with browser.back and browser.forward
     window.addEventListener('popstate', () => {
@@ -469,7 +476,7 @@ class CustomHistory {
       // get the current details.
       const currentUrl = new URL(window.location);
       const data = this.convert_url_to_pagedata(currentUrl);
-      console.log(`Processing page pop! Details:`, data);
+      this.verbose.log(`Processing page pop! Details:`, data);
 
       // load the page, and process anything that is listening of this pop event.
       page.load_page(data.page, data.search, data.sub, data.branch);
@@ -499,11 +506,11 @@ class CustomHistory {
    * @returns {boolean} True if this represents a new unique page state
    */
   is_new_page(new_data) {
-    console.log(`rabbit?: ${this.poppin_jump}`);
+    this.verbose.log(`rabbit?: ${this.poppin_jump}`);
     const url_to_compare = this.poppin_jump ? this.current_url : new URL(window.location);
     const compare_data = this.convert_url_to_pagedata(url_to_compare);
-    console.log(`customHistory.is_new_page: Comparing:`, new_data, `with:`, compare_data);
-    console.log(`results:
+    this.verbose.log(`customHistory.is_new_page: Comparing:`, new_data, `with:`, compare_data);
+    this.verbose.log(`results:
 new_data.branch != compare_data?.branch: ${new_data.branch != compare_data?.branch}
 new_data.page !== compare_data?.page: ${new_data.page !== compare_data?.page}
 this.current_url === null: ${this.current_url === null}`);
@@ -535,7 +542,7 @@ this.current_url === null: ${this.current_url === null}`);
   are_same_page(new_data) {
     const url_to_compare = this.poppin_jump ? this.current_url : new URL(window.location);
     const compare_data = this.convert_url_to_pagedata(url_to_compare);
-    console.log(`Same page?:
+    this.verbose.log(`Same page?:
 new_data.branch == compare_data?.branch: ${new_data.branch == compare_data?.branch}
 new_data.page == compare_data?.page: ${new_data.page == compare_data?.page}
 new_data.sub == compare_data?.sub: ${new_data.sub == compare_data?.sub}
@@ -551,10 +558,10 @@ new_data.search == compare_data?.search: ${new_data.search.toString() == compare
     const callback = this.listeners.get(key);
     if (callback !== undefined) {
       // call any callback functions they might have
-      console.log(`Calling ${callback.name} for ${key} with data:`, data);
+      this.verbose.log(`Calling ${callback.name} for ${key} with data:`, data);
       return callback(data);
     }
-    console.warn(`Failed to find ${key} in customHistory.listeners`);
+    this.verbose.warn(`Failed to find ${key} in customHistory.listeners`);
   }
 
   /**
@@ -567,13 +574,13 @@ new_data.search == compare_data?.search: ${new_data.search.toString() == compare
       return;
     }
 
-    console.trace(`Store message trace output.`);
+    this.verbose.trace(`Store message trace output.`);
     const new_data = this.convert_url_to_pagedata(url);
 
     // same page, hence probably some kind of history stuff. No need to worry about it.
     const same = this.are_same_page(new_data);
     if (same) {
-      console.log(`Attempting to store same that we are already on, skipping.`);
+      this.verbose.log(`Attempting to store same that we are already on, skipping.`);
       return;
     }
 
@@ -583,7 +590,7 @@ new_data.search == compare_data?.search: ${new_data.search.toString() == compare
     // remove last / from url.href (this cases too many issues...);
     url.href = url.href.replace(/\/$/, '');
 
-    console.log(`${requires_push ? 'Storing' : 'Replacing'} page: ${url.href} with data:`, new_data);
+    this.verbose.log(`${requires_push ? 'Storing' : 'Replacing'} page: ${url.href} with data:`, new_data);
     this.current_url = url;
     history[requires_push ? 'pushState' : 'replaceState'](null, "", url);
   }
