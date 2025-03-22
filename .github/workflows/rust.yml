@@ -10,11 +10,8 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
-        with:
-          sparse-checkout: |
-            tools/*
-          sparse-checkout-cone-mode: false
+      - name: Clone repo
+        run: git clone https://github.com/dragmine149/dragmine149.github.io.git
 
       - name: Check if tools binary updated
         id: check-tools
