@@ -1,3 +1,6 @@
 [submodule "Blog/marked"]
 	path = Blog/marked
 	url = git@github.com:dragmine149/marked.git
+[submodule "ETOH"]
+	path = ETOH
+	url = https://github.com/dragmine149/ETOH
