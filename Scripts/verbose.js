@@ -42,18 +42,6 @@ class Verbose {
   }
 
   /**
-   * Adds a new named log instance
-   * @param {string} log_name - Name of the log to add
-   * @param {string} [colour] - Optional colour for the log prefix
-   * @return {Verbose} Returns a new Verbose instance
-     */
-  add_log(log_name, colour) {
-    const newLog = new Verbose(log_name, colour);
-    this[log_name] = newLog;
-    return newLog;
-  }
-
-  /**
    * Logs a message to the console if verbose mode is enabled
    * @param {...*} params - Parameters to log
    */
@@ -131,5 +119,3 @@ class Verbose {
     console.table(...params);
   }
 }
-
-const verbose = new Verbose();
