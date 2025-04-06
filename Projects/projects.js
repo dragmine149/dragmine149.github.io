@@ -3,7 +3,7 @@ class ProjectLoader {
   __path = [];
 
   constructor() {
-    this.verbose = verbose.add_log("Projects", "#f1a942");
+    this.verbose = new Verbose("Projects", "#f1a942");
 
     (async () => {
       this.__levels[""] = await loader.get_contents_from_server(`Projects/Projects/metadata.json`, true, loader.RETURN_TYPE.json);

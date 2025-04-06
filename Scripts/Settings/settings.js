@@ -57,7 +57,7 @@ class DragSettings {
 
   constructor() {
     /** @type {Verbose} */
-    this.verbose = verbose.add_log('Settings', '#f5a97e');
+    this.verbose = new Verbose('Settings', '#f5a97e');
     /** @type {DragStorage} */
     this.settings = new DragStorage("setting");
     this.cache = new Map();
