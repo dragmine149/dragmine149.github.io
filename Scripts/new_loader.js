@@ -320,8 +320,10 @@ class Page {
   * Designed to be called once upon loading the websie.
   * Calls `load_page` after decoding the url that has loaded this site.
   */
-  load_page_from_url() {
-    const url = new URL(location);
+  load_page_from_url(url) {
+    if (!url) {
+      url = new URL(location);
+    }
     this.verbose.log(`Attempting to load page from url: `, url);
 
     const branch = this.get_branch_from_url(url);
@@ -494,7 +496,7 @@ class CustomHistory {
   /**
   * Add a listener to the history so that pages can be loaded as soon as possible.
   * @param {string} key The listener identity, each one must be unique.
-  * @param {Function} callback What to call upon this listener being triggered
+  * @param {(data: {branch: string, page: string, search: URLSearchParams, sub: string}) => void} callback What to call upon this listener being triggered
   */
   add_listener(key, callback) {
     this.listeners.set(key, callback);
@@ -553,6 +555,11 @@ new_data.search == compare_data?.search: ${new_data.search.toString() == compare
       new_data.search.toString() == compare_data?.search.toString();
   }
 
+  /**
+   * Process a listener callback for a given key with page data
+   * @param {string} key The listener identifier to process
+   * @param {{branch: string, page: string, search: URLSearchParams, sub: string}} data The page data to pass to the listener
+   */
   process_listener(key, data) {
     // check for any listeners
     const callback = this.listeners.get(key);

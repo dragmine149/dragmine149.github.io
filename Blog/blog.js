@@ -8,8 +8,7 @@ class Blog {
 
     // page.listen_to_state_pop("blog", v => this.load_blog(v, false));
     customHistory.add_listener("Blog", (v) => {
-      const searchParams = new URLSearchParams(v.search)
-      this.load_blog(searchParams.get("blog"));
+      this.load_blog(v.search.get("blog"));
     });
 
     Object.freeze(this.__blog_state);
@@ -142,8 +141,10 @@ class Blog {
     customHistory.store_page(new URL(`${page.get_current_root_subpage()}`));
   }
 
-  load_blog_from_url() {
-    const url = new URL(location);
+  load_blog_from_url(url) {
+    if (!url) {
+      url = new URL(location);
+    }
     this.load_blog(url.searchParams.get('blog'));
   }
 }
