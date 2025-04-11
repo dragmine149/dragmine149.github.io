@@ -54,6 +54,8 @@ class Markdown {
         });
       case "markedCenterText":
         return markedCenterText();
+      case "markedLocalLink":
+        return markedLocalLink(this.__settings.markedLocalLink, "dragmine149.github.io");
       default:
         return {}
     }
@@ -109,6 +111,7 @@ class Markdown {
  * @property {boolean} markedImprovedImage - Enable Images rendering inside a <div class="img"> instead of normal rendering.
  * @property {boolean} markedRemoteImage - Gets images from the server `raw.githubusercontent` instead of our server `dragmine149.github.io`
  * @property {boolean} markedHighlight - Enable code block highlighting.
+ * @property {(url: URL) => boolean} markedLocalLink - Upon clicking a link on this site, do this custom function instead of a redirect.
  */
 const markdownSettings = {
   markedLocalTime: false,
@@ -118,4 +121,5 @@ const markdownSettings = {
   markedRemoteImage: false,
   markedHighlight: false,
   markedCenterText: false,
+  markedLocalLink: (url) => { return false; },
 };

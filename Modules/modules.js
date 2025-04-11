@@ -13,6 +13,7 @@ class Modules {
         "Blog/marked/markedLocalTime.js",
         "Blog/marked/markedImprovedImage.js",
         "Blog/marked/markedCenterText.js",
+        "Blog/marked/markedLocalLink.js",
         // highlight.js assets required for marked-highlight
         "Assets/highlight/highlight.min.js"
       ],

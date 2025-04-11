@@ -28,6 +28,19 @@ class Blog {
         markedCustomHeadingId: true,
         markedHighlight: true,
         markedRemoteImage: true,
+        markedLocalLink: (url) => {
+          // console.warn(`Loading page from URL: ${url}`);
+
+          if (url.searchParams.has("blog")) {
+            console.log("Loading blog from URL:", url);
+            this.load_blog(url.searchParams.get("blog"));
+            return true;
+          }
+          console.log("Loading page from URL:", url);
+
+          page.load_page_from_url(url);
+          return true;
+        },
       }, document.getElementById("blog_content"));
     }
   }
