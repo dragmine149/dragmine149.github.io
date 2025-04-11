@@ -1,5 +1,4 @@
 class DateTime {
-  time = 0;
   clock;
 
   constructor() {
@@ -12,7 +11,6 @@ class DateTime {
     settings.add_listener("Datetime", "location", this.settings.setting_realistic);
     settings.add_listener("Datetime", "default_state", this.settings.setting_default);
   }
-
 
   /**
   * Holds sunrise, sunset, and other sun position data for a specific day.
@@ -51,8 +49,9 @@ class DateTime {
   * website_mode is different so that the website can be read easier at night/day times.
   * @param {string} website_mode The mode of the website to show
   * @param {string} real_mode The actual mode
+  * @param {boolean} auto Controls whether the inner elements have the same colours scheme as the rest of the page when day/night is enabled. Enabled they have the same. Disabled they have the opposite to make better readability.
   */
-  set_classes(website_mode, real_mode) {
+  set_classes(website_mode, real_mode, auto = false) {
     let previous_gradient = Object.values(document.body.classList).filter((k) => k.startsWith("bd_") || k.startsWith("bn_"));
     previous_gradient.forEach((k) => document.body.classList.remove(k));
 
@@ -60,6 +59,16 @@ class DateTime {
     ui('mode', website_mode);
     document.getElementById("button-snacks").classList.remove(website_mode);
     document.getElementById("button-snacks").classList.add(real_mode);
+
+    document.querySelectorAll('[dark-is-dark]').forEach((element) => {
+      let dark_is_dark = element.getAttribute('dark-is-dark') || website_mode;
+
+      element.classList.remove(dark_is_dark);
+      if (!auto) {
+        element.classList.add(real_mode);
+      }
+      element.setAttribute('dark-is-dark', real_mode);
+    });
   }
 
   /**
@@ -71,7 +80,7 @@ class DateTime {
   update_time(half, hour, quarter) {
     // Remove all existing gradient classes
     const [website_mode, real_mode] = half == 'n' ? ['light', 'dark'] : ['dark', 'light'];
-    this.set_classes(website_mode, real_mode);
+    this.set_classes(website_mode, real_mode, true);
 
     // Add the current gradient class
     document.body.classList.add(`b${half}_${hour}${quarter}`);

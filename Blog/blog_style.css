@@ -3,6 +3,17 @@
   color: inherit;
 }
 
+:where(.dark) :where(.light) #blog_content,
+.light #blog_content {
+  background-color: #1a1a1a1a;
+}
+
+.dark #blog_content {
+  background-color: #09090909;
+}
+
+
+
 #blog_content,
 #blog_list {
   text-align: left;
@@ -25,10 +36,14 @@
 
 #blog_content a {
   text-decoration: underline;
-  color: #11554e;
 }
 
 .dark #blog_content a {
+  color: #0041C2;
+}
+
+:where(.dark) :where(.light) #blog_content a,
+.light #blog_content a {
   color: #95ddd5;
 }
 
@@ -51,4 +66,23 @@ body.light #blog_list article {
 #blog_content div.img {
   width: 100%;
   overflow: auto;
+}
+
+#blog_content blockquote {
+  border-top-right-radius: 20px;
+  border-bottom-right-radius: 20px;
+  border-inline-start: .25rem solid var(--inverse-primary);
+}
+
+:where(.dark) :where(.light) #blog_content blockquote,
+.light #blog_content blockquote {
+  background: #42424242;
+}
+
+.dark #blog_content blockquote {
+  background: #1a1a1a1a;
+}
+
+#blog_content li {
+  font-size: 1.05rem;
 }
