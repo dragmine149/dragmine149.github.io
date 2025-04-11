@@ -34,7 +34,7 @@ fn help() {
     println!("Usage: tools [command]");
     println!("Commands:");
     println!("  help - display this help message");
-    println!("  json - generate JSON file");
-    println!("  rss - generate RSS feed");
-    println!("  website - generate website");
+    println!("  json - generate Blog JSON file");
+    println!("  rss - generate Blog RSS feed");
+    println!("  website - generate website .includes.txt file");
 }
