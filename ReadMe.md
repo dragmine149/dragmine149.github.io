@@ -10,25 +10,24 @@ Hint: If you want to check out a specific branch, go to `https://dragmine149.git
 - [x] (once again) Improved page loader system.
 - [x] Improved blog system (i want to use the `markdown` stuff elsewhere in the website)
 - [ ] Finished project page
-- [ ] Improved URL (hopefully via the use of `/.htaccess`)
 - [ ] More blog features:
   - [ ] Code block detection (`) with keyboard controls -> replace with more better looking things.
   - [ ] Back button
   - [ ] Ability to link to certain parts in the blog
   - [ ] Ability to jump between blog headings
   - [x] Better blog formatting (images scroll instead of who blog scroll)
-  - [ ] progress tracker (local storage)
+  - [ ] progress tracker (local storage / indexedDB)
   - [ ] search
   - [ ] category sorting
-  - [ ] More time formats
+  - [X] More time formats (This will get expanded on over time)
   - [X] Separate marked_*.js files to their own repo.
-  - [ ] Improved CSS (links and lists don't really look all that well)
-  - [ ] In-site links (links that show a page on this site will go to that page instead of reloading the site to go to that page).
+  - [X] Improved CSS (links and lists don't really look all that well)
+  - [***] In-site links (links that show a page on this site will go to that page instead of reloading the site to go to that page).
   - [X] Fix spelling
     - [X] and maybe getting a better spelling system?
 - [*] Finished branch system
 - [**] More seasonal backgrounds
-- [***] Improved and more realistic day night system.
+- [X] Improved and more realistic day night system.
 - [X] Figure out a way to "fetch" images from `raw.githubusercontent.com` instead of bundling them with the website.
 - [ ] Mobile site / touch support.
 - [ ] Improve typewritter API
@@ -39,6 +38,6 @@ Hint: If you want to check out a specific branch, go to `https://dragmine149.git
 ### Notes:
 - `*` -> It's in a state now where you can technically go to the branch (`/Branch/{BRANCH_NAME}`), however the end result is broken in more ways than one.
 - `**` -> Winter, Spring have seasonal backgrounds. Summer, Autumn currently do not.
-- `***` -> It's nearly there. Most of it is out on main branch, however a tiny bit needs to be finished off for it to be completed.
+- `***` -> It's nearly there. Some things are broken and need revisiting before it can be counted as completed.
 - `R` -> In research
 - `?` -> Work has been done on it, but the completion is unknown
