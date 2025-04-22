@@ -16,10 +16,15 @@ class Blog {
     this.load_blog_from_url();
   }
 
-  __load_markdown() {
+  async __load_markdown() {
     // custom function to make sure that markdown exists before loading.
     // As technically it doesn't need to exist until we load a blog. Hence we can prevent any errors.
     if (this.markdown) return;
+
+    while (!Markdown) {
+      await new Promise(resolve => setTimeout(resolve, 100));
+    }
+
     if (Markdown) {
       this.markdown = new Markdown({
         markedLocalTime: true,
