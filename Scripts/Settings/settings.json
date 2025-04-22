@@ -18,6 +18,21 @@
       }
     }
   },
+  "Blog": {
+    "description": "Stuff which affects how the blog is displayed",
+    "options": {
+      "title": {
+        "description": "Changing the font-size of the blog title to take up less space, hence having more blog space",
+        "type": "number",
+        "range": {
+          "lower": 4,
+          "upper": 7.5
+        },
+        "default": 7.5,
+        "quick": false
+      }
+    }
+  },
   "Datetime": {
     "description": "Change how the background works in accordance to a day/night cycle",
     "options": {

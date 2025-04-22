@@ -11,6 +11,14 @@ class Blog {
       this.load_blog(v.search.get("blog"));
     });
 
+    settings.add_listener("Blog", "title", (v) => {
+      console.log("Updating blog title:", v);
+      /** @type {HTMLHeadingElement} */
+      let elm = document.querySelector('h1[id="title"]');
+      if (!elm) return;
+      elm.style.fontSize = v + "rem";
+    });
+
     Object.freeze(this.__blog_state);
 
     this.load_blog_from_url();
