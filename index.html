@@ -9,7 +9,18 @@
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="Scripts/DayNightCycle/background.css">
 
+      <!-- DayJS -->
+    <script src="https://cdn.jsdelivr.net/npm/dayjs@1.11.13/dayjs.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/dayjs@1.11.13/plugin/relativeTime.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/dayjs@1.11.13/plugin/localizedFormat.js"></script>
+    <script>
+      dayjs.extend(dayjs_plugin_relativeTime);
+      dayjs.extend(dayjs_plugin_localizedFormat);
+      dayjs.locale('en');
+    </script>
+
     <script src="Scripts/verbose.js"></script>
+    <link rel="stylesheet" href="Scripts/verbose.css">
 
     <script src="Scripts/new_loader.js"></script>
     <script src="Modules/modules.js"></script>
@@ -24,16 +35,6 @@
     <script defer src="Assets/fontawesome-free-6.6.0-web/js/all.min.js"></script>
     <link href="Assets/fontawesome-free-6.6.0-web/css/all.min.css" rel="stylesheet">
 
-    <!-- DayJS -->
-    <script src="https://cdn.jsdelivr.net/npm/dayjs@1.11.13/dayjs.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/dayjs@1.11.13/plugin/relativeTime.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/dayjs@1.11.13/plugin/localizedFormat.js"></script>
-    <script>
-      dayjs.extend(dayjs_plugin_relativeTime);
-      dayjs.extend(dayjs_plugin_localizedFormat);
-      dayjs.locale('en');
-    </script>
-
     <!-- Particles -->
     <script src="Scripts/Particles/particles.js"></script>
     <script defer src="Scripts/Particles/particle_controller.js"></script>
@@ -43,6 +44,7 @@
     <script src="Scripts/typewritter.js"></script>
     <!-- Ability to copy code blocks -->
     <script src="Scripts/code_copier.js"></script>
+
   </head>
   <body class="light bn_11">
     <article class="main no-padding medium center-align middle-align">
@@ -102,6 +104,14 @@
 
       <div id="scripts">
         <div class="modules"></div>
+      </div>
+
+      <div id="logs" hidden>
+        <div id="template" hidden>
+          <div tag="icon"></div>
+          <span tag="category"></span><span tag="time"></span><br>
+          <span tag="message"></span><br>
+        </div>
       </div>
 
       <div id="content">
