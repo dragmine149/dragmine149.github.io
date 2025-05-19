@@ -140,7 +140,9 @@ class log {
 
   /** @type {{category: String, serveriety: String, params: any[], trace: String | undefined, time: dayjs}[]} */
   __logs = [];
-  __callbacks = {};
+  __callbacks = {
+    "*": {}
+  };
   __elements = [];
 
   __limit = 1000;
@@ -171,7 +173,9 @@ class log {
     }
 
     let callbacks = this.getCallback(category, serveriety);
+    let any = this.getCallback("*", serveriety);
     if (callbacks) callbacks.forEach(func => func(log));
+    if (any) any.forEach(func => func(log));
     if (!document.getElementById('logs').hidden) this.displayLog(log);
   }
 
