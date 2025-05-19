@@ -186,13 +186,13 @@ class log {
   * @param {(log: {category: String, serveriety: String, params: any[], trace: String | undefined, time: dayjs})} callback The function to call upon log being received.
   */
   addCallback(category, serveriety, callback) {
-    let servList = this.__callbacks[category];
-    if (servList == undefined) servList = {};
-    let callList = servList[serveriety];
-    if (callList == undefined) callList = [];
-    callList.push(callback);
-    servList[serveriety] = callList;
-    this.__callbacks = servList;
+    if (!this.__callbacks[category]) {
+      this.__callbacks[category] = {};
+    }
+    if (!this.__callbacks[category][serveriety]) {
+      this.__callbacks[category][serveriety] = [];
+    }
+    this.__callbacks[category][serveriety].push(callback);
   }
 
   getLogs(category, serveriety) {
