@@ -176,7 +176,7 @@ class log {
     let any = this.getCallback("*", serveriety);
     if (callbacks) callbacks.forEach(func => func(log));
     if (any) any.forEach(func => func(log));
-    if (!document.getElementById('logs').hidden) this.displayLog(log);
+    if (!document.getElementById('logs')?.hidden) this.displayLog(log);
   }
 
   /**
