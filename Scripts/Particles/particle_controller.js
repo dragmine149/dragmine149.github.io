@@ -8,6 +8,15 @@ const seasonal_settings = {
     "config": "Scripts/Particles/seasons/spring.json",
     "start_date": dayjs().set('date', 1).set('month', 2),
     "end_date": dayjs().set('date', 20).set('month', 4)
+  },
+  // "Summer": {
+  //   "config": "Scripts/Particles/seasons/summer.json",
+  //   "start_date": dayjs().set('date', 20).set('month', 4),
+  //   "end_date": dayjs().set('date', 25).set('month', 7)
+  // }
+  "Summer": {
+    "start_date": dayjs().set('date', 20).set('month', 4),
+    "end_date": dayjs().set('date', 25).set('month', 7)
   }
 };
 
