@@ -69,16 +69,19 @@ class Blog {
   set_blog_state(state) {
     const blog_content = document.getElementById('blog_content');
     const blog_list = document.getElementById('blog_list');
+    const back = document.getElementById("blog_back");
     switch (state) {
       case this.__blog_state.List:
         console.log(`Switching blog to list mode.`);
         if (blog_list) blog_list.hidden = false;
         if (blog_content) blog_content.hidden = true;
+        if (back) back.disabled = true;
         return;
       case this.__blog_state.Viewer:
         console.log(`Switching blog to viewer mode.`);
         if (blog_list) blog_list.hidden = true;
         if (blog_content) blog_content.hidden = false;
+        if (back) back.disabled = false;
         return;
     }
   }

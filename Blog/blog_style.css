@@ -86,3 +86,13 @@ body.light #blog_list article {
 #blog_content li {
   font-size: 1.05rem;
 }
+
+#blog_back {
+  z-index: 5;
+  font-size: 2rem;
+
+  position: fixed;
+  left: 5%;
+  top: 5%;
+  padding: 1.5rem;
+}
