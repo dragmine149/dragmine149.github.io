@@ -75,7 +75,7 @@ After many attempts (which i won't go into detail). I finally arrived at this co
 ```
 Without the sleeps, the terminal was doing stuff way too quickly for the program to keep up eventually causing a fatal error (due to a `^D`)
 
-#### Part 4: Variables {#script-variables}
+#### Part 4: Variables
 The variables `$DIR` took a bit to work out how to do (there isn't really much documentation on these things) but once sorted, the script is completed eventually leading to this:
 ```zsh
 #!/bin/zsh
@@ -111,12 +111,12 @@ The variable `$DIR` is where everything is temporary saved. Scripts can't really
 Hence the use of the `/tmp` directory. <br>
 The rest of the script, all the echos are there as an updater telling you what is going on.
 
-### Why not flatpak discord {#flatpak-discord}
+### Why not flatpak discord
 <sub><sup>Flatpak discord: [https://flathub.org/apps/com.discordapp.Discord](https://flathub.org/apps/com.discordapp.Discord)</sub></sup>
 I only just discovered this as i'm writing this (went to vencord.dev to find confirm the reason for snap and found it).
 Well, put simply. I can't be bothered to switch now and from reading the flatpak description, some feature (which are optional) are disabled.
 
-### Vencord Installer {#vencord-installer}
+### Vencord Installer
 The vencord installer is annoying for two reasons:
 1. Sudo is required. (You can't even run the command `sh -c "$(curl -sS https://raw.githubusercontent.com/Vendicated/VencordInstaller/main/install.sh)"` with sudo)
 2. The whole path is required. The installer doesn't understand `~/Applications/Discord` as being `$USER/Applications/Discord` (`$USER` being the path to your home directory, in my case `/home/dragmine`)
