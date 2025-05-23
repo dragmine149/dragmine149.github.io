@@ -37,8 +37,6 @@ class Markdown {
     switch (type) {
       case "markedLocalTime":
         return markedLocalTime();
-      case "markedCustomHeadingId":
-        return markedCustomHeadingId();
       case "markedFootnote":
         return markedFootnote();
       case "markedImprovedImage":
@@ -56,6 +54,10 @@ class Markdown {
         return markedCenterText();
       case "markedLocalLink":
         return markedLocalLink(this.__settings.markedLocalLink, "dragmine149.github.io");
+      case "markedHeadingId":
+        return markedGfmHeadingId.gfmHeadingId({
+          prefix: this.__settings.markedHeadingId
+        })
       default:
         return {}
     }
@@ -106,20 +108,20 @@ class Markdown {
  * Settings interface for Markdown class
  * @typedef {Object} markdownSettings
  * @property {boolean} markedLocalTime - Enable using `<t:X:F>` to render time in viewer local time
- * @property {boolean} markedCustomHeadingId - Enable custom heading IDs
  * @property {boolean} markedFootnote - Enable footnotes
  * @property {boolean} markedImprovedImage - Enable Images rendering inside a <div class="img"> instead of normal rendering.
  * @property {boolean} markedRemoteImage - Gets images from the server `raw.githubusercontent` instead of our server `dragmine149.github.io`
  * @property {boolean} markedHighlight - Enable code block highlighting.
  * @property {(url: URL) => boolean} markedLocalLink - Upon clicking a link on this site, do this custom function instead of a redirect.
+ * @property {String?} markedHeadingId - Using github style heading ids.
  */
 const markdownSettings = {
   markedLocalTime: false,
-  markedCustomHeadingId: false,
   markedFootnote: false,
   markedImprovedImage: false,
   markedRemoteImage: false,
   markedHighlight: false,
   markedCenterText: false,
   markedLocalLink: (url) => { return false; },
+  markedHeadingId: null,
 };

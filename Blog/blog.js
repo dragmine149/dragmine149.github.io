@@ -7,6 +7,8 @@ class Blog {
   loaded_list_items = false;
 
   constructor() {
+    snackbar.set_area("table", snackbar.AREA.Middle_Left);
+
     // initialise the markdown module.
     this.__load_markdown();
 
@@ -14,6 +16,7 @@ class Blog {
     customHistory.add_listener("Blog", (v) => {
       this.load_blog(v.search.get("blog"));
     });
+    customHistory.add_scroll(document.getElementById("blog_content"), "blog-")
 
     settings.add_listener("Blog", "title", (v) => {
       console.log("Updating blog title:", v);
@@ -42,7 +45,6 @@ class Blog {
         markedLocalTime: true,
         markedFootnote: true,
         markedImprovedImage: true,
-        markedCustomHeadingId: true,
         markedHighlight: true,
         markedRemoteImage: true,
         markedLocalLink: (url) => {
@@ -58,8 +60,39 @@ class Blog {
           page.load_page_from_url(url);
           return true;
         },
+        markedHeadingId: "blog-"
       }, document.getElementById("blog_content"));
     }
+  }
+
+  updateTable() {
+    let table = this.hideTable();
+    /** @type {Object[]} */
+    let headings = markedGfmHeadingId.getHeadingList();
+    let mapped = headings.map((data) => {
+      let li = document.createElement("li");
+      let a = document.createElement("a");
+      // a.href = `#${data.id}`;
+      let url = new URL(location);
+      url.hash = `#${data.id}`;
+      a.onclick = () => {
+        page.load_page_from_url(url);
+      }
+
+      // a.onclick = page.load_page_from_url(url);
+      a.classList.add(`h${data.level}`);
+      a.text = data.raw;
+      li.appendChild(a);
+      return li;
+    });
+    // table.append(mapped);
+    mapped.forEach((child) => table.appendChild(child));
+  }
+
+  hideTable() {
+    let table = document.getElementById("table");
+    table.childNodes.forEach((child) => child.remove());
+    return table;
   }
 
   __blog_state = {
@@ -80,12 +113,14 @@ class Blog {
         if (blog_list) blog_list.hidden = false;
         if (blog_content) blog_content.hidden = true;
         if (back) back.disabled = true;
+        this.hideTable();
         return;
       case this.__blog_state.Viewer:
         console.log(`Switching blog to viewer mode.`);
         if (blog_list) blog_list.hidden = true;
         if (blog_content) blog_content.hidden = false;
         if (back) back.disabled = false;
+        this.updateTable();
         return;
     }
   }

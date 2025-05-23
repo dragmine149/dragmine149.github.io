@@ -54,9 +54,9 @@ class SnackBar {
   get_mouse_corner(mouseX, mouseY) {
     const width = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
     const height = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
-    const is_on_left = mouseX <= width * 0.15;
+    const is_on_left = mouseX <= width * 0.025;
     const is_in_xiddle = mouseX >= width * 0.35 && mouseX <= width * 0.65;
-    const is_on_right = mouseX >= width * 0.85;
+    const is_on_right = mouseX >= width * 0.975;
     const is_on_top = mouseY <= height * 0.15;
     const is_in_yiddle = mouseY >= height * 0.35 && mouseY <= height * 0.65;
     const is_on_bottom = mouseY >= height * 0.85;

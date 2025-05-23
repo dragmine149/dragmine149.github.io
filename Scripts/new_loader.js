@@ -455,6 +455,8 @@ class Script {
 class CustomHistory {
   /** @type {Map<String, Function>} */
   listeners;
+  /** @type {Map<String, HTMLElement>} */
+  scrolls;
   /**
    * A value to determine if we are processing the 'popstate' event.
    * During this time, some other checks need to be modified or skipped to avoid messing up the history.
@@ -466,6 +468,7 @@ class CustomHistory {
 
   constructor() {
     this.listeners = new Map();
+    this.scrolls = new Map();
     this.verbose = new Verbose("Loader_History", "#a1b2c3")
 
     // the event handler for dealing with browser.back and browser.forward
@@ -483,6 +486,7 @@ class CustomHistory {
       // load the page, and process anything that is listening of this pop event.
       page.load_page(data.page, data.search, data.sub, data.branch);
       this.process_listener(data.page, data);
+      this.process_scroll(data.sub);
 
       // timeout to wait so that listeners have time to finish their tasks.
       setTimeout(() => {
@@ -500,6 +504,15 @@ class CustomHistory {
   */
   add_listener(key, callback) {
     this.listeners.set(key, callback);
+  }
+
+  /**
+  * Add a "listener" to hash part of URL and scroll stuff upon being called.
+  * @param {HTMLElement} element The element to scroll.
+  * @param {String} prefix The prefix of the hash.
+  */
+  add_scroll(element, prefix) {
+    this.scrolls.set(prefix, element);
   }
 
   /**
@@ -569,6 +582,12 @@ new_data.search == compare_data?.search: ${new_data.search.toString() == compare
       return callback(data);
     }
     this.verbose.warn(`Failed to find ${key} in customHistory.listeners`);
+  }
+
+  process_scroll(hash) {
+    let key = Array.from(this.scrolls.keys()).filter(k => hash.startsWith(k))[0];
+    if (!key) return;
+    document.getElementById(hash).scrollIntoView();
   }
 
   /**

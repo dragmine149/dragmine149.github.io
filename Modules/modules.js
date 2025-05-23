@@ -8,8 +8,8 @@ class Modules {
       "js": [
         "https://cdn.jsdelivr.net/npm/marked@15.0.7/lib/marked.umd.min.js",
         "https://cdn.jsdelivr.net/npm/marked-footnote@1.2.4/dist/index.umd.min.js",
-        "https://cdn.jsdelivr.net/npm/marked-custom-heading-id@2.0.11/lib/index.umd.min.js",
         "https://cdn.jsdelivr.net/npm/marked-highlight@2.2.1/lib/index.umd.min.js",
+        "https://cdn.jsdelivr.net/npm/marked-gfm-heading-id/lib/index.umd.js",
         "Blog/marked/markedLocalTime.js",
         "Blog/marked/markedImprovedImage.js",
         "Blog/marked/markedCenterText.js",
