@@ -1,3 +1,7 @@
+/**
+* @typedef {import('../Scripts/new_loader')}
+*/
+
 class Blog {
   /** @type {boolean} Variable to check if we have loaded the list or not, to prevent reloading of the list. */
   loaded_list_items = false;
