@@ -138,7 +138,7 @@ class log {
     DEBUG: 'DEBUG', TRACE: 'TRACE', DIR: 'DIR', TABLE: 'TABLE'
   });
 
-  /** @type {{category: String, serveriety: String, params: any[], trace: String | undefined, time: dayjs}[]} */
+  /** @type {{category: String, serveriety: String, params: any[], trace: String | undefined, time: number}[]} */
   __logs = [];
   __callbacks = {
     "*": {}
@@ -165,7 +165,7 @@ class log {
       category, serveriety, params,
     }
     log.trace = new Error().stack;
-    log.time = dayjs();
+    log.time = new Date().getTime();
     this.__logs.push(log);
 
     if (this.__logs.length > this.limit) {
@@ -183,7 +183,7 @@ class log {
   *
   * @param {String} category The category to listen for.
   * @param {String} serveriety How bad of the log to listen for.
-  * @param {(log: {category: String, serveriety: String, params: any[], trace: String | undefined, time: dayjs})} callback The function to call upon log being received.
+  * @param {(log: {category: String, serveriety: String, params: any[], trace: String | undefined, time: number})} callback The function to call upon log being received.
   */
   addCallback(category, serveriety, callback) {
     if (!this.__callbacks[category]) {
@@ -209,7 +209,7 @@ class log {
 
   /**
   * Display a log in the ui.
-  * @param {{category: String, serveriety: String, params: any[], trace: String | undefined, time: dayjs}} log The log to display.
+  * @param {{category: String, serveriety: String, params: any[], trace: String | undefined, time: number}} log The log to display.
   */
   displayLog(log) {
     let logs = document.getElementById('logs');
@@ -269,8 +269,16 @@ class log {
     let category = template.querySelector("[tag='category']")
     if (category) category.textContent = log.category;
 
-    let time = template.querySelector("[tag='time']")
-    if (time) time.textContent = log.time.format('HH:mm:ss:SSS');
+    let time = template.querySelector("[tag='time']");
+    if (time) time.textContent = new Date(log.time).toLocaleString(undefined, {
+      year: "numeric",
+      month: "numeric",
+      day: "numeric",
+      hour: "numeric",
+      minute: "numeric",
+      second: "numeric",
+      hour12: false,
+    });
 
     let message = template.querySelector("[tag='message']")
     if (message) {
