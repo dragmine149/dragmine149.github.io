@@ -88,7 +88,7 @@ body.light #blog_list article {
 }
 
 #blog_back {
-  z-index: 5;
+  z-index: 1;
   font-size: 2rem;
 
   position: fixed;
