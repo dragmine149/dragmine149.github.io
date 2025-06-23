@@ -116,7 +116,7 @@ fn process_dir(path: &Path, mut rules: Vec<String>) -> Vec<String> {
 pub fn main() {
     let files = process_dir(Path::new("../"), vec![]);
 
-    fs::write("../include.txt", files.join("\n")).unwrap();
+    fs::write("../.include.txt", files.join("\n")).unwrap();
 }
 
 #[cfg(test)]
