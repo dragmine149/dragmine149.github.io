@@ -1,3 +1,4 @@
+use rss::{Category, CategoryBuilder, Channel, ChannelBuilder, Item, ItemBuilder};
 use serde::{Deserialize, Serialize};
 use std::{cmp::Ordering, ffi::OsStr, fs, path::Path};
 
@@ -34,7 +35,7 @@ impl Blog {
                 .replace("]", "")
                 .split_whitespace()
                 .map(|c| c.replace(",", ""))
-                .collect();
+                .collect()
         }
 
         Self {
@@ -44,24 +45,39 @@ impl Blog {
         }
     }
 
-    pub fn generate_rss(&self) -> String {
-        // Uses itself to generate a rss snippet of stuff.
-        let mut rss = String::from("\t\t<item>\n");
-        rss.push_str(&format!("\t\t\t<title>{}</title>\n", self.date));
-        rss.push_str(&format!(
-            "\t\t\t<link>https://dragmine149.github.io/Blog?blog={}</link>\n",
-            self.date
-        ));
-        rss.push_str(&format!(
-            "\t\t\t<description>{}</description>\n",
-            self.preview
-        ));
-        for category in &self.categories {
-            rss.push_str(&format!("\t\t\t<category>{}</category>\n", category));
-        }
-        rss.push_str("\t\t</item>\n");
+    pub fn generate_rss(&self) -> Item {
+        ItemBuilder::default()
+            .title(self.date.to_owned())
+            .link(format!(
+                "https://dragmine149.github.io/Blog?blog={}",
+                self.date
+            ))
+            .description(self.preview.to_owned())
+            .categories(
+                self.categories
+                    .iter()
+                    .map(|c| CategoryBuilder::default().name(c).build())
+                    .collect::<Vec<Category>>(),
+            )
+            .build()
 
-        rss
+        // Uses itself to generate a rss snippet of stuff.
+        // let mut rss = String::from("\t\t<item>\n");
+        // rss.push_str(&format!("\t\t\t<title>{}</title>\n", self.date));
+        // rss.push_str(&format!(
+        //     "\t\t\t<link>https://dragmine149.github.io/Blog?blog={}</link>\n",
+        //     self.date
+        // ));
+        // rss.push_str(&format!(
+        //     "\t\t\t<description>{}</description>\n",
+        //     self.preview
+        // ));
+        // for category in &self.categories {
+        // rss.push_str(&format!("\t\t\t<category>{}</category>\n", category));
+        // }
+        // rss.push_str("\t\t</item>\n");
+
+        // rss
     }
 
     pub fn sort_blog(&self, other: &Self) -> Ordering {
@@ -71,7 +87,7 @@ impl Blog {
 
 // generate a list of blogs
 pub fn make_blog_list() -> Vec<Blog> {
-    let paths = fs::read_dir("Blog/Posts").unwrap(); // get all blogs
+    let paths = fs::read_dir("../Blog/Posts").unwrap(); // get all blogs
     let mut blogs: Vec<Blog> = paths
         .map(|path| path.unwrap().path()) // convert to path
         .filter(|path| path.extension().unwrap_or(OsStr::new("")) == "md") // only have markdown files
@@ -83,21 +99,35 @@ pub fn make_blog_list() -> Vec<Blog> {
 }
 
 pub fn make_rss_feed(blogs: &[Blog]) {
-    let mut rss = String::from("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
-    rss.push_str("<rss version=\"2.0\">\n");
-    rss.push_str("\t<channel>\n");
-    rss.push_str("\t\t<title>Dragmine149's Blog</title>\n");
-    rss.push_str("\t\t<link>https://dragmine149.github.io/Blog</link>\n");
-    rss.push_str("\t\t<description>A blog by Dragmine149</description>\n");
+    // let mut rss = String::from("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
+    // rss.push_str("<rss version=\"2.0\">\n");
+    // rss.push_str("\t<channel>\n");
+    // rss.push_str("\t\t<title>Dragmine149's Blog</title>\n");
+    // rss.push_str("\t\t<link>https://dragmine149.github.io/Blog</link>\n");
+    // rss.push_str("\t\t<description>A blog by Dragmine149</description>\n");
 
-    for blog in blogs {
-        rss.push_str(&blog.generate_rss());
-    }
+    // // for blog in blogs {
+    // //     rss.push_str(&blog.generate_rss());
+    // // }
 
-    rss.push_str("\t</channel>\n");
-    rss.push_str("</rss>");
+    // rss.push_str("\t</channel>\n");
+    // rss.push_str("</rss>");
 
-    let result = fs::write("Blog/feed.xml", rss);
+    let channel = ChannelBuilder::default()
+        .title("Dragmine149's Blog")
+        .link("https://dragmine149.github.io/Blog")
+        .description("A blog by Dragmine149")
+        .items(
+            blogs
+                .iter()
+                .map(|blog| blog.generate_rss())
+                .collect::<Vec<Item>>(),
+        )
+        .build();
+
+    let result = fs::write("../Blog/feed.xml", channel.to_string());
+
+    // let result = fs::write("Blog/feed.xml", rss);
     println!("RSS feed written: {:?}", result);
 }
 
