@@ -1,0 +1,14 @@
+<!-- This head tag redirects the user so the page can be loaded correctly. -->
+<!-- TODO: Change this method so the page doesn't have to be redirected. -->
+<head>
+  <noscript>
+    <meta http-equiv="refresh" content="0; url=https://dragmine149.github.io"/>
+  </noscript>
+  <script>
+    const url = new URL(location);
+    const query = url.searchParams;
+    query.append("load", location.pathname.replaceAll('/', ''));
+    console.log(`Redirect to ${location.origin}${url.search}`);
+    location.href = `${location.origin}${url.search}`;
+  </script>
+</head>
