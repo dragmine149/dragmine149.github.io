@@ -177,6 +177,8 @@ jobs:
           cd website/tools
           cargo run website
           cd ..
+          ls -la
+          pwd
           mkdir -p ../tmp/IncludeFile
           while IFS= read -r line
           do
