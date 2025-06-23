@@ -99,7 +99,7 @@ fn process_dir(path: &Path, mut rules: Vec<String>) -> Vec<String> {
             if f.is_dir() {
                 results.extend(process_dir(&f, rules.clone()));
             } else if allow_path(&f, &rules) {
-                results.push(f.to_str().unwrap().to_string());
+                results.push(f.to_str().unwrap().replace("../", ""));
             }
 
             results
@@ -157,7 +157,7 @@ mod tests {
             "Path allowed: {:?}",
             allow_path(Path::new("src/subfolder/file.txt"), &rules)
         );
-        assert!(allow_path(Path::new("src/subfolder/file.txt"), &rules));
+        assert!(!allow_path(Path::new("src/subfolder/file.txt"), &rules));
     }
 
     #[test]

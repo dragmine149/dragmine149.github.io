@@ -1,4 +1,4 @@
-use rss::{Category, CategoryBuilder, Channel, ChannelBuilder, Item, ItemBuilder};
+use rss::{Category, CategoryBuilder, ChannelBuilder, Item, ItemBuilder};
 use serde::{Deserialize, Serialize};
 use std::{cmp::Ordering, ffi::OsStr, fs, path::Path};
 
