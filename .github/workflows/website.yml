@@ -32,8 +32,9 @@ jobs:
 
       - name: Generate blog list
         run: |
-          ./tools/tools json
-          ./tools/tools rss
+          cd tools
+          cargo run json
+          cargo run rss
 
       - name: Upload
         uses: actions/upload-artifact@v4
@@ -173,9 +174,9 @@ jobs:
 
       - name: Process website ignore
         run: |
-          cd website
-          chmod +x ./tools/tools
-          ./tools/tools website
+          cd website/tools
+          cargo run website
+          cd ..
           mkdir -p ../tmp/IncludeFile
           while IFS= read -r line
           do

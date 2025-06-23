@@ -136,6 +136,6 @@ pub fn make_json(blogs: &[Blog]) {
     let json = serde_json::to_string(&blogs).unwrap();
 
     // save the json
-    let result = fs::write("Blog/list.json", json);
+    let result = fs::write("../Blog/list.json", json);
     println!("JSON file written: {:?}", result);
 }
