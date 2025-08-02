@@ -5,6 +5,21 @@
     "use_new_terminal": true,
     "reveal": "never",
     "hide": "always",
-    "shell": "system"
+    "shell": "system",
+    "tags": [
+      "dev",
+      "server"
+    ]
+  },
+  {
+    "label": "Start watching",
+    "command": "npm run watch",
+    "use_new_terminal": true,
+    "reveal": "never",
+    "hide": "always",
+    "shell": "system",
+    "tags": [
+      "dev"
+    ]
   }
 ]

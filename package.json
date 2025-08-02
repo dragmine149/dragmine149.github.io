@@ -1,9 +1,20 @@
 {
   "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "watch": "npm-watch",
+    "build": "npx tsc"
   },
   "dependencies": {
-    "typescript": "^5.9.2"
+    "typescript": "^5.9.2",
+    "npm-watch": "^0.13.0"
+  },
+  "watch": {
+    "build": {
+      "patterns": [
+        "Scripts"
+      ],
+      "extensions": "js,ts,mjs"
+    }
   }
 }
