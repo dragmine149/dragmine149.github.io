@@ -1,3 +1,7 @@
+import { Verbose } from "../Scripts/verbose.mjs";
+import { Markdown } from "../Modules/markdown.mjs";
+import { loader } from "../Scripts/new_loader.mjs";
+
 class ProjectLoader {
   __levels = {};
   __path = [];
@@ -204,3 +208,15 @@ const projects = new ProjectLoader();
 function Projects_default_0() {
   projects.load_from_url();
 }
+
+document.getElementById("pro-1").addEventListener('click', projects.load_next(document.getElementById("pro-1").getAttribute("real")));
+document.getElementById("pro-2").addEventListener('click', projects.load_next(document.getElementById("pro-2").getAttribute("real")));
+document.getElementById("pro-3").addEventListener('click', projects.load_next(document.getElementById("pro-3").getAttribute("real")));
+document.getElementById("pro-4").addEventListener('click', projects.load_next(document.getElementById("pro-4").getAttribute("real")));
+document.getElementById("pro-5").addEventListener('click', projects.load_next(document.getElementById("pro-5").getAttribute("real")));
+document.getElementById("pro-6").addEventListener('click', projects.load_next(document.getElementById("pro-6").getAttribute("real")));
+document.getElementById("pro-7").addEventListener('click', projects.load_next(document.getElementById("pro-7").getAttribute("real")));
+document.getElementById("pro-8").addEventListener('click', projects.load_next(document.getElementById("pro-8").getAttribute("real")));
+
+
+export { projects }

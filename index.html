@@ -63,7 +63,7 @@
 
       <div id="Settings" class="snackbar vertical top right">
         <span>Quick Settings</span>
-        <button onclick="settings.visible();">More Settings</button>
+        <button id="settings-more">More Settings</button>
       </div>
 
       <noscript>
@@ -71,7 +71,7 @@
           <p style="text-align: center; width: 100%;">
           Due to how this site works, javascript is required to view most of the site. Please enable javascript in your <a href="https://www.enablejavascript.io/en" style="text-decoration: underline; color: cyan;">browser</a><br>
           Or enable javsacript in your plugin for this site.<br>
-          Note: Most of the javascript is on-site, hence you shouldn't need to allow many other sites for this one to run.
+          PLEASE NOTE: An update to this site is coming soon to reduce the amount of js/ts used.
           </p>
         </div>
       </noscript>
@@ -83,12 +83,12 @@
 
       <div id="navigation" class="snackbar top active">
         <div class="max"></div>
-        <button onclick="page.load_page('main_page.html')">Home</button>
-        <button onclick="page.load_page('Blog')">Blog</button>
-        <button onclick="page.load_page('Projects')">Projects</button>
+        <button id="nav_main">Home</button>
+        <button id="nav_blog">Blog</button>
+        <button id="nav_proj">Projects</button>
         <!-- <button onclick="page.load_page('Stories')">Stories</button> -->
         <!-- <button onclick="page.load_page('Blog', page.generate_search_params({'blog': 'aoc/2024'}));">Advent of Code 2024</button> -->
-        <button onclick="socials()">Socials</button>
+        <button id="nav_soci">Socials</button>
         <div id="socials" class="snackbar top">
           <i class="fa-brands fa-mastodon"></i>
           <a rel="me" href="https://silversword.online/@dragmine149" target="_blank">Mastodon</a>
@@ -121,7 +121,7 @@
 
       <div id="big-settings" hidden>
         <h1 class="title">Settings</h1>
-        <button onclick="settings.visible();">Close</button>
+        <button id="settings-hide">Close</button>
         <div>
           <div id="setting-key"></div>
           <div id="setting-value">

@@ -458,6 +458,16 @@ class DragSettings {
   }
 }
 
+/**
+* Capitalise a string.... Why does JS not have this already?
+* @param {string} str The string to capitalise
+* @returns The same string, but with a capital start
+*/
+function capitalise(str) {
+  return str.charAt(0).toUpperCase() + str.slice(1);
+}
+
+
 const settings = new DragSettings();
 
-export { settings }
+export { settings, capitalise }

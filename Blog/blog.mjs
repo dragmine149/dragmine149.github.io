@@ -2,6 +2,9 @@
 * @typedef {import('../Scripts/new_loader')}
 */
 
+import { loader, customHistory } from '../Scripts/new_loader.mjs';
+import { settings } from '../Scripts/Settings/settings.mjs';
+
 class Blog {
   /** @type {boolean} Variable to check if we have loaded the list or not, to prevent reloading of the list. */
   loaded_list_items = false;
@@ -184,7 +187,12 @@ class Blog {
 
 const blog = new Blog();
 
+// NOTE: Technically this is load in some weird module loading nonsense that probably needs to be cleaned up.
 function Blog_default_0() {
   // by default, after everything has loaded.
   blog.load_blog_from_url();
 }
+
+document.getElementById("blog_back").addEventListener('click', blog.load_blog_list());
+
+export { blog }
