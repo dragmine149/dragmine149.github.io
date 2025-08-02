@@ -123,3 +123,5 @@ const markdownSettings = {
   markedCenterText: false,
   markedLocalLink: (url) => { return false; },
 };
+
+export { Markdown, markdownSettings };

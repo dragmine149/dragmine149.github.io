@@ -129,3 +129,5 @@ class Modules {
 }
 
 const modules = new Modules();
+
+export { modules }

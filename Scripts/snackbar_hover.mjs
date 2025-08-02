@@ -171,3 +171,5 @@ window.addEventListener('mousemove', (event) => {
   snackbar.show_elements(area);
   snackbar.last_area = area;
 })
+
+export { snackbar }

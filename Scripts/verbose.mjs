@@ -310,3 +310,5 @@ class log {
 }
 
 let logs = new log();
+
+export { logs, Verbose }

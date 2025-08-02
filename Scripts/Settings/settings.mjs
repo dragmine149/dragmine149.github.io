@@ -1,3 +1,7 @@
+import { DragStorage } from "../storage.mjs";
+import { Verbose } from "../verbose.mjs";
+import { loader } from "../new_loader.mjs";
+
 class DragSettings {
   /** @type {Map<string, HTMLElement>} */
   cache;
@@ -455,3 +459,5 @@ class DragSettings {
 }
 
 const settings = new DragSettings();
+
+export { settings }

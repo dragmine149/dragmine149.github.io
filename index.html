@@ -20,26 +20,23 @@
       dayjs.locale('en');
     </script>
 
-    <script src="Scripts/verbose.js"></script>
     <link rel="stylesheet" href="Scripts/verbose.css">
 
-    <script src="Scripts/new_loader.js"></script>
-    <script src="Modules/modules.js"></script>
+    <script src="Scripts/new_loader.mjs" type="module"></script>
+    <script src="Modules/modules.mjs" type="module"></script>
 
     <script src="https://cdn.jsdelivr.net/npm/compress-json@3/bundle.min.js"></script>
-    <script src="Scripts/storage.js"></script>
-    <script src="Scripts/Settings/settings.js"></script>
 
-    <script src="Scripts/snackbar_hover.js"></script>
+    <script src="Scripts/snackbar_hover.mjs" type="module"></script>
 
     <!-- Font Awesome -->
     <script defer src="Assets/fontawesome-free-6.6.0-web/js/all.min.js"></script>
     <link href="Assets/fontawesome-free-6.6.0-web/css/all.min.css" rel="stylesheet">
 
     <!-- Particles -->
-    <script src="Scripts/Particles/particles.js"></script>
+    <!-- <script src="Scripts/Particles/particles.js"></script>
     <script defer src="Scripts/Particles/particle_controller.js"></script>
-    <link rel="stylesheet" href="Scripts/Particles/particles.css">
+    <link rel="stylesheet" href="Scripts/Particles/particles.css"> -->
 
     <!-- Typewritter (custom) -->
     <script src="Scripts/typewritter.mjs" type="module"></script>
@@ -49,19 +46,19 @@
   </head>
   <body class="light bn_11">
     <article class="main no-padding medium center-align middle-align">
-      <script src="Scripts/inital.js" defer></script>
+      <script src="Scripts/inital.mjs" type="module" defer></script>
       <script src="https://cdn.jsdelivr.net/npm/suncalc@1.9.0/suncalc.min.js" defer></script>
-      <script src="Scripts/DayNightCycle/background.js" defer></script>
+      <script src="Scripts/DayNightCycle/background.mjs" type="module" defer></script>
 
       <div id="button-snacks" class="light">
-        <div id="snackbar-tl" onclick="snackbar.toggle_area(snackbar.AREA.Top_Left)" class="snackbar button top left"></div>
-        <div id="snackbar-tm" onclick="snackbar.toggle_area(snackbar.AREA.Top_Middle)" class="snackbar button top"></div>
-        <div id="snackbar-tr" onclick="snackbar.toggle_area(snackbar.AREA.Top_Right)" class="snackbar button top right"></div>
-        <div id="snackbar-ml" onclick="snackbar.toggle_area(snackbar.AREA.Middle_Left)" class="snackbar button middle left"></div>
-        <div id="snackbar-mr" onclick="snackbar.toggle_area(snackbar.AREA.Middle_Right)" class="snackbar button middle right"></div>
-        <div id="snackbar-bl" onclick="snackbar.toggle_area(snackbar.AREA.Bottom_Left)" class="snackbar button bottom left"></div>
-        <div id="snackbar-bm" onclick="snackbar.toggle_area(snackbar.AREA.Bottom_Middle)" class="snackbar button bottom"></div>
-        <div id="snackbar-br" onclick="snackbar.toggle_area(snackbar.AREA.Bottom_Right)" class="snackbar button bottom right"></div>
+        <div id="snackbar-tl" class="snackbar button top left"></div>
+        <div id="snackbar-tm" class="snackbar button top"></div>
+        <div id="snackbar-tr" class="snackbar button top right"></div>
+        <div id="snackbar-ml" class="snackbar button middle left"></div>
+        <div id="snackbar-mr" class="snackbar button middle right"></div>
+        <div id="snackbar-bl" class="snackbar button bottom left"></div>
+        <div id="snackbar-bm" class="snackbar button bottom"></div>
+        <div id="snackbar-br" class="snackbar button bottom right"></div>
       </div>
 
       <div id="Settings" class="snackbar vertical top right">

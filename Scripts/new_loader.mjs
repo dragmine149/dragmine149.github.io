@@ -1,3 +1,6 @@
+import { Verbose } from "./verbose.mjs";
+import { modules } from "../Modules/modules.mjs";
+
 class Loader {
   RETURN_TYPE = {
     text: 0, json: 1, document: 2
@@ -634,3 +637,5 @@ const script = new Script();
 const customHistory = new CustomHistory();
 
 page.load_page_from_url();
+
+export { loader, page, script, customHistory };
