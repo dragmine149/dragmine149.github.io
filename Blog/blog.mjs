@@ -2,8 +2,9 @@
 * @typedef {import('../Scripts/new_loader')}
 */
 
-import { loader, customHistory } from '../Scripts/new_loader.mjs';
+import { loader, customHistory, page } from '../Scripts/new_loader.mjs';
 import { settings } from '../Scripts/Settings/settings.mjs';
+import { Markdown, markdownSettings } from '../Modules/markdown.mjs';
 
 class Blog {
   /** @type {boolean} Variable to check if we have loaded the list or not, to prevent reloading of the list. */

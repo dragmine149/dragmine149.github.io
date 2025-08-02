@@ -4,7 +4,7 @@
 class Modules {
   __modules = {
     "markdown": {
-      "main": "Modules/markdown.js",
+      // "main": "Modules/markdown.mjs",
       "js": [
         "https://cdn.jsdelivr.net/npm/marked@15.0.7/lib/marked.umd.min.js",
         "https://cdn.jsdelivr.net/npm/marked-footnote@1.2.4/dist/index.umd.min.js",
