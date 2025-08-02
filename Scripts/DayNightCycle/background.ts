@@ -1,10 +1,66 @@
-import { DragStorage } from '../storage.mjs';
+import { DragStorage, MiliSeconds } from '../storage.js';
 import { Verbose } from '../verbose.mjs';
+// import { settings } from '../../dist/Scripts/Settings/settings.mjs';
 import { settings } from '../Settings/settings.mjs';
+import { loader } from '../new_loader.js';
+import dayjs from 'dayjs';
+
+declare function ui(arg0: string, arg1: string): void;
+
+/**
+* Holds sunrise, sunset, and other sun position data for a specific day.
+*/
+interface TimesCollection {
+  sunrise: DayTimes;
+  sunset: DayTimes;
+}
+
+/**
+* Collection of time data for consecutive days.
+*/
+interface DayTimes {
+  yesterday: dayjs.Dayjs;
+  today: dayjs.Dayjs;
+  tomorrow: dayjs.Dayjs;
+}
+
+/**
+* Holds sunrise, sunset, and other sun position data for a specific day.
+*/
+interface TimesCollectionString {
+  sunrise: DayTimesString;
+  sunset: DayTimesString;
+}
+
+/**
+* Collection of time data for consecutive days.
+*/
+interface DayTimesString {
+  yesterday: string;
+  today: string;
+  tomorrow: string;
+}
+
+interface TimeZoneLocation {
+  lat: number;
+  long: number;
+}
+
+
+/**
+* A map of locations with their coordinates.
+ */
+type TimezoneData = {
+  [key: string]: TimeZoneLocation;
+};
+
+type Half = ('d' | 'n');
 
 
 class DateTime {
-  clock;
+  clock: number = -1;
+  storage: DragStorage;
+  verbose: Verbose;
 
   constructor() {
     this.storage = new DragStorage('datetime');
@@ -18,52 +74,27 @@ class DateTime {
   }
 
   /**
-  * Holds sunrise, sunset, and other sun position data for a specific day.
-  * @typedef {Object} TimesCollection
-  * @property {DayTimes} sunrise The times for when the sun rises
-  * @property {DayTimes} sunset The times for when the sun sets
-  */
-  /**
-  * Collection of time data for consecutive days.
-  * @typedef {Object} DayTimes
-  * @property {number} yesterday - Sun time for the previous day
-  * @property {number} today - Sun time for the current day
-  * @property {number} tomorrow - Sun time for the next day
-  */
-
-  /**
-  * @typedef {Object} TimeZoneLocation
-  * @property {number} lat - Latitude coordinate of the location
-  * @property {number} long - Longitude coordinate of the location
-  */
-  /**
-  * A map of locations with their coordinates.
-  * @typedef { Object.< string, TimeZoneLocation >} TimezoneData
-  */
-
-  /**
   * Gets a pre-determined list of timezone data.
-  * @returns {Promise<TimezoneData>}
   */
-  async __get_timezones() {
+  async __get_timezones(): Promise<TimezoneData> {
     return await loader.get_contents_from_server('Scripts/DayNightCycle/timezones.json', true, loader.RETURN_TYPE.json);
   }
 
   /**
   * Sets classes on the body depending on the provided values.
   * website_mode is different so that the website can be read easier at night/day times.
-  * @param {string} website_mode The mode of the website to show
-  * @param {string} real_mode The actual mode
-  * @param {boolean} auto Controls whether the inner elements have the same colours scheme as the rest of the page when day/night is enabled. Enabled they have the same. Disabled they have the opposite to make better readability.
+  * @param website_mode The mode of the website to show
+  * @param real_mode The actual mode
+  * @param auto Controls whether the inner elements have the same colours scheme as the rest of the page when day/night is enabled. Enabled they have the same. Disabled they have the opposite to make better readability.
   */
-  set_classes(website_mode, real_mode, auto = false) {
+  set_classes(website_mode: string, real_mode: string, auto: boolean = false) {
     let previous_gradient = Object.values(document.body.classList).filter((k) => k.startsWith("bd_") || k.startsWith("bn_"));
     previous_gradient.forEach((k) => document.body.classList.remove(k));
 
     // update rest of website
     ui('mode', website_mode);
-    document.getElementById("button-snacks").classList.remove(website_mode);
-    document.getElementById("button-snacks").classList.add(real_mode);
+    document.getElementById("button-snacks")?.classList.remove(website_mode);
+    document.getElementById("button-snacks")?.classList.add(real_mode);
 
     document.querySelectorAll('[dark-is-dark]').forEach((element) => {
       let dark_is_dark = element.getAttribute('dark-is-dark') || website_mode;
@@ -78,11 +109,11 @@ class DateTime {
 
   /**
   * Update the classes of the body depending on the time given
-  * @param {('d'|'n')} half The half of the day
-  * @param {number} hour The hour in 12h format
-  * @param {number} quarter The quarter in 1->4 format
+  * @param half The half of the day
+  * @param hour The hour in 12h format
+  * @param quarter The quarter in 1->4 format
   */
-  update_time(half, hour, quarter) {
+  update_time(half: Half, hour: number, quarter: number) {
     // Remove all existing gradient classes
     const [website_mode, real_mode] = half == 'n' ? ['light', 'dark'] : ['dark', 'light'];
     this.set_classes(website_mode, real_mode, true);
@@ -96,11 +127,10 @@ class DateTime {
 
   /**
   * A quick way to get the half format
-  * @param {number} time The current hour
-  * @returns {('d'|'n')}
+  * @param time The current hour
   */
-  __get_half_from_time(time) {
-    let half = time > 18 || time <= 6 ? 'n' : 'd';
+  __get_half_from_time(time: number): [Half, number] {
+    let half = time > 18 || time <= 6 ? 'n' : 'd' as Half;
     // if morning (0->6), then time is +6 as it's the other half of night
     // if day (6->18), then time is -6 as day starts at 6 not 0
     // if evening (18->23) then time is -18 to offset the end of the day.
@@ -147,12 +177,11 @@ class DateTime {
 
   /**
   * Gets the location either via the browser geolocation api or timezone decoding.
-  * @returns {Promise<[number, number]>}
   */
-  async __get_location() {
+  async __get_location(): Promise<[number, number]> {
     if (settings.get_setting("Datetime", "location")) {
       // attempts to get the location via the geolocation api
-      let pos = await new Promise((resolve, reject) => {
+      let pos: GeolocationPosition = await new Promise((resolve, reject) => {
         navigator.geolocation.getCurrentPosition(resolve, reject);
       });
 
@@ -168,6 +197,11 @@ class DateTime {
     let timezones = await this.__get_timezones();
     this.verbose.log(`User timezone: ${Intl.DateTimeFormat().resolvedOptions().timeZone}`);
     let current = timezones[Intl.DateTimeFormat().resolvedOptions().timeZone]; // from a pre-deteminded list
+    if (current == undefined) {
+      // where are you? The middle of nowhere.
+      return [0, 0];
+    }
+
     let [latitude, longitude] = [current.lat, current.long];
     this.storage.setStorage("lvia", "timezone", MiliSeconds.day);
     return [latitude, longitude];
@@ -175,7 +209,7 @@ class DateTime {
 
   /**
   * Get the times for a given location
-  * @returns {Promise<TimesCollection>} A list of times in dayjs format.
+  * @returns A list of times in dayjs format.
   */
   async __get_times() {
     // checks if we can bypass the storage check or not.
@@ -189,7 +223,7 @@ class DateTime {
 
     // If we can't bypass storage, and we have storage. prefer that instead.
     if (!bypass_storage && this.storage.hasStorage("times")) {
-      let data = JSON.parse(this.storage.getStorage("times"));
+      let data = JSON.parse(this.storage.getStorage("times") as string) as TimesCollection;
       data.sunrise.yesterday = dayjs(data.sunrise.yesterday);
       data.sunrise.today = dayjs(data.sunrise.today);
       data.sunrise.tomorrow = dayjs(data.sunrise.tomorrow);
@@ -206,15 +240,17 @@ class DateTime {
     let yesterday = now.subtract(1, 'day');
     let tomorrow = now.add(1, 'day');
 
+    // @ts-ignore
     let yesterdaySunCalc = SunCalc.getTimes(yesterday.toDate(), latitude, longitude);
+    // @ts-ignore
     let todaySunCalc = SunCalc.getTimes(now.toDate(), latitude, longitude);
+    // @ts-ignore
     let tomorrowSunCalc = SunCalc.getTimes(tomorrow.toDate(), latitude, longitude);
 
     /**
     * calculate a lot of times
-    * @type {TimesCollection}
     */
-    let times = {
+    let times: TimesCollection = {
       sunrise: {
         yesterday: dayjs(yesterdaySunCalc.sunrise),
         today: dayjs(todaySunCalc.sunrise),
@@ -231,23 +267,28 @@ class DateTime {
     return times;
   }
 
-  format_times(times) {
-    times.sunrise.yesterday = times.sunrise.yesterday.format();
-    times.sunrise.today = times.sunrise.today.format();
-    times.sunrise.tomorrow = times.sunrise.tomorrow.format();
-    times.sunset.yesterday = times.sunset.yesterday.format();
-    times.sunset.today = times.sunset.today.format();
-    times.sunset.tomorrow = times.sunset.tomorrow.format();
-    return times;
+  format_times(times: TimesCollection) {
+    let new_times: TimesCollectionString = {
+      sunrise: {
+        yesterday: times.sunrise.yesterday.format(),
+        today: times.sunrise.today.format(),
+        tomorrow: times.sunrise.tomorrow.format()
+      },
+      sunset: {
+        yesterday: times.sunset.yesterday.format(),
+        today: times.sunset.today.format(),
+        tomorrow: times.sunset.tomorrow.format(),
+      }
+    };
+    return new_times;
   }
 
   /**
   * Get the progress of days
-  * @param {dayjs} now The current time
-  * @param {TimesCollection} times
-  * @returns {{"duration": number, "progress": number}} The duration of day (+) / night (-), and the progress.
+  * @param now The current time
+  * @returns The duration of day (+) / night (-), and the progress.
   */
-  get_progress(now, times) {
+  get_progress(now: dayjs.Dayjs, times: TimesCollection) {
     if (now.isAfter(times.sunset.today)) {
       this.verbose.log(`Evening`);
       // After sunset but before midnight
@@ -279,10 +320,10 @@ class DateTime {
 
   /**
     * Calculates the time until the next quarter increment based on progress
-    * @param {{"duration": number, "progress": number}} progress - Current progress value (0-1)
-    * @returns {number} - Time in milliseconds until next quarter increment
+    * @param progress - Current progress value (0-1)
+    * @returns - Time in milliseconds until next quarter increment
     */
-  calculate_time_to_next_quarter(progress) {
+  calculate_time_to_next_quarter(progress: { duration: number; progress: number; }) {
     progress = {
       duration: Math.abs(progress.duration), // in terms of hours
       progress: progress.progress
@@ -332,7 +373,7 @@ class DateTime {
     this.verbose.info(`Progress: ${progress.progress}`);
     this.verbose.info(`Duration: ${progress.duration} hours`);
 
-    let half = (progress.duration > 0) ? `d` : `n`;
+    let half = (progress.duration > 0) ? `d` : `n` as Half;
     let hour = Math.ceil(progress.progress * 12);
     let quarter = Math.floor((progress.progress * 12 - Math.floor(progress.progress * 12)) * 4) + 1;
 
@@ -353,7 +394,7 @@ class DateTime {
      * Sets the appearance to a specific time of day rather than using the real time.
      * @param {number} state - The hour value to set (0-24)
      */
-    setting_default: (state) => {
+    setting_default: (state: any) => {
       if (settings.get_setting("Datetime", "enabled")) {
         return;
       }
@@ -374,9 +415,9 @@ class DateTime {
     /**
      * Handler for realistic time setting.
      * Toggles between nature-based time (sun position) and quarter-hour based time.
-     * @param {boolean} _ - Unused parameter
+     * @param _ - Unused parameter
      */
-    setting_realistic: (_) => {
+    setting_realistic: (_: boolean = false) => {
       if (!settings.get_setting("Datetime", "enabled")) {
         return;
       }
@@ -390,7 +431,7 @@ class DateTime {
      * Controls whether dynamic time features are active.
      * @param {boolean} _ - Unused parameter
      */
-    setting_enable: (_) => {
+    setting_enable: (_: any) => {
       clearTimeout(this.clock);
       this.settings.setting_realistic();
       this.settings.setting_default(settings.get_setting("Datetime", "default_state"));

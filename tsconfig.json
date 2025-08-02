@@ -9,6 +9,11 @@
     "module": "nodenext",
     "target": "esnext",
     "types": [],
+    "paths": {
+      "*": [
+        "./node_modules/*"
+      ]
+    },
     // For nodejs:
     // "lib": ["esnext"],
     // "types": ["node"],
@@ -37,9 +42,12 @@
     "skipLibCheck": true,
     "allowJs": true
   },
+  "include": [
+    "node_modules"
+  ],
   "exclude": [
-    "ETOH",
-    "dist",
-    "Assets"
+    "ETOH/**",
+    "dist/**",
+    "Assets/**"
   ]
 }

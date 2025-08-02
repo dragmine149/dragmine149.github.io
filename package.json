@@ -6,8 +6,11 @@
     "build": "npx tsc"
   },
   "dependencies": {
-    "typescript": "^5.9.2",
-    "npm-watch": "^0.13.0"
+    "compress-json": "^3.2.0",
+    "dayjs": "^1.11.13",
+    "npm-watch": "^0.13.0",
+    "suncalc": "^1.9.0",
+    "typescript": "^5.9.2"
   },
   "watch": {
     "build": {

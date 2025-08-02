@@ -2,7 +2,7 @@
 * @typedef {import('../Scripts/new_loader')}
 */
 
-import { loader, customHistory, page } from '../dist/Scripts/new_loader.js';
+import { loader, customHistory, page } from '../Scripts/new_loader.js';
 import { settings } from '../Scripts/Settings/settings.mjs';
 import { Markdown, markdownSettings } from '../Modules/markdown.mjs';
 

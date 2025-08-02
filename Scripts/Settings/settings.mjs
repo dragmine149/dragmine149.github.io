@@ -1,6 +1,6 @@
-import { DragStorage } from "../storage.mjs";
+import { DragStorage } from "../storage.js";
 import { Verbose } from "../verbose.mjs";
-import { loader } from "../../dist/Scripts/new_loader.js";
+import { loader } from "../new_loader.js";
 
 class DragSettings {
   /** @type {Map<string, HTMLElement>} */
@@ -441,9 +441,9 @@ class DragSettings {
 
   /**
   * To show or to hide the settings
-  * @param {boolean} state The state of which to put the settings menu into
+  * @param {boolean | undefined} state The state of which to put the settings menu into
   */
-  visible(state) {
+  visible(state = undefined) {
     if (state === undefined || state === null) {
       // ability to flip the state if not defined
       state = document.getElementById("big-settings").hidden;

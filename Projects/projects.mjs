@@ -1,6 +1,7 @@
 import { Verbose } from "../Scripts/verbose.mjs";
 import { Markdown } from "../Modules/markdown.mjs";
-import { loader, customHistory, page } from "../dist/Scripts/new_loader.js";
+// import { loader, customHistory, page } from "../dist/Scripts/new_loader.js";
+import { loader, customHistory, page } from "../Scripts/new_loader.js";
 
 class ProjectLoader {
   __levels = {};
