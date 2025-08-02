@@ -1,15 +1,15 @@
 import { Verbose } from "./verbose.mjs";
 import { modules } from "../Modules/modules.mjs";
 
+declare function ui(element: string): void;
+
 class Loader {
   RETURN_TYPE = {
     text: 0, json: 1, document: 2
   }
 
-  /**
-  * @type {Map<string, any>}
-  */
-  cache;
+  cache: Map<string, any>;
+  verbose: Verbose;
 
   /**
   * Create a new loader class to load content from the server.
@@ -22,9 +22,9 @@ class Loader {
 
   /**
   * Show a warning message to the user when something goes wrong
-  * @param {string} message The message to display
+  * @param message The message to display
   */
-  __warn_load(message) {
+  __warn_load(message: string) {
     const warnings = document.getElementById("warnings");
     if (warnings === null) {
       this.verbose.log(`Failed to get warnings element whilst trying to display: ${message}`);
@@ -47,12 +47,12 @@ class Loader {
 
   /**
   * Get contents from the server
-  * @param {string} server_url The url on the server to query
-  * @param {bool} use_branch To use the specified branch instead of the main branch
+  * @param server_url The url on the server to query
+  * @param use_branch To use the specified branch instead of the main branch
   * @param {Loader.RETURN_TYPE} return_type The type of data to return.
-  * @returns {any} Returns data based on the return type provided.
+  * @returns Returns data based on the return type provided.
   */
-  async get_contents_from_server(server_url, use_branch = true, return_type = this.RETURN_TYPE.text) {
+  async get_contents_from_server(server_url: string | URL, use_branch: boolean = true, return_type: number = this.RETURN_TYPE.text) {
     if (server_url instanceof URL) {
       this.verbose.warn(`server_url was URL object - converting to string`);
       server_url = server_url.href;
@@ -101,13 +101,13 @@ class Loader {
 
     // check to see if we have a result
     if (!result.ok) {
-      if (use_branch) {
-        // redo, but this time without the branch
-        const no_branch = this.get_contents_from_server(server_url, false);
-        if (no_branch !== null) {
-          return no_branch;
-        }
-      }
+      // if (use_branch) {
+      //   // redo, but this time without the branch
+      //   const no_branch = this.get_contents_from_server(server_url, false);
+      //   if (no_branch !== null) {
+      //     return no_branch;
+      //   }
+      // }
       // warning message
       this.verbose.log(`Failed to load data, result:`, result);
       this.__warn_load(`Failed to load data from url: ${server_url} (via: ${result.url}).`);
@@ -131,21 +131,21 @@ class Loader {
 
   /**
   * Cache the results and return the same result
-  * @param {string} cache_name The server url that this result is from
-  * @param {any} result The results from the server.
-  * @returns {any} Returns the original result data provided, or slightly modified depending on the __get_from_cache method.
+  * @param cache_name The server url that this result is from
+  * @param result The results from the server.
+  * @returns Returns the original result data provided, or slightly modified depending on the __get_from_cache method.
   */
-  __cache_and_return(cache_name, result) {
+  __cache_and_return(cache_name: string, result: any) {
     this.cache.set(cache_name, result);
     return this.__get_from_cache(cache_name);
   }
 
   /**
   * Get data from the cache and returns it depending on what type it is
-  * @param {string} cache_name The name of the cache
-  * @returns {any} The resulting data
+  * @param cache_name The name of the cache
+  * @returns The resulting data
   */
-  __get_from_cache(cache_name) {
+  __get_from_cache(cache_name: string) {
     const data = this.cache.get(cache_name);
     if (data === undefined) return data;
 
@@ -173,7 +173,7 @@ class Page {
   * @returns The page
   */
   get_current_page_root() {
-    const url = new URL(location);
+    const url = new URL(location.toString());
     return this.get_root_from_url(url);
   }
 
@@ -182,7 +182,7 @@ class Page {
   * @returns The subpage name
   */
   get_current_subpage() {
-    const url = new URL(location);
+    const url = new URL(location.toString());
     return this.get_subpage_from_url(url);
   }
 
@@ -191,7 +191,7 @@ class Page {
   * @returns The current root subpage
   */
   get_current_root_subpage() {
-    const url = new URL(location);
+    const url = new URL(location.toString());
     return `${this.get_root_from_url(url)}/${this.get_subpage_from_url(url)}`;
   }
 
@@ -200,25 +200,25 @@ class Page {
   * @returns The name of the current branch
   */
   get_current_branch() {
-    const url = new URL(location);
+    const url = new URL(location.toString());
     return this.get_branch_from_url(url);
   }
 
   /**
   * Gets the root of the page
-  * @param {URL} url The url to get the root from
+  * @param url The url to get the root from
   * @returns The root of the site
   */
-  get_root_from_url(url) {
+  get_root_from_url(url: URL) {
     return url.origin;
   }
 
   /**
   * Gets the subpage of the page
-  * @param {URL} url The url to get the subpage from
+  * @param url The url to get the subpage from
   * @returns The subpage of the site
   */
-  get_subpage_from_url(url) {
+  get_subpage_from_url(url: URL) {
     const matches = url.pathname.match(/[^\/]+\/?$/);
     if (matches === null) {
       return '';
@@ -228,20 +228,27 @@ class Page {
 
   /**
   * Gets the branch of the page
-  * @param {URL} url The url to get the branch from
+  * @param url The url to get the branch from
   * @returns The name of the branch
   */
-  get_branch_from_url(url) {
-    return url.pathname.includes('Branches/') ? url.pathname.match(/Branches\/.*?\//)[1] : '';
+  get_branch_from_url(url: URL) {
+    let branches = url.pathname.match(/Branches\/.*?\//);
+    if (branches == null) {
+      return '';
+    }
+    return branches[1] as string;
+
+    // return url.pathname.includes('Branches/') ? [1] as string : '';
   }
 
   /**
   * The cache of the elements
   * This would normally not be needed, but some scripts relay on elements to save code.
   * Without cache, elements might not load correctly as they are referencing things that exist but aren't visible.
-  * @type {Map<string, HTMLElement>}
   */
-  document_cache;
+  document_cache: Map<string, HTMLElement>;
+
+  verbose: Verbose;
 
   constructor() {
     this.document_cache = new Map();
@@ -253,31 +260,34 @@ class Page {
   * @param {URL} url The url of the page to load
   * @param {HTMLElement} data The data of the page to load
   */
-  load_page_contents(url, data) {
-    document.getElementById("content").replaceWith(data);
+  load_page_contents(url: URL, data: HTMLElement) {
+    document.getElementById("content")?.replaceWith(data);
     const title_elm = document.getElementsByTagName('title').item(0);
+
     // set the page title to the one provided in the page, or the actually page "category" per se.
-    const new_title = content.getElementsByTagName('pageTitle').item(0);
-    title_elm.innerText = new_title ? new_title.innerText : this.get_subpage_from_url(url);
+    const new_title = document.getElementById("content")?.getElementsByTagName('pageTitle').item(0) as HTMLElement;
+    if (title_elm != null) {
+      title_elm.innerText = new_title ? new_title.innerText : this.get_subpage_from_url(url);
+    }
 
     customHistory.store_page(url);
   }
 
   /**
     * Loads a page in the form of website.com/page?search#sub
-    * @param {string} page The page to load (e.g. /Blog)
-    * @param {URLSearchParams} search Search parameters (e.g. ?blog=2024-01-02)
-    * @param {string} sub Page reference (e.g. #some_heading)
-    * @param {string} branch_name The branch of the website to get the data from. Default to no branch
+    * @param page The page to load (e.g. /Blog)
+    * @param search Search parameters (e.g. ?blog=2024-01-02)
+    * @param sub Page reference (e.g. #some_heading)
+    * @param branch_name The branch of the website to get the data from. Default to no branch
     */
-  async load_page(page, search = null, sub = '', branch_name = '') {
+  async load_page(page: string, search: URLSearchParams | null = null, sub: string = '', branch_name: string = '') {
     this.verbose.log(`Attempting to load page with data:`, { page, search, sub, branch_name });
 
     // sort out the data so that they are either empty or in a special form.
     let branch = branch_name == '' ? '' : `Branches/${branch_name}/`
     page = page.includes('main_page') ? '' : page;
     sub = sub == '' ? '' : `#${sub}`;
-    search = (search == '' || search == null || search.size == 0) ? new URLSearchParams() : search;
+    search = (search == null || search.size == 0) ? new URLSearchParams() : search;
 
     // check to see if the page change is too big to reload everything
     const looking_data = {
@@ -302,9 +312,13 @@ class Page {
 
     // load from server and make a new cache if it doesn't exist.
     if (data == undefined) {
-      /** @type {Document} */
-      const doc_data = await loader.get_contents_from_server(file, true, loader.RETURN_TYPE.document);
-      data = doc_data.getElementById("content");
+      const doc_data: Document = await loader.get_contents_from_server(file, true, loader.RETURN_TYPE.document);
+      let temp_data = doc_data.getElementById("content");
+      if (temp_data == null) {
+        this.verbose.error(`Invalid file from server: ${file}`);
+        return;
+      }
+      data = temp_data;
       this.document_cache.set(file, data);
     }
 
@@ -323,9 +337,9 @@ class Page {
   * Designed to be called once upon loading the websie.
   * Calls `load_page` after decoding the url that has loaded this site.
   */
-  load_page_from_url(url) {
-    if (!url) {
-      url = new URL(location);
+  load_page_from_url(url?: URL) {
+    if (url == undefined) {
+      url = new URL(location.toString());
     }
     this.verbose.log(`Attempting to load page from url: `, url);
 
@@ -333,9 +347,10 @@ class Page {
     let page = this.get_subpage_from_url(url);
     this.verbose.log(`page from url: ${page}`);
 
+    let load = url.searchParams.get("load");
     // load the page from the url provided if we have said url.
-    if (url.searchParams.has('load')) {
-      page = url.searchParams.get('load');
+    if (load != null) {
+      page = load;
       url.searchParams.delete('load');
     }
 
@@ -345,53 +360,56 @@ class Page {
     this.load_page(page, search, sub, branch);
   }
 
-  /**
-    * Creates a URLSearchParams object from a variable number of search parameter objects
-    * @param {...Object} params - Objects containing search parameter key-value pairs
-    * @returns {URLSearchParams} The combined search parameters
-    */
-  generate_search_params(...params) {
-    const search_params = new URLSearchParams();
+  //   /**
+  //     * Creates a URLSearchParams object from a variable number of search parameter objects
+  //     * @param {...Object} params - Objects containing search parameter key-value pairs
+  //     * @returns {URLSearchParams} The combined search parameters
+  //     */
+  //   generate_search_params(...params) {
+  //     const search_params = new URLSearchParams();
 
-    for (const param_obj of params) {
-      Object.entries(param_obj).forEach(([key, value]) => {
-        search_params.append(key, value);
-      });
-    }
+  //     for (const param_obj of params) {
+  //       Object.entries(param_obj).forEach(([key, value]) => {
+  //         search_params.append(key, value);
+  //       });
+  //     }
 
-    return search_params;
-  }
+  //     return search_params;
+  //   }
 }
 
 class Script {
+  scripts: HTMLElement | null;
+  verbose: Verbose;
+
   constructor() {
-    this.__reload_self();
+    this.scripts = this.__reload_self();
     this.verbose = new Verbose("Loader_Script", "#a9f831");
   }
 
   __reload_self() {
     if (this.scripts !== null && this.scripts !== undefined) {
-      return;
+      return null;
     }
-    this.scripts = document.getElementById("scripts");
+    return document.getElementById("scripts");
   }
 
   /**
   * Checks to see if we have already loaded this script before
-  * @param {string} src The source of the script to check for
-  * @returns {boolean} Have we or have we not
+  * @param src The source of the script to check for
+  * @returns Have we or have we not
   */
-  __has_loaded(src) {
-    return this.scripts.querySelector(`script[src="${src}"]`) != null;
+  __has_loaded(src: string | null) {
+    return this.scripts?.querySelector(`script[src="${src}"]`) != null;
   }
 
   /**
     * Load the scripts for a page.
-    * @param {string} page_name - The name of the page, won't load stuff it's already loaded.
-    * @param {HTMLElement} page_data - The script data to load.
+    * @param page_name - The name of the page, won't load stuff it's already loaded.
+    * @param page_data - The script data to load.
     */
-  load_scripts(category, page_data) {
-    this.__reload_self();
+  load_scripts(category: string, page_data: HTMLElement) {
+    this.scripts = this.__reload_self();
     if (page_data == null) {
       this.verbose.error(`Failed to load page with category '${category}' as there was no page data...`);
       return;
@@ -399,7 +417,7 @@ class Script {
 
     // check to see if a category exists, if so call that instead of trying to add new scripts.
     // the page data should be cached anyway, and if it's not well tough.
-    if (this.scripts.querySelector(`script[category="${category}"]`) !== null) {
+    if (this.scripts?.querySelector(`script[category="${category}"]`) !== null) {
       this.verbose.log(`Found script with category: ${category}, skipping...`);
       this.call_defaults_in_category(category);
       return;
@@ -409,8 +427,12 @@ class Script {
     const new_scripts = page_data.getElementsByTagName("script");
     for (let script_id = 0; script_id < new_scripts.length; script_id++) {
       const script = new_scripts.item(script_id);
-      this.verbose.log(`Attempting to add new script: ${script.attributes.src?.value}`);
-      if (script.src && this.__has_loaded(script.attributes.src?.value)) {
+      if (script == null) {
+        continue;
+      }
+
+      this.verbose.log(`Attempting to add new script: ${script.getAttribute("src")}`);
+      if (script.src && this.__has_loaded(script.getAttribute("src"))) {
         this.verbose.warn(`Found already loaded script, continuing... (category was not picked up)`);
         this.verbose.trace();
         // this should RARLEY be hit, but it's to avoid cases like "redeclaration of variable", etc..
@@ -420,7 +442,7 @@ class Script {
       // Create a new script element and copy everything across.
       const new_script = document.createElement("script");
       for (const attribute of script.getAttributeNames()) {
-        new_script.setAttribute(attribute, script.getAttribute(attribute));
+        new_script.setAttribute(attribute, script.getAttribute(attribute) as string);
       }
       if (script.src.length == 0) {
         new_script.innerHTML = script.innerHTML;
@@ -434,42 +456,42 @@ class Script {
 
   /**
   * Call all default functions (if possible), in a certain category.
-  * @param {string} category The category to call the scripts in.
+  * @param category The category to call the scripts in.
   */
-  call_defaults_in_category(category) {
-    this.verbose.log(`Calling defaults on scripts of category: ${category}`);
+  call_defaults_in_category(category: string) {
+    // this.verbose.log(`Calling defaults on scripts of category: ${category}`);
+    this.verbose.log(`NOT!! !! !! Calling defaults on scripts of category: ${category}`);
 
     // filter out all of those in difference categories
-    const children = Array.from(this.scripts.children).filter(child => child.attributes.category?.value === category);
-    for (let script_id = 0; script_id < children.length; script_id++) {
-      // test function to see if it exists
-      const func_name = `${category}_default_${script_id}`;
-      if (typeof window[func_name] !== "function") {
-        continue;
-      }
-      // and call it.
-      this.verbose.log(`Calling default function: ${func_name}`);
-      window[func_name]();
-    }
+    // const children = Array.from(this.scripts.children).filter(child => child.getAttribute("category") === category);
+    // for (let script_id = 0; script_id < children.length; script_id++) {
+    //   // test function to see if it exists
+    //   const func_name = `${category}_default_${script_id}`;
+    //   if (typeof window[func_name] !== "function") {
+    //     continue;
+    //   }
+    //   // and call it.
+    //   this.verbose.log(`Calling default function: ${func_name}`);
+    //   window[func_name]();
+    // }
   }
 }
 
 
 class CustomHistory {
-  /** @type {Map<String, Function>} */
-  listeners;
+  listeners: Map<String, Function>;
   /**
    * A value to determine if we are processing the 'popstate' event.
    * During this time, some other checks need to be modified or skipped to avoid messing up the history.
-   * @type {boolean}
    */
-  poppin_jump = false;
-  /** @type {URL} */
-  current_url = null;
+  poppin_jump: boolean = false;
+  current_url: URL;
+  verbose: Verbose;
 
   constructor() {
     this.listeners = new Map();
-    this.verbose = new Verbose("Loader_History", "#a1b2c3")
+    this.verbose = new Verbose("Loader_History", "#a1b2c3");
+    this.current_url = new URL(window.location.toString());
 
     // the event handler for dealing with browser.back and browser.forward
     window.addEventListener('popstate', () => {
@@ -479,7 +501,7 @@ class CustomHistory {
       this.poppin_jump = true;
 
       // get the current details.
-      const currentUrl = new URL(window.location);
+      const currentUrl = new URL(window.location.toString());
       const data = this.convert_url_to_pagedata(currentUrl);
       this.verbose.log(`Processing page pop! Details:`, data);
 
@@ -498,21 +520,21 @@ class CustomHistory {
 
   /**
   * Add a listener to the history so that pages can be loaded as soon as possible.
-  * @param {string} key The listener identity, each one must be unique.
+  * @param key The listener identity, each one must be unique.
   * @param {(data: {branch: string, page: string, search: URLSearchParams, sub: string}) => void} callback What to call upon this listener being triggered
   */
-  add_listener(key, callback) {
+  add_listener(key: string, callback: Function) {
     this.listeners.set(key, callback);
   }
 
   /**
    * Checks if the provided data represents a new unique page compared to current history state
-   * @param {{branch: string, page: string, search: string, sub: string}} new_data The incoming page data to compare
-   * @returns {boolean} True if this represents a new unique page state
+   * @param new_data The incoming page data to compare
+   * @returns True if this represents a new unique page state
    */
-  is_new_page(new_data) {
+  is_new_page(new_data: { branch: any; page: any; search?: URLSearchParams; sub?: string; }) {
     this.verbose.log(`rabbit?: ${this.poppin_jump}`);
-    const url_to_compare = this.poppin_jump ? this.current_url : new URL(window.location);
+    const url_to_compare = this.poppin_jump ? this.current_url : new URL(window.location.toString());
     const compare_data = this.convert_url_to_pagedata(url_to_compare);
     this.verbose.log(`customHistory.is_new_page: Comparing:`, new_data, `with:`, compare_data);
     this.verbose.log(`results:
@@ -527,11 +549,11 @@ this.current_url === null: ${this.current_url === null}`);
   /**
    * Checks if the new page data represents an important change from the current state
    * that would require a new history entry.
-   * @param {{branch: string, page: string, search: URLSearchParams, sub: string}} new_data The incoming page data to compare
-   * @returns {boolean} True if this represents an important change requiring a new history entry
+   * @param new_data The incoming page data to compare
+   * @returns True if this represents an important change requiring a new history entry
    */
-  is_important_change(new_data) {
-    const url_to_compare = this.poppin_jump ? this.current_url : new URL(window.location);
+  is_important_change(new_data: { branch: any; page: any; search?: URLSearchParams; sub?: string; }) {
+    const url_to_compare = this.poppin_jump ? this.current_url : new URL(window.location.toString());
     const compare_data = this.convert_url_to_pagedata(url_to_compare);
     return this.is_new_page(new_data) ||
       new_data.search != compare_data?.search ||
@@ -541,29 +563,29 @@ this.current_url === null: ${this.current_url === null}`);
 
   /**
      * Checks if the new page data represents exactly the same page as the current state
-     * @param {{branch: string, page: string, search: URLSearchParams, sub: string}} new_data The incoming page data to compare
-     * @returns {boolean} True if the new data represents the same page
+     * @param new_data The incoming page data to compare
+     * @returns True if the new data represents the same page
      */
-  are_same_page(new_data) {
-    const url_to_compare = this.poppin_jump ? this.current_url : new URL(window.location);
+  are_same_page(new_data: { branch: any; page: any; search?: URLSearchParams; sub?: string; }) {
+    const url_to_compare = this.poppin_jump ? this.current_url : new URL(window.location.toString());
     const compare_data = this.convert_url_to_pagedata(url_to_compare);
     this.verbose.log(`Same page?:
 new_data.branch == compare_data?.branch: ${new_data.branch == compare_data?.branch}
 new_data.page == compare_data?.page: ${new_data.page == compare_data?.page}
 new_data.sub == compare_data?.sub: ${new_data.sub == compare_data?.sub}
-new_data.search == compare_data?.search: ${new_data.search.toString() == compare_data?.search.toString()}`);
+new_data.search == compare_data?.search: ${new_data.search?.toString() == compare_data?.search.toString()}`);
     return new_data.branch == compare_data?.branch &&
       new_data.page == compare_data?.page &&
       new_data.sub == compare_data?.sub &&
-      new_data.search.toString() == compare_data?.search.toString();
+      new_data.search?.toString() == compare_data?.search.toString();
   }
 
   /**
    * Process a listener callback for a given key with page data
-   * @param {string} key The listener identifier to process
-   * @param {{branch: string, page: string, search: URLSearchParams, sub: string}} data The page data to pass to the listener
+   * @param key The listener identifier to process
+   * @param data The page data to pass to the listener
    */
-  process_listener(key, data) {
+  process_listener(key: string, data: { branch: any; page: any; search?: URLSearchParams; sub?: string; }) {
     // check for any listeners
     const callback = this.listeners.get(key);
     if (callback !== undefined) {
@@ -576,9 +598,9 @@ new_data.search == compare_data?.search: ${new_data.search.toString() == compare
 
   /**
   * Store a page in history. Will compare the current store state data to see if we need to push or replace.
-  * @param {URL} url The url to go to
+  * @param url The url to go to
   */
-  store_page(url) {
+  store_page(url: URL) {
     if (this.poppin_jump) {
       // we are processing the popped state here. Affecting the UrL is not necessary.
       return;
@@ -607,21 +629,21 @@ new_data.search == compare_data?.search: ${new_data.search.toString() == compare
 
   /**
   * Convert page data to a URL object (opposite of convert_url_to_pagedata)
-  * @param {{branch: string, page: string, search: URLSearchParams, sub: string}} data The page data to convert
-  * @returns {URL} A URL object representing the page data
+  * @param data The page data to convert
+  * @returns A URL object representing the page data
   */
-  convert_pagedata_to_url(data) {
+  convert_pagedata_to_url(data: { branch: any; page: any; search?: URLSearchParams; sub?: string; }) {
     const branch = data.branch == '' ? '' : `Branches/${data.branch}/`
-    const search_str = data.search.toString().length > 0 ? `?${data.search.toString()}` : '';
+    const search_str = data.search == null ? '' : data.search.toString().length > 0 ? `?${data.search.toString()}` : '';
     return new URL(`${page.get_current_page_root()}/${branch}${data.page}${search_str}${data.sub}`);
   }
 
   /**
   * Convert a URL object to page data (opposite of convert_pagedata_to_url)
-  * @param {URL} url The URL object to convert
-  * @returns {{branch: string, page: string, search: URLSearchParams, sub: string}} The URL's page data
+  * @param url The URL object to convert
+  * @returns The URL's page data
   */
-  convert_url_to_pagedata(url) {
+  convert_url_to_pagedata(url: URL) {
     return {
       branch: page.get_branch_from_url(url),
       page: page.get_subpage_from_url(url),

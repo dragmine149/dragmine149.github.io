@@ -1,5 +1,5 @@
 import { snackbar } from './snackbar_hover.mjs';
-import { loader, page } from './new_loader.mjs';
+import { loader, page } from '../dist/Scripts/new_loader.js';
 import { settings } from './Settings/settings.mjs';
 
 // Script to run stuff on page load to finish loading everything else
