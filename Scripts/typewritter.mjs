@@ -48,3 +48,5 @@ class typewriter {
     this.in_progress = false;
   };
 }
+
+export { typewriter }

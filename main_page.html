@@ -9,14 +9,17 @@
 
 <div id="content" style="width: 100%;">
   <pageTitle hidden>Dragmine149</pageTitle>
-  <script>
+  <script type="module">
+    import { typewriter } from './Scripts/typewritter.mjs';
+
     let obj = document.getElementById('name');
     let writer = new typewriter(obj);
     function start_writer() {
       writer.start('Dragmine149', 1250);
     }
+    document.getElementById("name").addEventListener("click", start_writer);
   </script>
-  <h1 id="name" onclick="start_writer()">Dragmine149</h1>
+  <h1 id="name">Dragmine149</h1>
   <h6>Welcome to the site of dragons</h6>
   <span>Jack of many trades, master of none.</span>
   <span>Please note that this site is still in development.</span>
