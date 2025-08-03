@@ -1,4 +1,4 @@
-let writers = [];
+let writers: typewriter[] = [];
 
 class typewriter {
   elm: HTMLDivElement;

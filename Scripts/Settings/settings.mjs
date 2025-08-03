@@ -1,6 +1,6 @@
-import { DragStorage } from "../storage.js";
+import { DragStorage } from "../storage.ts";
 import { Verbose } from "../verbose.mjs";
-import { loader } from "../new_loader.js";
+import { loader } from "../new_loader.ts";
 
 class DragSettings {
   /** @type {Map<string, HTMLElement>} */

@@ -1,8 +1,8 @@
-import { DragStorage, MiliSeconds } from '../storage.js';
+import { DragStorage, MiliSeconds } from '../storage';
 import { Verbose } from '../verbose.mjs';
 // import { settings } from '../../dist/Scripts/Settings/settings.mjs';
 import { settings } from '../Settings/settings.mjs';
-import { loader } from '../new_loader.js';
+import { loader } from '../new_loader';
 import dayjs from 'dayjs';
 
 declare function ui(arg0: string, arg1: string): void;
@@ -58,7 +58,7 @@ type Half = ('d' | 'n');
 
 
 class DateTime {
-  clock: number = -1;
+  clock: NodeJS.Timeout;
   storage: DragStorage;
   verbose: Verbose;
 

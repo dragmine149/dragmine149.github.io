@@ -137,13 +137,14 @@ class DragStorage {
   }
 
   listStorage() {
-    let items = [];
+    let items: string[] = [];
     this.__key_loop((item: string) => {
       if (item == 'cache') return;
       if (item.startsWith(this.prefix)) {
         items.push(item.replace(this.prefix + "-", ""));
       }
     });
+    return items;
   }
 }
 
