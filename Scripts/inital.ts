@@ -1,5 +1,6 @@
 import { snackbar, SnackbarArea } from './snackbar_hover';
-import { loader, page } from './new_loader';
+import { loader, RETURN_TYPE } from './loader/loader.js';
+import { page } from './loader/page.js';
 import { settings } from './Settings/settings.js';
 import './DayNightCycle/background';
 
@@ -38,7 +39,7 @@ async function set_branch() {
   if (url.hostname !== 'localhost') return;
 
   url.pathname = ".git/HEAD";
-  let branch = await loader.get_contents_from_server(url.href, false, loader.RETURN_TYPE.text);
+  let branch = await loader.get_contents_from_server(url.href, RETURN_TYPE.text);
   branch = branch.replace(/^ref: refs\/heads\//, '');
   return branch;
 }

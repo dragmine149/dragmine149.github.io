@@ -16,7 +16,13 @@ const MiliSeconds = {
   }
 };
 
+/**
+ * Custom storage interface for localStorage, might expand with the very annoying indexedDB later.
+ *
+ * The "Cache" feature is for storage that needs to be stored longer than a session but not indefinitely.
+ */
 class DragStorage {
+
   prefix = "";
   /**
    * Creates a new Storage instance with a specified prefix
@@ -26,7 +32,7 @@ class DragStorage {
     this.prefix = prefix;
   }
 
-  __key_loop(callback: Function) {
+  #key_loop(callback: Function) {
     for (let index = 0; index < localStorage.length; index++) {
       callback(localStorage.key(index));
     }
@@ -61,7 +67,7 @@ class DragStorage {
   }
 
   /**
-   * Checks if an item exists in localStorage
+   * Checks if an item exists in localStorage, although just do an if null check on getStorage
    * @param name - The name of the storage item
    * @returns True if the item exists, false otherwise
    */
@@ -85,7 +91,7 @@ class DragStorage {
    * Removes all items from localStorage that start with the instance prefix
    */
   clearPrefix() {
-    this.__key_loop((key: string) => {
+    this.#key_loop((key: string) => {
       if (key.startsWith(this.prefix)) {
         localStorage.removeItem(key);
       }
@@ -136,9 +142,13 @@ class DragStorage {
     return false;
   }
 
+  /**
+   * Lists all the keys in localStorage
+   * @returns A list of keys
+   */
   listStorage() {
     let items: string[] = [];
-    this.__key_loop((item: string) => {
+    this.#key_loop((item: string) => {
       if (item == 'cache') return;
       if (item.startsWith(this.prefix)) {
         items.push(item.replace(this.prefix + "-", ""));

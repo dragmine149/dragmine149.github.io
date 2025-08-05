@@ -1,6 +1,6 @@
 import { DragStorage } from "../storage.ts";
 import { Verbose } from "../verbose.mjs";
-import { loader } from "../new_loader.ts";
+import { loader, RETURN_TYPE } from "../loader/loader.ts";
 
 type SettingType = (boolean | number | string);
 
@@ -88,7 +88,7 @@ class DragSettings {
   */
   async __initial_load() {
     // get settings from server
-    this.data = await loader.get_contents_from_server("Scripts/Settings/settings.json", true, loader.RETURN_TYPE.json);
+    this.data = await loader.get_contents_from_server("Scripts/Settings/settings.json", RETURN_TYPE.json);
 
     // templates are tempalates, although should not be as important sometimes they are.
     await this.__load_templates();
@@ -134,8 +134,8 @@ class DragSettings {
   async __load_templates() {
     this.verbose.log("Loading templates...");
     this.templates = {
-      'main': await loader.get_contents_from_server("Scripts/Settings/templates/main.html", true, loader.RETURN_TYPE.document),
-      'quick': await loader.get_contents_from_server("Scripts/Settings/templates/quick.html", true, loader.RETURN_TYPE.document)
+      'main': await loader.get_contents_from_server("Scripts/Settings/templates/main.html", RETURN_TYPE.document),
+      'quick': await loader.get_contents_from_server("Scripts/Settings/templates/quick.html", RETURN_TYPE.document)
     };
   }
 

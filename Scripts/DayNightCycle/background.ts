@@ -1,7 +1,7 @@
 import { DragStorage, MiliSeconds } from '../storage';
 import { Verbose } from '../verbose.mjs';
 import { settings } from '../Settings/settings';
-import { loader } from '../new_loader';
+import { loader, RETURN_TYPE } from '../loader/loader';
 import dayjs from 'dayjs';
 
 declare function ui(arg0: string, arg1: string): void;
@@ -76,7 +76,7 @@ class DateTime {
   * Gets a pre-determined list of timezone data.
   */
   async __get_timezones(): Promise<TimezoneData> {
-    return await loader.get_contents_from_server('Scripts/DayNightCycle/timezones.json', true, loader.RETURN_TYPE.json);
+    return await loader.get_contents_from_server('Scripts/DayNightCycle/timezones.json', RETURN_TYPE.json);
   }
 
   /**
