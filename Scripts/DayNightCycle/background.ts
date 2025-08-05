@@ -58,7 +58,7 @@ type Half = ('d' | 'n');
 
 
 class DateTime {
-  clock: NodeJS.Timeout;
+  clock: number;
   storage: DragStorage;
   verbose: Verbose;
 

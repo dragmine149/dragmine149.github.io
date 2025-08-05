@@ -1,6 +1,7 @@
 import { snackbar, SnackbarArea } from './snackbar_hover';
 import { loader, page } from './new_loader';
 import { settings } from './Settings/settings.mjs';
+import './DayNightCycle/background';
 
 // Script to run stuff on page load to finish loading everything else
 function socials() {

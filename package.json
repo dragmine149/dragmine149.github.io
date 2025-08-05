@@ -19,6 +19,6 @@
       ],
       "extensions": "js,ts,mjs"
     }
-  }
+  },
   "private": true
 }
