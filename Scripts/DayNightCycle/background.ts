@@ -1,7 +1,6 @@
 import { DragStorage, MiliSeconds } from '../storage';
 import { Verbose } from '../verbose.mjs';
-// import { settings } from '../../dist/Scripts/Settings/settings.mjs';
-import { settings } from '../Settings/settings.mjs';
+import { settings } from '../Settings/settings';
 import { loader } from '../new_loader';
 import dayjs from 'dayjs';
 
