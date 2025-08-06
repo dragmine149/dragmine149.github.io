@@ -1,5 +1,5 @@
-// Source: https://adventofcode.com/
-// Triple click to select code blocks
+// Source: https://adventofcode.com/ (use inspector to find this!)
+// Triple click to select code blocks, slightly modified to be more readable and extends to more situations.
 window.addEventListener('click',
   function (event: MouseEvent) {
     const isCode = (event.target as HTMLElement | null)?.nodeName === 'CODE';

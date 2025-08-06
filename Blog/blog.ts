@@ -1,96 +1,93 @@
-/**
-* @typedef {import('../Scripts/new_loader')}
-*/
-
 import { loader, RETURN_TYPE } from '../Scripts/loader/loader';
 import { customHistory } from '../Scripts/loader/customHistory';
 import { page } from '../Scripts/loader/page';
 import * as url_functions from '../Scripts/loader/url_functions';
 
-
 import { settings } from '../Scripts/Settings/settings';
-import { Markdown, markdownSettings } from '../Modules/markdown.mjs';
+import { Markdown, MarkdownSettings } from '../Modules/markdown.js';
+
+enum BLOG_STATE {
+  List, Viewer
+}
+
+type BlogFormat = {
+  date: string;
+  categories: string[];
+  preview: string;
+}
+
 
 class Blog {
-  /** @type {boolean} Variable to check if we have loaded the list or not, to prevent reloading of the list. */
+  /** Variable to check if we have loaded the list or not, to prevent reloading of the list. */
   loaded_list_items = false;
+  markdown: Markdown;
+  blog_list: BlogFormat[];
 
   constructor() {
     // initialise the markdown module.
-    this.__load_markdown();
+    this.#load_markdown();
 
     // page.listen_to_state_pop("blog", v => this.load_blog(v, false));
     customHistory.add_listener("Blog", (v) => {
-      this.load_blog(v.search.get("blog"));
+      this.load_blog(v.search?.get("blog"));
     });
 
     settings.add_listener("Blog", "title", (v) => {
       console.log("Updating blog title:", v);
-      /** @type {HTMLHeadingElement} */
-      let elm = document.querySelector('h1[id="title"]');
+      let elm = document.querySelector('h1[id="title"]') as HTMLHeadingElement | null;
       if (!elm) return;
       elm.style.fontSize = v + "rem";
     });
 
-    Object.freeze(this.__blog_state);
-
     this.load_blog_from_url();
   }
 
-  async __load_markdown() {
+  async #load_markdown() {
     // custom function to make sure that markdown exists before loading.
     // As technically it doesn't need to exist until we load a blog. Hence we can prevent any errors.
     if (this.markdown) return;
 
-    while (!Markdown) {
-      await new Promise(resolve => setTimeout(resolve, 100));
-    }
+    this.markdown = new Markdown({
+      markedLocalTime: true,
+      markedFootnote: true,
+      markedImprovedImage: true,
+      markedCustomHeadingId: true,
+      markedHighlight: true,
+      markedRemoteImage: true,
+      markedLocalLink: (url) => {
+        // console.warn(`Loading page from URL: ${url}`);
 
-    if (Markdown) {
-      this.markdown = new Markdown({
-        markedLocalTime: true,
-        markedFootnote: true,
-        markedImprovedImage: true,
-        markedCustomHeadingId: true,
-        markedHighlight: true,
-        markedRemoteImage: true,
-        markedLocalLink: (url) => {
-          // console.warn(`Loading page from URL: ${url}`);
-
-          if (url.searchParams.has("blog")) {
-            console.log("Loading blog from URL:", url);
-            this.load_blog(url.searchParams.get("blog"));
-            return true;
-          }
-          console.log("Loading page from URL:", url);
-
-          page.load_page_from_url(url);
+        if (url.searchParams.has("blog")) {
+          console.log("Loading blog from URL:", url);
+          this.load_blog(url.searchParams.get("blog"));
           return true;
-        },
-      }, document.getElementById("blog_content"));
-    }
+        }
+        console.log("Loading page from URL:", url);
+
+        page.load_page_from_url(url);
+        return true;
+      },
+    });
   }
 
-  __blog_state = {
-    List: 0, Viewer: 1
-  }
 
   /**
   * Set the blog state as being shown or the list.
-  * @param {Blog.__blog_state} state The state to show
+  * @param state The state to show
   */
-  set_blog_state(state) {
+  set_blog_state(state?: BLOG_STATE) {
     const blog_content = document.getElementById('blog_content');
     const blog_list = document.getElementById('blog_list');
-    const back = document.getElementById("blog_back");
+    const back = document.getElementById("blog_back") as HTMLButtonElement | null;
     switch (state) {
-      case this.__blog_state.List:
+      case BLOG_STATE.List:
         console.log(`Switching blog to list mode.`);
         if (blog_list) blog_list.hidden = false;
         if (blog_content) blog_content.hidden = true;
         if (back) back.disabled = true;
         return;
-      case this.__blog_state.Viewer:
+      case BLOG_STATE.Viewer:
+      default:
         console.log(`Switching blog to viewer mode.`);
         if (blog_list) blog_list.hidden = true;
         if (blog_content) blog_content.hidden = false;
@@ -101,16 +98,16 @@ class Blog {
 
   /**
   * Load a blog, or load the list if an invalid blog is parsed.
-  * @param {string} blog_page The blog to load
-  * @returns
+  * @param blog_page The blog to load
   */
-  async load_blog(blog_page) {
-    if (blog_page == null || blog_page === "" || blog_page == undefined) {
+  async load_blog(blog_page?: string | null) {
+    if (blog_page === "" || blog_page == undefined || blog_page == null) {
       this.load_blog_list();
       return;
     }
 
-    this.__load_markdown();
+    this.#load_markdown();
+    this.markdown.set_obj(document.getElementById("blog_content") as HTMLElement);
 
     // replace the search terms aspect if it gets left behind for some reason.
     if (blog_page.includes("?blog=")) {
@@ -123,15 +120,15 @@ class Blog {
     const blog_details = await loader.get_contents_from_server(`Blog/Posts/${blog_page}.md`, RETURN_TYPE.text);
     this.markdown.parse(blog_details);
 
-    this.set_blog_state(this.__blog_state.Viewer);
-    customHistory.store_page(new URL(`${page.get_current_root_subpage()}?blog=${blog_page}`));
+    this.set_blog_state(BLOG_STATE.Viewer);
+    customHistory.store_page(new URL(`${url_functions.get_current_root_subpage()}?blog=${blog_page}`));
   }
 
   /**
    * Create the list items for the blog list.
    * Happens in a separate function as it only really needs to be called once due to the cache in loader.
    */
-  __create_list_items() {
+  #create_list_items() {
     if (this.loaded_list_items) {
       return;
     }
@@ -177,16 +174,15 @@ class Blog {
   */
   async load_blog_list() {
     this.blog_list = await loader.get_contents_from_server(`Blog/list.json`, RETURN_TYPE.json);
-    this.__create_list_items()
+    this.#create_list_items()
 
-    this.set_blog_state(this.__blog_state.List);
+    this.set_blog_state(BLOG_STATE.List);
     customHistory.store_page(new URL(`${url_functions.get_current_root_subpage()}`));
   }
 
-  load_blog_from_url(url) {
-    if (!url) {
-      url = new URL(location);
-    }
+  load_blog_from_url(url?: URL) {
+    if (!url) url = new URL(location.toString());
+
     this.load_blog(url.searchParams.get('blog'));
   }
 }
@@ -194,11 +190,12 @@ class Blog {
 const blog = new Blog();
 
 // NOTE: Technically this is load in some weird module loading nonsense that probably needs to be cleaned up.
-function Blog_default_0() {
+function initialise() {
   // by default, after everything has loaded.
   blog.load_blog_from_url();
+  return true;
 }
 
-document.getElementById("blog_back")?.addEventListener('click', blog.load_blog_list());
+document.getElementById("blog_back")?.addEventListener('click', blog.load_blog_list);
 
-export { blog }
+export { blog, initialise }

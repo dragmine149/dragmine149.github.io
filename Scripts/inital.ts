@@ -54,9 +54,15 @@ async function set_branch() {
   }
 })();
 
-async function load_blog() {
-  let blog = await import('../Blog/blog.mjs');
-  console.log(blog.blog.loaded_list_items);
-}
+// async function load_blog() {
+//   let module = {
+//     "blog": {
+//       "module": async () => await import('../Blog/blog')
+//     }
+//   }
+//   // let blog = await import(module["blog"].module);
+//   let blog = await module["blog"].module();
+//   console.log(blog.blog.loaded_list_items);
+// }
 
-document.getElementById("test")?.addEventListener('click', () => load_blog());
+// document.getElementById("test")?.addEventListener('click', () => load_blog());

@@ -2,6 +2,7 @@ import { Verbose } from "../verbose.mjs";
 import { customHistory } from './customHistory';
 import { loader, RETURN_TYPE } from "./loader";
 import * as url_functions from './url_functions';
+import { modules } from "../../Modules/modules";
 
 class Page {
   /**
@@ -64,7 +65,6 @@ class Page {
     // Attempts to store the page and if we can't call the scripts and continue.
     if (!customHistory.store_page(destination_url)) {
       this.verbose.log(`Cancelling page load as changes aren't big enough to warrant change`);
-      // script.call_defaults_in_category(page);
       return;
     }
 
@@ -85,14 +85,13 @@ class Page {
     }
 
     // load the module data before loading the script data. modules are designed to have priority as they are used in most places.
-    // modules.load_modules_from_dom(data);
+    await modules.load_modules_from_dom(data);
     // i don't really like this, but the 30ms wait should give enough time for most of the modules to load the important stuff at least.
     // going lower would just cause stability errors, hence 30ms
-    await new Promise(resolve => setTimeout(resolve, 30));
+    // await new Promise(resolve => setTimeout(resolve, 30));
 
     this.verbose.log(`New destination: ${destination_url} ({branch: ${branch}, page: ${page}, search: ${search}, sub: ${sub}})`);
     this.load_page_contents(destination_url, data);
-    // script.load_scripts(page, data);
   }
 
   /**

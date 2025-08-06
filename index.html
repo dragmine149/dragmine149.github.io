@@ -10,24 +10,7 @@
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="Scripts/DayNightCycle/background.css">
 
-    <!-- DayJS -->
-    <!-- <script src="https://cdn.jsdelivr.net/npm/dayjs@1.11.13/dayjs.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/dayjs@1.11.13/plugin/relativeTime.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/dayjs@1.11.13/plugin/localizedFormat.js"></script>
-    <script>
-      dayjs.extend(dayjs_plugin_relativeTime);
-      dayjs.extend(dayjs_plugin_localizedFormat);
-      dayjs.locale('en');
-    </script> -->
-
     <link rel="stylesheet" href="Scripts/verbose.css">
-
-    <!-- <script src="dist/Scripts/new_loader.js" type="module"></script> -->
-    <!-- <script src="Modules/modules.mjs" type="module"></script> -->
-
-    <!-- <script src="https://cdn.jsdelivr.net/npm/compress-json@3/bundle.min.js"></script> -->
-
-    <!-- <script src="Scripts/snackbar_hover.mjs" type="module"></script> -->
 
     <!-- Font Awesome -->
     <script defer src="Assets/fontawesome-free-6.6.0-web/js/all.min.js"></script>
@@ -38,18 +21,21 @@
     <script defer src="Scripts/Particles/particle_controller.js"></script>
     <link rel="stylesheet" href="Scripts/Particles/particles.css"> -->
 
-    <!-- Typewritter (custom) -->
-    <!-- <script src="dist/Scripts/typewritter.js" type="module"></script> -->
     <!-- Ability to copy code blocks -->
     <script src="dist/code_copier.js" type="module"></script>
-
   </head>
   <body class="light bn_11">
-    <article class="main no-padding medium center-align middle-align">
-      <script src="dist/inital.js" type="module" defer></script>
-      <script src="https://cdn.jsdelivr.net/npm/suncalc@1.9.0/suncalc.min.js" defer></script>
-      <script src="dist/DayNightCycle/background.js" type="module" defer></script>
+    <!-- Main script, which kinda loads everything else. -->
+    <script src="dist/inital.js" type="module" defer></script>
 
+    <!-- Background scripts to control the beautiful background changing. -->
+    <script src="https://cdn.jsdelivr.net/npm/suncalc@1.9.0/suncalc.min.js" defer></script>
+
+    <div id="scripts">
+      <div class="modules"></div>
+    </div>
+
+    <article class="main no-padding medium center-align middle-align">
       <div id="button-snacks" class="light">
         <div id="snackbar-tl" class="snackbar button top left"></div>
         <div id="snackbar-tm" class="snackbar button top"></div>
@@ -99,10 +85,6 @@
         </div>
         <a class="button" href="https://dragmine149.github.io/ETOH" title="Eternal Towers of Hell (roblox game) Tower Tracker">EToH TT</a>
         <div class="max"></div>
-      </div>
-
-      <div id="scripts">
-        <div class="modules"></div>
       </div>
 
       <div id="logs" hidden>
