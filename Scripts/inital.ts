@@ -53,3 +53,10 @@ async function set_branch() {
     elm.remove();
   }
 })();
+
+async function load_blog() {
+  let blog = await import('../Blog/blog.mjs');
+  console.log(blog.blog.loaded_list_items);
+}
+
+document.getElementById("test")?.addEventListener('click', () => load_blog());

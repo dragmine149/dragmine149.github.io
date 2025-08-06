@@ -2,8 +2,13 @@
 * @typedef {import('../Scripts/new_loader')}
 */
 
-import { loader, customHistory, page } from '../Scripts/new_loader.js';
-import { settings } from '../Scripts/Settings/settings.mjs';
+import { loader, RETURN_TYPE } from '../Scripts/loader/loader';
+import { customHistory } from '../Scripts/loader/customHistory';
+import { page } from '../Scripts/loader/page';
+import * as url_functions from '../Scripts/loader/url_functions';
+
+
+import { settings } from '../Scripts/Settings/settings';
 import { Markdown, markdownSettings } from '../Modules/markdown.mjs';
 
 class Blog {
@@ -115,7 +120,7 @@ class Blog {
     }
 
     console.log(`Loading blog: ${blog_page} `);
-    const blog_details = await loader.get_contents_from_server(`Blog/Posts/${blog_page}.md`, true, loader.RETURN_TYPE.text);
+    const blog_details = await loader.get_contents_from_server(`Blog/Posts/${blog_page}.md`, RETURN_TYPE.text);
     this.markdown.parse(blog_details);
 
     this.set_blog_state(this.__blog_state.Viewer);
@@ -149,7 +154,7 @@ class Blog {
       title.innerText = v.date;
       preview.innerText = v.preview;
 
-      document.getElementById('blog_list').appendChild(elm);
+      document.getElementById('blog_list')?.appendChild(elm);
 
       v.categories.forEach((category) => {
         const fake_btn = document.createElement('a');
@@ -171,11 +176,11 @@ class Blog {
   * Load the blog list from the server, and update history, blog visibility whilst at it.
   */
   async load_blog_list() {
-    this.blog_list = await loader.get_contents_from_server(`Blog/list.json`, true, loader.RETURN_TYPE.json);
+    this.blog_list = await loader.get_contents_from_server(`Blog/list.json`, RETURN_TYPE.json);
     this.__create_list_items()
 
     this.set_blog_state(this.__blog_state.List);
-    customHistory.store_page(new URL(`${page.get_current_root_subpage()}`));
+    customHistory.store_page(new URL(`${url_functions.get_current_root_subpage()}`));
   }
 
   load_blog_from_url(url) {
@@ -194,6 +199,6 @@ function Blog_default_0() {
   blog.load_blog_from_url();
 }
 
-document.getElementById("blog_back").addEventListener('click', blog.load_blog_list());
+document.getElementById("blog_back")?.addEventListener('click', blog.load_blog_list());
 
 export { blog }
