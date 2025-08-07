@@ -42,7 +42,9 @@ class Blog {
       elm.style.fontSize = v + "rem";
     });
 
-    this.load_blog_from_url();
+    page.addFinishListener("Blog", () => {
+      this.load_blog_from_url();
+    })
   }
 
   async #load_markdown() {

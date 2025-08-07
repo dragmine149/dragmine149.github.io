@@ -11,13 +11,18 @@ class Page {
   * Without cache, elements might not load correctly as they are referencing things that exist but aren't visible.
   */
   document_cache: Map<string, HTMLElement>;
-
   verbose: Verbose;
+  finish_loaded: Map<string, () => void>;
 
   constructor() {
     this.document_cache = new Map();
+    this.finish_loaded = new Map();
     this.verbose = new Verbose("Loader_Page", "#f01e94");
     customHistory.add_listener("page", (data) => this.load_page(data.page, data.search, data.sub, data.branch));
+  }
+
+  addFinishListener(page: string, callback: () => void) {
+    this.finish_loaded.set(page, callback);
   }
 
   /**
@@ -86,12 +91,11 @@ class Page {
 
     // load the module data before loading the script data. modules are designed to have priority as they are used in most places.
     await modules.load_modules_from_dom(data);
-    // i don't really like this, but the 30ms wait should give enough time for most of the modules to load the important stuff at least.
-    // going lower would just cause stability errors, hence 30ms
-    // await new Promise(resolve => setTimeout(resolve, 30));
 
     this.verbose.log(`New destination: ${destination_url} ({branch: ${branch}, page: ${page}, search: ${search}, sub: ${sub}})`);
     this.load_page_contents(destination_url, data);
+    let func = this.finish_loaded.get(page);
+    if (func) func();
   }
 
   /**
