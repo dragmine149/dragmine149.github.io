@@ -44,6 +44,7 @@ class Blog {
 
     page.addFinishListener("Blog", () => {
       this.load_blog_from_url();
+      document.getElementById("blog_back")?.addEventListener('click', () => this.load_blog_list());
     })
   }
 
@@ -112,7 +113,8 @@ class Blog {
     }
 
     this.#load_markdown();
-    this.markdown.set_obj(document.getElementById("blog_content") as HTMLElement);
+    let obj = document.getElementById("blog_content") as HTMLElement;
+    this.markdown.set_obj(obj);
 
     // replace the search terms aspect if it gets left behind for some reason.
     if (blog_page.includes("?blog=")) {
@@ -126,6 +128,7 @@ class Blog {
     this.markdown.parse(blog_details);
 
     this.set_blog_state(BLOG_STATE.Viewer);
+    if (obj) obj.scrollTo(0, 0);
     customHistory.store_page(new URL(`${url_functions.get_current_root_subpage()}?blog=${blog_page}`));
   }
 
@@ -200,7 +203,5 @@ function initialise() {
   blog.load_blog_from_url();
   return true;
 }
-
-document.getElementById("blog_back")?.addEventListener('click', blog.load_blog_list);
 
 export { blog, initialise }
