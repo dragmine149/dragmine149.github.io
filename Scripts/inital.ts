@@ -34,22 +34,37 @@ document.getElementById("nav_soci")?.addEventListener('click', socials);
 document.getElementById("settings-more")?.addEventListener('click', () => settings.visible());
 document.getElementById("settings-hide")?.addEventListener('click', () => settings.visible());
 
+async function getGitHeadInfo(head: string): Promise<string> {
+  const trimmedContent = head.trim();
+
+  if (trimmedContent.startsWith('ref: refs/heads/')) {
+    // It's a branch!
+    return trimmedContent.replace('ref: refs/heads/', '');
+  }
+  if (trimmedContent.length >= 7) {
+    // It's likely a commit hash!
+    return trimmedContent.substring(0, 6);
+  }
+
+  return `Unknown format: ${trimmedContent}`;
+}
+
 async function set_branch() {
   let url = new URL(location.toString());
   if (url.hostname !== 'localhost') return;
 
   url.pathname = ".git/HEAD";
-  let branch = await loader.get_contents_from_server(url.href, RETURN_TYPE.text);
-  branch = branch.replace(/^ref: refs\/heads\//, '');
-  return branch;
+  let branch = await loader.get_contents_from_server(url.href, RETURN_TYPE.text) as string;
+  return getGitHeadInfo(branch);
 }
 
 (async () => {
   let branch = await set_branch();
   let elm = document.getElementById("branch");
   if (elm == null) { return; }
-  elm.innerText = branch;
   if (branch == undefined) {
     elm.remove();
+    return;
   }
+  elm.innerText = branch;
 })();
