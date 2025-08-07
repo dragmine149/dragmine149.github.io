@@ -29,7 +29,10 @@ class Blog {
 
     // page.listen_to_state_pop("blog", v => this.load_blog(v, false));
     customHistory.add_listener("Blog", (v) => {
-      this.load_blog(v.search?.get("blog"));
+      // this.load_blog(v.search?.get("blog"));
+
+      // load from the current url instead of whichever url got popped.
+      this.load_blog(url_functions.get_url().searchParams.get("blog"));
     });
 
     settings.add_listener("Blog", "title", (v) => {

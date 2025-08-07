@@ -119,7 +119,7 @@ class CustomHistory {
     const callback = this.listeners.get(key);
     if (callback !== undefined) {
       // call any callback functions they might have
-      this.verbose.log(`Calling ${callback.name} for ${key} with data:`, data);
+      this.verbose.log(`Calling '${callback.name}' for '${key}' with data:`, data);
       return callback(data);
     }
     this.verbose.warn(`Failed to find ${key} in customHistory.listeners`);

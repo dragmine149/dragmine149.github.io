@@ -353,7 +353,7 @@ class DragSettings {
   * @param setting The setting name
   * @param callback The function to call upon the setting being changed
   */
-  add_listener(category: string, setting: string, callback: Function) {
+  add_listener(category: string, setting: string, callback: (value: SettingType) => void) {
     this.verbose.info(`Adding listener: ${category}-${setting}`);
     this.listeners.set(`${category}-${setting}`, callback);
   }
