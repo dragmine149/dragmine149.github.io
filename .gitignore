@@ -5,5 +5,8 @@
 /Blog/list.json
 /Blog/feed.xml
 
+# Stuff related to npm/bun/compiling stuff whatever.
 node_modules
 dist
+external
+*.lock
