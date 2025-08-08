@@ -2,13 +2,11 @@ import { loader, RETURN_TYPE } from '../Scripts/loader/loader';
 import { customHistory } from '../Scripts/loader/customHistory';
 import { page } from '../Scripts/loader/page';
 import * as url_functions from '../Scripts/loader/url_functions';
+import { VIEWING_STATE } from "../Modules/template";
 
 import { settings } from '../Scripts/Settings/settings';
-import { Markdown, MarkdownSettings } from '../Modules/markdown.js';
+import { Markdown } from '../Modules/markdown';
 
-enum BLOG_STATE {
-  List, Viewer
-}
 
 type BlogFormat = {
   date: string;
@@ -73,7 +71,7 @@ class Blog {
         page.load_page_from_url(url);
         return true;
       },
-    });
+    }, document.getElementById("blog_content") as HTMLElement);
   }
 
 
@@ -81,18 +79,18 @@ class Blog {
   * Set the blog state as being shown or the list.
   * @param state The state to show
   */
-  set_blog_state(state?: BLOG_STATE) {
+  set_blog_state(state?: VIEWING_STATE) {
     const blog_content = document.getElementById('blog_content');
     const blog_list = document.getElementById('blog_list');
     const back = document.getElementById("blog_back") as HTMLButtonElement | null;
     switch (state) {
-      case BLOG_STATE.List:
+      case VIEWING_STATE.List:
         console.log(`Switching blog to list mode.`);
         if (blog_list) blog_list.hidden = false;
         if (blog_content) blog_content.hidden = true;
         if (back) back.disabled = true;
         return;
-      case BLOG_STATE.Viewer:
+      case VIEWING_STATE.Viewer:
       default:
         console.log(`Switching blog to viewer mode.`);
         if (blog_list) blog_list.hidden = true;
@@ -113,8 +111,6 @@ class Blog {
     }
 
     this.#load_markdown();
-    let obj = document.getElementById("blog_content") as HTMLElement;
-    this.markdown.set_obj(obj);
 
     // replace the search terms aspect if it gets left behind for some reason.
     if (blog_page.includes("?blog=")) {
@@ -127,8 +123,8 @@ class Blog {
     const blog_details = await loader.get_contents_from_server(`Blog/Posts/${blog_page}.md`, RETURN_TYPE.text);
     this.markdown.parse(blog_details);
 
-    this.set_blog_state(BLOG_STATE.Viewer);
-    if (obj) obj.scrollTo(0, 0);
+    this.set_blog_state(VIEWING_STATE.Viewer);
+    this.markdown.scroll_top();
     customHistory.store_page(new URL(`${url_functions.get_current_root_subpage()}?blog=${blog_page}`));
   }
 
@@ -170,7 +166,7 @@ class Blog {
 
       elm.onclick = () => {
         console.log(`Clicked elm: ${v.date}`);
-        blog.load_blog(v.date);
+        this.load_blog(v.date);
       }
     });
 
@@ -184,7 +180,7 @@ class Blog {
     this.blog_list = await loader.get_contents_from_server(`Blog/list.json`, RETURN_TYPE.json);
     this.#create_list_items()
 
-    this.set_blog_state(BLOG_STATE.List);
+    this.set_blog_state(VIEWING_STATE.List);
     customHistory.store_page(new URL(`${url_functions.get_current_root_subpage()}`));
   }
 
@@ -196,12 +192,6 @@ class Blog {
 }
 
 const blog = new Blog();
+function initialise() { return true; }
 
-// NOTE: Technically this is load in some weird module loading nonsense that probably needs to be cleaned up.
-function initialise() {
-  // by default, after everything has loaded.
-  blog.load_blog_from_url();
-  return true;
-}
-
-export { blog, initialise }
+export { blog, initialise };

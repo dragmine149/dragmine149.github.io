@@ -1,5 +1,18 @@
 [
   {
+    "label": "Clean dist",
+    "command": "rm -r ./dist/",
+    "use_new_terminal": true,
+    "reveal": "never",
+    "hide": "always",
+    "shell": "system",
+    "show_command": true,
+    "tags": [
+      "dev"
+    ],
+    "allow_concurrent_runs": false
+  },
+  {
     "label": "Start server",
     "command": "./server.zsh",
     "use_new_terminal": true,
@@ -9,7 +22,9 @@
     "tags": [
       "dev",
       "server"
-    ]
+    ],
+    "allow_concurrent_runs": false,
+    "show_command": true
   },
   {
     "label": "Start watching",
@@ -20,6 +35,8 @@
     "shell": "system",
     "tags": [
       "dev"
-    ]
+    ],
+    "allow_concurrent_runs": false,
+    "show_command": true
   }
 ]

@@ -115,46 +115,55 @@ class Markdown {
   set_obj(obj: HTMLElement) {
     this.#obj = obj;
   }
+
+  scroll_top() {
+    this.#obj?.scrollTo(0, 0);
+  }
 }
 
 /**
  * Settings interface for Markdown class
  */
-interface MarkdownSettings {
+type MarkdownSettings = {
   /**
    * Enable using `<t:X:F>` to render time in viewer local time
    */
-  markedLocalTime: boolean;
+  markedLocalTime?: boolean;
 
   /**
    * Enable custom heading IDs
    */
-  markedCustomHeadingId: boolean;
+  markedCustomHeadingId?: boolean;
 
   /**
    * Enable footnotes
    */
-  markedFootnote: boolean;
+  markedFootnote?: boolean;
 
   /**
    * Enable Images rendering inside a <div class="img"> instead of normal rendering.
    */
-  markedImprovedImage: boolean;
+  markedImprovedImage?: boolean;
 
   /**
    * Gets images from the server `raw.githubusercontent` instead of our server `dragmine149.github.io`
    */
-  markedRemoteImage: boolean;
+  markedRemoteImage?: boolean;
 
   /**
    * Enable code block highlighting.
    */
-  markedHighlight: boolean;
+  markedHighlight?: boolean;
 
   /**
    * Upon clicking a link on this site, do this custom function instead of a redirect.
    */
-  markedLocalLink: (url: URL) => boolean;
+  markedLocalLink?: (url: URL) => boolean;
+
+  /**
+   * Extra markdown for centering / shifting text to the right.
+   */
+  markedCenterText?: boolean;
 }
 
 /**
@@ -169,6 +178,7 @@ function defaultMarkdownSettings(): MarkdownSettings {
     markedRemoteImage: false,
     markedHighlight: false,
     markedLocalLink: (url: URL) => false,
+    markedCenterText: false
   }
 };
 

@@ -1,7 +1,7 @@
 import { snackbar, SnackbarArea } from './snackbar_hover';
-import { loader, RETURN_TYPE } from './loader/loader.js';
-import { page } from './loader/page.js';
-import { settings } from './Settings/settings.js';
+import { loader, RETURN_TYPE } from './loader/loader';
+import { page } from './loader/page';
+import { settings } from './Settings/settings';
 import './DayNightCycle/background';
 
 // Script to run stuff on page load to finish loading everything else

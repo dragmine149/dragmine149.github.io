@@ -46,6 +46,7 @@ class Modules {
 
     switch (module) {
       case "blog": return await import('../Blog/blog');
+      case "projects": return await import('../Projects/projects');
       default: return await import('./empty');
     }
   }
@@ -114,7 +115,8 @@ class Modules {
     const elm = this.#get_module(module);
 
     /** The data of the module */
-    const data: moduleInfo = this.#modules[module];
+    const data: moduleInfo | undefined = this.#modules[module];
+    if (data == undefined) return;
 
     // filter out scripts that aren't loaded yet.
     // if we have more loaded in that category, just leave them be.
