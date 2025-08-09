@@ -24,6 +24,7 @@ class ProjectLoader {
   path: string[] = [];
   verbose: Verbose;
   markdown: Markdown;
+  initial_load = false;
 
   constructor() {
     this.verbose = new Verbose("Projects", "#f1a942");
@@ -37,16 +38,19 @@ class ProjectLoader {
     customHistory.add_listener("Projects", (_) => this.load_from_url());
 
     page.addFinishListener("Projects", async () => {
-      this.#set_elements();
-      for (let i = 0; i < 8; i++) {
-        let node = this.get_node_index(i);
-        node.addEventListener('click', () => {
-          // Nodes visible will also have the 'real' attribute.
-          this.load_next(node.getAttribute("real") as string);
-        })
+      if (!this.initial_load) {
+        this.#set_elements();
+        for (let i = 0; i < 8; i++) {
+          let node = this.get_node_index(i);
+          node.addEventListener('click', () => {
+            // Nodes visible will also have the 'real' attribute.
+            this.load_next(node.getAttribute("real") as string);
+          })
+        }
+        this.get_node_index(8).addEventListener('click', () => { this.load_previous(); });
+        this.get_node_index(9).addEventListener('click', () => { this.load_previous(); });
+        this.initial_load = true;
       }
-      this.get_node_index(8).addEventListener('click', () => { this.load_previous(); });
-      this.get_node_index(9).addEventListener('click', () => { this.load_previous(); });
 
       await this.load_ui();
       await this.load_from_url();
