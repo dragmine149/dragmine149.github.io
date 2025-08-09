@@ -84,11 +84,10 @@ class CustomHistory {
    * @returns True if this represents an important change requiring a new history entry
    */
   #is_important_change(new_data: URLData) {
-    const compare_data = this.convert_url_to_pagedata();
+    let compare_data = this.convert_url_to_pagedata();
     return this.#is_new_page(new_data) ||
       new_data.search != compare_data?.search ||
-      (new_data.sub && !compare_data?.sub) ||
-      (!new_data.sub && compare_data?.sub);
+      new_data.sub != compare_data.sub;
   }
 
   /**
@@ -138,25 +137,34 @@ class CustomHistory {
       return true;
     }
 
-    this.verbose.trace(`Store message trace output.`);
-    const new_data = this.convert_url_to_pagedata(url);
-
-    // same page, hence probably some kind of history stuff. No need to worry about it.
-    if (this.#are_same_page(new_data)) {
-      this.verbose.log(`Attempting to store same that we are already on, skipping.`);
-      return false;
-    }
-
-    // checks if the page or URL query parameters are different, or if sub (hash) section is being added for the first time
-    const requires_push = this.#is_important_change(new_data);
+    let check = this.page_check(url);
+    if (check == undefined) return false;
 
     // remove last / from url.href (this cases too many issues...);
     url.href = url.href.replace(/\/$/, '');
 
-    this.verbose.log(`${requires_push ? 'Storing' : 'Replacing'} page: ${url.href} with data:`, new_data);
+    this.verbose.log(`${check ? 'Storing' : 'Replacing'} page: ${url.href} with data:`, this.convert_url_to_pagedata(url));
     this.current_url = url;
-    history[requires_push ? 'pushState' : 'replaceState'](null, "", url);
-    return requires_push;
+    history[check ? 'pushState' : 'replaceState'](null, "", url);
+    return check;
+  }
+
+  /**
+   * Checks to see what we do with a given page. Basically store_page but not storing.
+   * @param url The url to check.
+   */
+  page_check(url: URL) {
+    this.verbose.trace(`Store message trace output.`);
+    let new_data = this.convert_url_to_pagedata(url);
+
+    // same page, hence probably some kind of history stuff. No need to worry about it.
+    if (this.#are_same_page(new_data)) {
+      this.verbose.log(`Attempting to store same that we are already on, skipping.`);
+      return undefined;
+    }
+
+    // checks if the page or URL query parameters are different, or if sub (hash) section is being added for the first time
+    return this.#is_important_change(new_data);
   }
 
   /**

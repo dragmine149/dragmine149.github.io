@@ -1,6 +1,7 @@
 import { Verbose } from "../verbose.mjs";
 import { DragStorage } from "../storage";
 import * as url_functions from './url_functions';
+import { tryCatch } from "../trycatch";
 
 declare function ui(element: string): void;
 
@@ -90,44 +91,61 @@ class Loader {
       // we have a cache, hence we don't need to worry about anything else.
       return stored_data;
     }
+    this.verbose.log("No cache, forced to fetch");
 
     // get the result from the server, as we have no cache clue.
     // console.warn(string_server_url);
-    let result = await fetch(string_server_url, {
+    let result = await tryCatch(fetch(string_server_url, {
       headers: {
         "Cache-Control": "max-age=86400"
       }, mode: "no-cors"
-    });
+    }));
+    this.verbose.log(result);
+
+    if (result.error) {
+      this.verbose.error("Fetch failed: ", result.error);
+      this.#warn_load(`Failed to load data from url: ${string_server_url}. Due to reason: ${result.error}`);
+      return undefined;
+    }
+    let data_result = result.data;
 
     // check to see if we have a result
-    if (!result.ok) {
+    if (!data_result.ok) {
       this.verbose.log(`Failed to load data, result:`, result);
       if (use_branch != null) {
         string_server_url = string_server_url.replace(/Branches\/.*?\//, '');
-        result = await fetch(string_server_url, {
+        result = await tryCatch(fetch(string_server_url, {
           headers: {
             "Cache-Control": "max-age=86400"
           }, mode: "no-cors"
-        });
+        }));
       }
     }
+    this.verbose.log(result);
+
+    if (result.error) {
+      this.verbose.error("Fetch failed (round 2): ", result.error);
+      this.#warn_load(`Failed to load data from url: ${string_server_url}. Due to reason: ${result.error} (round 2)`);
+      return undefined;
+    }
+    data_result = result.data;
 
     // Yes second check, but sometimes this happens after we've sent another request to the server.
-    if (!result.ok) {
+    if (!data_result.ok) {
       // warning message
-      this.verbose.log(`Failed to load data, result:`, result);
-      this.#warn_load(`Failed to load data from url: ${string_server_url} (via: ${result.url}).`);
+      this.verbose.log(`Failed to load data, result:`, data_result);
+      this.#warn_load(`Failed to load data from url: ${string_server_url} (via: ${data_result.url}).`);
       return undefined;
     }
 
     // return the apporipate type depending on what is asked of us.
     switch (return_type) {
       case RETURN_TYPE.json:
-        return this.#cache_and_return(cache_name, await result.json());
+        return this.#cache_and_return(cache_name, await data_result.json());
       case RETURN_TYPE.document:
       case RETURN_TYPE.text:
       default:
-        return this.#cache_and_return(cache_name, await result.text());
+        return this.#cache_and_return(cache_name, await data_result.text());
     }
   }
 

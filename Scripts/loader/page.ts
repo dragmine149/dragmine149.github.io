@@ -68,7 +68,7 @@ class Page {
     };
     const destination_url = customHistory.convert_pagedata_to_url(looking_data);
     // Attempts to store the page and if we can't call the scripts and continue.
-    if (!customHistory.store_page(destination_url)) {
+    if (!customHistory.page_check(destination_url)) {
       this.verbose.log(`Cancelling page load as changes aren't big enough to warrant change`);
       return;
     }
@@ -79,9 +79,9 @@ class Page {
 
     // load from server and make a new cache if it doesn't exist.
     if (data == undefined) {
-      const doc_data: Document = await loader.get_contents_from_server(file, RETURN_TYPE.document);
-      let temp_data = doc_data.getElementById("content");
-      if (temp_data == null) {
+      const doc_data = await loader.get_contents_from_server(file, RETURN_TYPE.document) as Document | undefined;
+      let temp_data = doc_data?.getElementById("content");
+      if (temp_data == null || temp_data == undefined) {
         this.verbose.error(`Invalid file from server: ${file}`);
         return;
       }
@@ -94,6 +94,7 @@ class Page {
 
     this.verbose.log(`New destination: ${destination_url} ({branch: ${branch}, page: ${page}, search: ${search}, sub: ${sub}})`);
     this.load_page_contents(destination_url, data);
+    customHistory.store_page(destination_url); // event store the page after stuff has loaded.
     let func = this.finish_loaded.get(page);
     if (func) func();
   }
