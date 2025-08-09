@@ -29,9 +29,10 @@ class Markdown {
   constructor(settings: MarkdownSettings, obj?: HTMLElement) {
     settings = Object.assign({}, defaultMarkdownSettings(), settings);
 
-    this.#marked = new Marked();
-    this.#settings = settings;
+    this.#settings = Object.freeze(settings);
     this.#obj = obj;
+    this.#marked = new Marked();
+    this.#marked = this.#make_marked();
   }
 
   /**
@@ -109,7 +110,7 @@ class Markdown {
    */
   parse_to_obj(text: string, obj: HTMLElement) {
     text = text.replace(/^[\u200B\u200C\u200D\u200E\u200F\uFEFF]/, "");
-    obj.innerHTML = this.#make_marked().parse(text) as string;
+    obj.innerHTML = this.#marked.parse(text) as string;
   }
 
   set_obj(obj: HTMLElement) {

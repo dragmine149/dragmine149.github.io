@@ -48,6 +48,7 @@ class Blog {
     // As technically it doesn't need to exist until we load a blog. Hence we can prevent any errors.
     if (this.markdown) return;
 
+    console.log("Making new markdown element!");
     this.markdown = new Markdown({
       markedLocalTime: true,
       markedFootnote: true,
