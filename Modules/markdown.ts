@@ -96,7 +96,7 @@ class Markdown {
    */
   parse(text: string) {
     if (this.#obj == undefined) {
-      console.warn("Undefined object!");
+      console.warn("Undefined object! Can't parse anything.");
       return;
     }
     this.parse_to_obj(text, this.#obj);

@@ -22,9 +22,6 @@ class Blog {
   blog_list: BlogFormat[];
 
   constructor() {
-    // initialise the markdown module.
-    this.#load_markdown();
-
     // page.listen_to_state_pop("blog", v => this.load_blog(v, false));
     customHistory.add_listener("Blog", (v) => {
       // this.load_blog(v.search?.get("blog"));
@@ -110,6 +107,7 @@ class Blog {
       return;
     }
 
+    // always make sure it's loaded before we load the blog.
     this.#load_markdown();
 
     // replace the search terms aspect if it gets left behind for some reason.
