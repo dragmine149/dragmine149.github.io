@@ -2,14 +2,6 @@ import { Marked } from "marked";
 import customHeadingId from "marked-custom-heading-id";
 import markedFootnote from "marked-footnote";
 import { markedHighlight } from "marked-highlight";
-import dayjs from "dayjs";
-import relativeTime from 'dayjs/plugin/relativeTime';
-import localisedFormat from 'dayjs/plugin/localizedFormat';
-
-dayjs.extend(relativeTime);
-dayjs.extend(localisedFormat);
-dayjs.locale('en');
-
 /**
  * Class to handle Markdown processing and rendering
  */
@@ -20,6 +12,8 @@ class Markdown {
   #obj: HTMLElement | undefined;
   /** Marked instance for markdown parsing */
   #marked: Marked;
+  /** Have we already made the markdown settings thingy. */
+  #made: boolean = false;
 
   /**
    * Creates a new Markdown processor
@@ -32,7 +26,6 @@ class Markdown {
     this.#settings = Object.freeze(settings);
     this.#obj = obj;
     this.#marked = new Marked();
-    this.#marked = this.#make_marked();
   }
 
   /**
@@ -45,7 +38,7 @@ class Markdown {
     switch (type) {
       case "markedLocalTime":
         // @ts-ignore
-        return markedLocalTime(dayjs);
+        return markedLocalTime();
       case "markedCustomHeadingId":
         return customHeadingId();
       case "markedFootnote":
@@ -81,14 +74,15 @@ class Markdown {
    * @private
    */
   #make_marked() {
-    let local_marked = this.#marked;
+    if (this.#made) return this.#marked;
     Object.entries(this.#settings).forEach((data) => {
       if (!data[1]) {
         return;
       }
-      local_marked.use(this.#use(data[0]));
-    })
-    return local_marked;
+      this.#marked.use(this.#use(data[0]));
+    });
+    this.#made = true;
+    return this.#marked;
   }
 
   /**
@@ -109,6 +103,7 @@ class Markdown {
    * @param obj - The object to render to.
    */
   parse_to_obj(text: string, obj: HTMLElement) {
+    this.#make_marked();
     text = text.replace(/^[\u200B\u200C\u200D\u200E\u200F\uFEFF]/, "");
     obj.innerHTML = this.#marked.parse(text) as string;
   }
