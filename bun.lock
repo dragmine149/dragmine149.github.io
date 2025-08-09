@@ -11,6 +11,7 @@
         "marked-footnote": "^1.4.0",
         "marked-highlight": "^2.2.2",
         "npm-watch": "^0.13.0",
+        "safe-wrapper": "^3.0.0",
         "suncalc": "^1.9.0",
         "typescript": "^5.9.2",
       },
@@ -86,6 +87,8 @@
     "readdirp": ["readdirp@3.6.0", "", { "dependencies": { "picomatch": "^2.2.1" } }, "sha512-hOS089on8RduqdbhvQ5Z37A0ESjsqz6qnRcffsMU3495FuTdqSm+7bhJ29JvIOsBDEEnan5DPu9t3To9VRlMzA=="],
 
     "safe-buffer": ["safe-buffer@5.2.1", "", {}, "sha512-rp3So07KcdmmKbGvgaNxQSJr7bGVSVk5S9Eq1F+ppbRo70+YeaDxkw5Dd8NPN+GD6bjnYm2VuPuCXmpuYvmCXQ=="],
+
+    "safe-wrapper": ["safe-wrapper@3.0.0", "", {}, "sha512-EmZzGKwqtAqwQE5CGaMRAZc59JRdC7PWpO2YK/Fr3xa1uoazGP3ulFdySn3RKMrQ7RkFoixtFa7u5WFqf+haIA=="],
 
     "semver": ["semver@7.7.2", "", { "bin": { "semver": "bin/semver.js" } }, "sha512-RF0Fw+rO5AMf9MAyaRXI4AV0Ulj5lMHqVxxdSgiVbixSCXoEmmX/jk0CuJw4+3SqroYO9VoUh+HcuJivvtJemA=="],
 

@@ -28,7 +28,7 @@
   },
   {
     "label": "Start watching",
-    "command": "./bun_build.sh",
+    "command": "./bun_watch.sh",
     "use_new_terminal": true,
     "reveal": "never",
     "hide": "always",
