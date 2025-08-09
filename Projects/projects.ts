@@ -87,11 +87,11 @@ class ProjectLoader {
   }
 
   #set_state(state: VIEWING_STATE) {
-    const list = document.getElementById("projects") as HTMLElement;
-    const viewer = document.getElementById("project-descriptions") as HTMLElement;
+    const list = document.getElementById("projects") as HTMLElement | null;
+    const viewer = document.getElementById("project-descriptions") as HTMLElement | null;
 
-    list.hidden = state !== VIEWING_STATE.List;
-    viewer.hidden = state !== VIEWING_STATE.Viewer;
+    if (list) list.hidden = state !== VIEWING_STATE.List;
+    if (viewer) viewer.hidden = state !== VIEWING_STATE.Viewer;
   }
 
   layouts = [
