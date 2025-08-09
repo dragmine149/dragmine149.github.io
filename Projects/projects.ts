@@ -78,7 +78,11 @@ class ProjectLoader {
       markedImprovedImage: true,
       markedCustomHeadingId: false,
       markedHighlight: true,
-      markedCenterText: true
+      markedCenterText: true,
+      markedLocalLink: (url) => {
+        page.load_page_from_url(url);
+        return true;
+      }
     }, document.getElementById("project-description-content") as HTMLElement);
   }
 

@@ -30,8 +30,7 @@ article.main h1 {
 }
 
 article.main h1,
-article.main h6,
-article.main span {
+article.main h6 {
   user-select: none;
 }
 
