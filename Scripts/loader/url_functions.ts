@@ -76,4 +76,9 @@ function get_branch_from_url(url: URL) {
   // return url.pathname.includes('Branches/') ? [1] as string : '';
 }
 
-export { get_branch_from_url, get_current_branch, get_current_page_root, get_current_root_subpage, get_current_subpage, get_root_from_url, get_subpage_from_url, get_url };
+function our_site() {
+  let url = get_url();
+  return url.hostname == 'dragmine149.github.io' || url.hostname == 'localhost';
+}
+
+export { get_branch_from_url, get_current_branch, get_current_page_root, get_current_root_subpage, get_current_subpage, get_root_from_url, get_subpage_from_url, get_url, our_site };

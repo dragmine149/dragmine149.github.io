@@ -183,7 +183,7 @@ class Blog {
   }
 
   load_blog_from_url(url?: URL) {
-    if (!url) url = new URL(location.toString());
+    if (!url) url = url_functions.get_url();
 
     this.load_blog(url.searchParams.get('blog'));
   }

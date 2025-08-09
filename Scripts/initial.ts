@@ -3,6 +3,7 @@ import { loader, RETURN_TYPE } from './loader/loader';
 import { page } from './loader/page';
 import { settings } from './Settings/settings';
 import './DayNightCycle/background';
+import { get_url } from './loader/url_functions';
 
 // Script to run stuff on page load to finish loading everything else
 function socials() {
@@ -68,7 +69,7 @@ async function getGitHeadInfo(head: string): Promise<string> {
 }
 
 async function set_branch() {
-  let url = new URL(location.toString());
+  let url = get_url();
   if (url.hostname !== 'localhost') return;
 
   url.pathname = ".git/HEAD";

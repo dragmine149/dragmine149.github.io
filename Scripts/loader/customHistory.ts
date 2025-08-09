@@ -27,12 +27,13 @@ class CustomHistory {
     this.current_url = url_functions.get_url();
 
     // the event handler for dealing with browser.back and browser.forward
-    window.addEventListener('popstate', () => {
+    window.addEventListener('popstate', (event) => {
       if (this.poppin_jump) return;
       this.poppin_jump = true;
+      if (url_functions.our_site()) event.preventDefault();
 
       // get the current details.
-      const data = this.convert_url_to_pagedata();
+      const data = this.convert_url_to_pagedata(url_functions.get_url());
       this.verbose.log(`Processing page pop! Details:`, data);
 
       // load the page, and process anything that is listening of this pop event.
@@ -133,7 +134,8 @@ class CustomHistory {
   store_page(url: URL) {
     if (this.poppin_jump) {
       // we are processing the popped state here. Affecting the UrL is not necessary.
-      return false;
+      // However, we return true as this is only set during back and true allows us to do stuff.
+      return true;
     }
 
     this.verbose.trace(`Store message trace output.`);
