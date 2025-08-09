@@ -1,8 +1,7 @@
 import { DragStorage, MiliSeconds } from '../storage';
 import { Verbose } from '../verbose.mjs';
-import { settings } from '../Settings/settings';
+import { settings, SettingType } from '../Settings/settings';
 import { loader, RETURN_TYPE } from '../loader/loader';
-import dayjs from 'dayjs';
 
 declare function ui(arg0: string, arg1: string): void;
 
@@ -18,9 +17,9 @@ interface TimesCollection {
 * Collection of time data for consecutive days.
 */
 interface DayTimes {
-  yesterday: dayjs.Dayjs;
-  today: dayjs.Dayjs;
-  tomorrow: dayjs.Dayjs;
+  yesterday: Date;
+  today: Date;
+  tomorrow: Date;
 }
 
 /**
@@ -54,6 +53,20 @@ type TimezoneData = {
 };
 
 type Half = ('d' | 'n');
+
+
+function timeDiffHour(a: Date, b: Date) {
+  return (a.getTime() - b.getTime()) / 1000 / 60 / 60;
+}
+function modifyDay(day: Date, operation: number) {
+  return new Date(day.getTime() + (operation * 1000 * 60 * 60 * 24));
+}
+function isAfter(a: Date, b: Date) {
+  return a.getTime() > b.getTime();
+}
+function isBefore(a: Date, b: Date) {
+  return a.getTime() < b.getTime();
+}
 
 
 class DateTime {
@@ -208,7 +221,7 @@ class DateTime {
 
   /**
   * Get the times for a given location
-  * @returns A list of times in dayjs format.
+  * @returns A list of times in Date format.
   */
   async __get_times() {
     // checks if we can bypass the storage check or not.
@@ -223,42 +236,44 @@ class DateTime {
     // If we can't bypass storage, and we have storage. prefer that instead.
     if (!bypass_storage && this.storage.hasStorage("times")) {
       let data = JSON.parse(this.storage.getStorage("times") as string) as TimesCollection;
-      data.sunrise.yesterday = dayjs(data.sunrise.yesterday);
-      data.sunrise.today = dayjs(data.sunrise.today);
-      data.sunrise.tomorrow = dayjs(data.sunrise.tomorrow);
-      data.sunset.yesterday = dayjs(data.sunset.yesterday);
-      data.sunset.today = dayjs(data.sunset.today);
-      data.sunset.tomorrow = dayjs(data.sunset.tomorrow);
+      data.sunrise.yesterday = new Date(data.sunrise.yesterday);
+      data.sunrise.today = new Date(data.sunrise.today);
+      data.sunrise.tomorrow = new Date(data.sunrise.tomorrow);
+      data.sunset.yesterday = new Date(data.sunset.yesterday);
+      data.sunset.today = new Date(data.sunset.today);
+      data.sunset.tomorrow = new Date(data.sunset.tomorrow);
       return data;
     }
 
     let [latitude, longitude] = await this.__get_location();
 
     // Get the current time
-    let now = dayjs();
-    let yesterday = now.subtract(1, 'day');
-    let tomorrow = now.add(1, 'day');
+    let now = new Date();
+    let yesterday = modifyDay(now, 1);
+    let tomorrow = modifyDay(now, -1);
+    // let yesterday = now.subtract(1, 'day');
+    // let tomorrow = now.add(1, 'day');
 
     // @ts-ignore
-    let yesterdaySunCalc = SunCalc.getTimes(yesterday.toDate(), latitude, longitude);
+    let yesterdaySunCalc = SunCalc.getTimes(yesterday, latitude, longitude);
     // @ts-ignore
-    let todaySunCalc = SunCalc.getTimes(now.toDate(), latitude, longitude);
+    let todaySunCalc = SunCalc.getTimes(now, latitude, longitude);
     // @ts-ignore
-    let tomorrowSunCalc = SunCalc.getTimes(tomorrow.toDate(), latitude, longitude);
+    let tomorrowSunCalc = SunCalc.getTimes(tomorrow, latitude, longitude);
 
     /**
     * calculate a lot of times
     */
     let times: TimesCollection = {
       sunrise: {
-        yesterday: dayjs(yesterdaySunCalc.sunrise),
-        today: dayjs(todaySunCalc.sunrise),
-        tomorrow: dayjs(tomorrowSunCalc.sunrise)
+        yesterday: new Date(yesterdaySunCalc.sunrise),
+        today: new Date(todaySunCalc.sunrise),
+        tomorrow: new Date(tomorrowSunCalc.sunrise)
       },
       sunset: {
-        yesterday: dayjs(yesterdaySunCalc.sunset),
-        today: dayjs(todaySunCalc.sunset),
-        tomorrow: dayjs(tomorrowSunCalc.sunset)
+        yesterday: new Date(yesterdaySunCalc.sunset),
+        today: new Date(todaySunCalc.sunset),
+        tomorrow: new Date(tomorrowSunCalc.sunset)
       }
     }
 
@@ -266,54 +281,39 @@ class DateTime {
     return times;
   }
 
-  format_times(times: TimesCollection) {
-    let new_times: TimesCollectionString = {
-      sunrise: {
-        yesterday: times.sunrise.yesterday.format(),
-        today: times.sunrise.today.format(),
-        tomorrow: times.sunrise.tomorrow.format()
-      },
-      sunset: {
-        yesterday: times.sunset.yesterday.format(),
-        today: times.sunset.today.format(),
-        tomorrow: times.sunset.tomorrow.format(),
-      }
-    };
-    return new_times;
-  }
-
   /**
   * Get the progress of days
   * @param now The current time
   * @returns The duration of day (+) / night (-), and the progress.
   */
-  get_progress(now: dayjs.Dayjs, times: TimesCollection) {
-    if (now.isAfter(times.sunset.today)) {
+  get_progress(now: Date, times: TimesCollection) {
+    if (isAfter(now, times.sunset.today)) {
       this.verbose.log(`Evening`);
       // After sunset but before midnight
-      let nightDuration = times.sunrise.tomorrow.diff(times.sunset.today, 'hours', true);
+      let nightDuration = timeDiffHour(times.sunrise.tomorrow, times.sunset.today);
+      // let nightDuration = times.sunrise.tomorrow.diff(times.sunset.today, 'hours', true);
       return {
         duration: -nightDuration,
-        progress: now.diff(times.sunset.today, 'hours', true) / nightDuration
+        progress: timeDiffHour(now, times.sunset.today) / nightDuration
       };
     }
 
-    if (now.isBefore(times.sunrise.today)) {
+    if (isBefore(now, times.sunrise.today)) {
       this.verbose.log(`Morning`);
       // After midnight but before sunrise
-      let nightDuration = times.sunset.yesterday.diff(times.sunrise.today, 'hours', true);
+      let nightDuration = timeDiffHour(times.sunset.yesterday, times.sunrise.today);
       return {
         duration: nightDuration,
-        progress: times.sunset.yesterday.diff(now, 'hours', true) / nightDuration
+        progress: timeDiffHour(times.sunset.yesterday, now) / nightDuration
       };
     }
 
     this.verbose.log(`Day`);
     // It's daytime
-    let dayDuration = times.sunset.today.diff(times.sunrise.today, 'hours', true);
+    let dayDuration = timeDiffHour(times.sunset.today, times.sunrise.today);
     return {
       duration: dayDuration,
-      progress: now.diff(times.sunrise.today, 'hours', true) / dayDuration
+      progress: timeDiffHour(now, times.sunrise.today) / dayDuration
     };
   }
 
@@ -362,9 +362,9 @@ class DateTime {
     }
 
     // get the times to do calculations with
-    let now = dayjs();
+    let now = new Date();
     let times = await this.__get_times();
-    this.verbose.log(now.format());
+    // this.verbose.log(now.format());
     this.verbose.log(times);
 
     // get the current progress in the day/night cycle. and for how long.
@@ -416,7 +416,7 @@ class DateTime {
      * Toggles between nature-based time (sun position) and quarter-hour based time.
      * @param _ - Unused parameter
      */
-    setting_realistic: (_: boolean = false) => {
+    setting_realistic: (_: SettingType = false) => {
       if (!settings.get_setting("Datetime", "enabled")) {
         return;
       }

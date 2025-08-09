@@ -468,4 +468,4 @@ function capitalise(str: string) {
 
 const settings = new DragSettings();
 
-export { settings, capitalise }
+export { settings, capitalise, SettingType }
