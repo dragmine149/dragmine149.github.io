@@ -12,9 +12,9 @@ Hint: If you want to check out a specific branch, go to `https://dragmine149.git
 - [ ] Finished project page
 - [ ] More blog features:
   - [ ] Code block detection (`) with keyboard controls -> replace with more better looking things.
-  - [ ] Back button
+  - [x] Back button
   - [ ] Ability to link to certain parts in the blog
-  - [ ] Ability to jump between blog headings
+  - [?] Ability to jump between blog headings
   - [x] Better blog formatting (images scroll instead of who blog scroll)
   - [ ] progress tracker (local storage / indexedDB)
   - [ ] search
