@@ -1,64 +1,70 @@
+import { DragStorage } from "../storage.ts";
+import { Verbose } from "../verbose.mjs";
+import { loader, RETURN_TYPE } from "../loader/loader.ts";
+
+type SettingType = (boolean | number | string);
+
+type SettingTypeString = ("bool" | "number" | "string");
+
+interface SettingRangeObject {
+  lower: number;
+  upper: number;
+}
+
+type SettingRequiresObject = {
+  [key: string]: boolean | number
+};
+/**
+* @description An object where keys are setting identifiers and values are required states (boolean or number)
+*/
+interface SettingOptionObject {
+  description: string;
+  type: (SettingTypeString);
+  default: (SettingType);
+  quick: boolean;
+  value: (SettingType);
+  range?: SettingRangeObject;
+  requires?: SettingRequiresObject;
+  disabled?: string;
+  icon?: string;
+}
+
+interface SettingCategoryObject {
+  description: string;
+  options: {
+    [key: string]: SettingOptionObject
+  };
+}
+
 class DragSettings {
-  /** @type {Map<string, HTMLElement>} */
-  cache;
+  cache: Map<string, HTMLElement>;
 
   /**
   * The page currently visible
-  * @type {string}
   */
-  currently_viewing;
+  currently_viewing: string;
 
   /**
   * Default templates to avoid having to use code everywhere to make a complex one.
-  * @type {{
-    'main': Document
-    'quick': Document
-  }}
   */
-  templates;
+  templates: {
+    'main': Document;
+    'quick': Document;
+  };
 
-  /**
-   * @typedef {(boolean|number)} SettingType
-   * @typedef {("bool"|"number")} SettingTypeString
-   *
-   * @typedef {Object} SettingRangeObject
-   * @property {number} lower - The lower bound of the range
-   * @property {number} upper - The upper bound of the range
-   *
-   * @typedef {Object.<string, boolean|number>} SettingRequiresObject
-   * @description An object where keys are setting identifiers and values are required states (boolean or number)
-   *
-   * @typedef {Object} SettingOptionObject
-   * @property {string} description - Description of the setting option
-   * @property {(SettingTypeString)} type - Type of the setting value
-   * @property {(SettingType)} default - Default value
-   * @property {boolean} quick - Whether this is a quick setting
-   * @property {(SettingType)} value - The value of the setting
-   * @property {SettingRangeObject} [range] - Optional range constraints for number types
-   * @property {SettingRequiresObject} [requires] - Optional dependency requirement
-   * @property {string} [disabled] - Optional none visibility requirement.
-   * @property {string} [icon] - Optional icon, requires quick to be true though.
-   *
-   * @typedef {Object} SettingCategoryObject
-   * @property {string} description - Description of the setting category
-   * @property {Object.<string, SettingOptionObject>} options - Map of setting options
-   */
 
   /**
    * Settings data structure
-   * @type {Object.<string, SettingCategoryObject>}
    */
-  data;
+  data: { [s: string]: SettingCategoryObject; };
 
-  /** Functions to call upon settings being changed
-   * @type {Map<string, Function>}
-   */
-  listeners;
+  /** Functions to call upon settings being changed */
+  listeners: Map<string, Function>;
+  verbose: Verbose;
+  settings: DragStorage;
 
   constructor() {
-    /** @type {Verbose} */
     this.verbose = new Verbose('Settings', '#f5a97e');
-    /** @type {DragStorage} */
     this.settings = new DragStorage("setting");
     this.cache = new Map();
     this.listeners = new Map();
@@ -69,7 +75,7 @@ class DragSettings {
     this.settings.listStorage().forEach((item) => {
       let [category, key] = item.split("-");
 
-      this.data[category] = { options: { [key]: {} } };
+      this.data[category] = { description: 'e', options: { [key]: { value: 0, quick: false, description: '', type: "number", default: 0 } } };
       this.data[category].options[key].value = this.get_setting(category, key);
       this.__call_listener(category, key, this.data[category].options[key].value);
     })
@@ -82,7 +88,7 @@ class DragSettings {
   */
   async __initial_load() {
     // get settings from server
-    this.data = await loader.get_contents_from_server("Scripts/Settings/settings.json", true, loader.RETURN_TYPE.json);
+    this.data = await loader.get_contents_from_server("Scripts/Settings/settings.json", RETURN_TYPE.json);
 
     // templates are tempalates, although should not be as important sometimes they are.
     await this.__load_templates();
@@ -108,9 +114,9 @@ class DragSettings {
 
   /**
   * Make a category for the settings
-  * @param {string} category The category to make
+  * @param category The category to make
   */
-  __make_category(category) {
+  __make_category(category: string) {
     // don't add a category if everything is disabled
     if (Object.entries(this.data[category].options).filter((entry) => !entry[1].disabled).length === 0) return;
 
@@ -119,7 +125,7 @@ class DragSettings {
     const button = document.createElement("button");
     button.innerText = category;
     button.addEventListener('click', (_) => this.__load_ui(category));
-    elements.appendChild(button);
+    elements?.appendChild(button);
   }
 
   /**
@@ -128,86 +134,77 @@ class DragSettings {
   async __load_templates() {
     this.verbose.log("Loading templates...");
     this.templates = {
-      'main': await loader.get_contents_from_server("Scripts/Settings/templates/main.html", true, loader.RETURN_TYPE.document),
-      'quick': await loader.get_contents_from_server("Scripts/Settings/templates/quick.html", true, loader.RETURN_TYPE.document)
+      'main': await loader.get_contents_from_server("Scripts/Settings/templates/main.html", RETURN_TYPE.document),
+      'quick': await loader.get_contents_from_server("Scripts/Settings/templates/quick.html", RETURN_TYPE.document)
     };
   }
 
   /**
    * Create a ui element for a setting.
-   * @param {string} category The category of the setting.
-   * @param {string} setting The key of the setting.
+   * @param category The category of the setting.
+   * @param setting The key of the setting.
    */
-  __create_ui_value(category, setting) {
-    /** @type {HTMLElement} */
-    let value = document.getElementById("setting-value")?.getElementsByClassName('values')?.item(0);
+  __create_ui_value(category: string, setting: string) {
+    let value = document.getElementById("setting-value")?.getElementsByClassName('values')?.item(0) as HTMLElement;
     if (value == undefined) {
       this.verbose.error("Failed to find setting-value element");
       return;
     }
 
     // check to see if in cache, if so add and ignore the rest.
-    /** @type {HTMLElement} */
-    let cached = this.cache.get(`${category}-${setting}`);
+    let cached = this.cache.get(`${category}-${setting}`) as HTMLElement;
     if (cached) {
       value.appendChild(cached);
       return;
     }
 
-    /** @type {SettingOptionObject} */
-    let details = this.data[category].options[setting];
+    let details: SettingOptionObject = this.data[category].options[setting];
 
-    /** @type {HTMLElement} */
-    let node = this.templates.main.querySelector('[tag="main"]').cloneNode(true);
+    let node = this.templates.main.querySelector('[tag="main"]')?.cloneNode(true) as HTMLElement;
 
-    /** @type {HTMLElement} */
-    let title = node.querySelector('[tag="title"]');
+    let title = node.querySelector('[tag="title"]') as HTMLElement;
     title.innerText = capitalise(setting).replace(/_/g, ' ');
 
-    /** @type {HTMLElement} */
-    let description = node.querySelector('[tag="description"]');
+    let description = node.querySelector('[tag="description"]') as HTMLElement;
     description.innerText = details.description;
 
-    /** @type {HTMLInputElement} */
     // process setting the default value of the input based off data provided
-    let input = node.querySelector('[tag="input"]');
+    let input = node.querySelector('[tag="input"]') as HTMLInputElement;
     let inputParent = node.querySelector('[tag="input-parent"]');
-    input.value = details.value;
+    input.value = details.value.toString();
 
     // depending on the type, some differences are in order.
     switch (details.type) {
       case 'number':
         input.type = 'number';
-        inputParent.classList.add('field', 'border', 'fill')
-        input.min = details.range?.lower;
-        input.max = details.range?.upper;
-        input.value = details.value;
+        inputParent?.classList.add('field', 'border', 'fill');
+        input.min = details.range?.lower.toString() || "0";
+        input.max = details.range?.upper.toString() || "0";
+        input.value = (details.value as number).toString();
         break;
       case 'bool':
         input.type = 'checkbox';
-        inputParent.classList.add('checkbox', 'extra');
-        input.checked = details.value;
+        inputParent?.classList.add('checkbox', 'extra');
+        input.checked = details.value as boolean;
         break;
       case 'string':
       default:
         input.type = 'text';
-        input.value = details.value;
+        input.value = details.value as string;
     }
 
     // listen and wait for a change
     input.addEventListener('change', (_) => {
-      let value;
+      let value: SettingType;
       switch (details.type) {
         case 'bool':
           value = input.checked;
-          let quick = document.getElementById('Settings').querySelector(`[tag="${category}-${setting}"]`);
-          if (quick) {
-            quick.querySelector('input').checked = value;
-          }
+          let quick = document.getElementById('Settings')?.querySelector(`[tag="${category}-${setting}"]`)?.querySelector("input");
+          if (quick) quick.checked = value;
           break;
         case 'number':
-          value = Math.min(Math.max(input.value, details.range?.lower), details.range?.upper);
-          input.value = value;
+          value = Math.min(Math.max(Number.parseInt(input.value), details.range?.lower || 0), details.range?.upper || 0);
+          input.value = (value as number).toString();
           break;
         default:
           value = input.value;
@@ -217,14 +214,14 @@ class DragSettings {
 
     // listen and wait for default reset
     let default_node = node.querySelector('[tag="default"]');
-    default_node.addEventListener('click', (_) => {
+    default_node?.addEventListener('click', (_) => {
       switch (details.type) {
         case 'bool':
           // annoying checkboxs...
-          input.checked = details.default;
+          input.checked = details.default as boolean;
           break;
         default:
-          input.value = details.default;
+          input.value = details.default as string;
       }
     });
 
@@ -235,10 +232,10 @@ class DragSettings {
 
   /**
   * Hides or shows an object based on if the required object is enabled or not
-  * @param {string} category The category of the setting
-  * @param {string} setting The setting in the category
+  * @param category The category of the setting
+  * @param setting The setting in the category
   */
-  __required(category, setting) {
+  __required(category: string, setting: string) {
     let required = this.data[category].options[setting].requires;
     // Early return if the required does not exist.
     if (required == undefined) return null;
@@ -271,7 +268,7 @@ class DragSettings {
   /**
   * Go through all the settings in a particular category.
   */
-  __update_required(category) {
+  __update_required(category: string) {
     // still have to check all of the category though.
     Object.keys(this.data[category].options).forEach((setting) => {
       if (setting.startsWith("$")) return;
@@ -284,12 +281,11 @@ class DragSettings {
 
   /**
   * Load the settings ui
-  * @param {string} category The category of the setting to load.
+  * @param category The category of the setting to load.
   */
-  __load_ui(category) {
+  __load_ui(category: string) {
     // check to see if exists, which would be a very big issue if it didn't...
-    /** @type {HTMLElement} */
-    let value = document.getElementById("setting-value");
+    let value = document.getElementById("setting-value") as HTMLElement;
     if (value == undefined) {
       this.verbose.error(`Element with id "setting-value" not found.`);
       return;
@@ -297,14 +293,15 @@ class DragSettings {
 
     // set title, description, options, all that stuff
     let title = value.getElementsByClassName('title').item(0);
-    title.innerHTML = capitalise(category);
+    if (title) title.innerHTML = capitalise(category);
 
     let description = value.getElementsByClassName('description').item(0);
-    description.innerHTML = this.data[category].description;
+    if (description) description.innerHTML = this.data[category].description;
 
     // clearing the innerhtml to quickly clean out the old stuff.
     // probably a nicer alternative, but whatever.
-    value.getElementsByClassName('values').item(0).innerHTML = '';
+    let input_value = value.getElementsByClassName('values').item(0);
+    if (input_value) input_value.innerHTML = '';
 
     Object.keys(this.data[category].options).forEach((option) => {
       if (this.data[category].options[option].disabled) return;
@@ -315,89 +312,93 @@ class DragSettings {
 
   /**
   * Create a quick setting so the whole ui doesn't need to be opened
-  * @param {string} category Category of setting
-  * @param {string} setting Setting name itself
+  * @param category Category of setting
+  * @param setting Setting name itself
   */
-  __add_quick_elm(category, setting) {
+  __add_quick_elm(category: string, setting: string) {
     this.verbose.log(`Adding quick element: ${category}-${setting}`);
 
-    /** @type {HTMLElement} */
-    let quick = this.templates.quick.cloneNode(true).getElementsByTagName('label').item(0);
+    let quick = (this.templates.quick.cloneNode(true) as HTMLElement).getElementsByTagName('label').item(0) as HTMLElement;
     quick.setAttribute('tag', `${category}-${setting}`);
     let input = quick.querySelector('input');
+    if (input == null) {
+      this.verbose.warn("Failed to add quick element: ${category}-${setting}");
+      return;
+    }
+
     // button
     input.addEventListener('click', () => {
       this.set_setting(category, setting, input.checked);
-      let cache = this.cache.get(`${category}-${setting}`);
-      if (cache) {
-        cache.querySelector('input').checked = input.checked;
-      }
+      let cache = this.cache.get(`${category}-${setting}`)?.querySelector("input");
+      if (cache) cache.checked = input.checked;
     });
-    input.checked = this.get_setting(category, setting);
+    input.checked = this.get_setting(category, setting) as boolean;
 
     // icon
     let icon = quick.querySelectorAll("i").item(1);
-    this.verbose.log(`Adding icon class:`, ...this.data[category].options[setting].icon?.split(" "));
-    icon.classList.add(...this.data[category].options[setting].icon?.split(" "));
+    this.verbose.log(`Adding icon class:`, ...this.data[category].options[setting].icon?.split(" ") || []);
+    icon.classList.add(...this.data[category].options[setting].icon?.split(" ") || []);
 
     // insert
     let settings = document.getElementById('Settings');
-    let more = settings.getElementsByTagName('button').item(0);
-    settings.insertBefore(quick, more);
+    if (settings) {
+      let more = settings.getElementsByTagName('button').item(0);
+      settings.insertBefore(quick, more);
+    }
   }
 
   /**
   * Add a listener to wait for a setting to be changed before updating stuff
-  * @param {string} category The setting category
-  * @param {string} setting The setting name
-  * @param {Function} callback The function to call upon the setting being changed
+  * @param category The setting category
+  * @param setting The setting name
+  * @param callback The function to call upon the setting being changed
   */
-  add_listener(category, setting, callback) {
+  add_listener(category: string, setting: string, callback: (value: SettingType) => void) {
     this.verbose.info(`Adding listener: ${category}-${setting}`);
     this.listeners.set(`${category}-${setting}`, callback);
   }
 
   /**
   * Remove a listener
-  * @param {string} category The setting category
-  * @param {string} setting The setting name
+  * @param category The setting category
+  * @param setting The setting name
   */
-  remove_listener(category, setting) {
+  remove_listener(category: string, setting: string) {
     this.listeners.delete(`${category}-${setting}`);
   }
 
 
   /**
   * Call a listener
-  * @param {string} category The setting category
-  * @param {string} setting The setting name
-  * @param {SettingType} value The value to send to the callback function
+  * @param category The setting category
+  * @param setting The setting name
+  * @param value The value to send to the callback function
   */
-  __call_listener(category, setting, value) {
+  __call_listener(category: string, setting: string, value: SettingType) {
     // `?` is very useful here...
     this.listeners.get(`${category}-${setting}`)?.(value);
   }
 
   /**
   * Sets any setting to the provided value
-  * @param {string} category The setting category
-  * @param {string} setting The name of the setting
-  * @param {SettingType} value The value to store. (will be saved as string due to localstorage)
+  * @param category The setting category
+  * @param setting The name of the setting
+  * @param value The value to store. (will be saved as string due to localstorage)
   */
-  set_setting(category, setting, value) {
+  set_setting(category: string, setting: string, value: SettingType) {
     this.verbose.log(`Saving setting: ${category}-${setting} (setting to ${value})`);
-    this.settings.setStorage(`${category}-${setting}`, value);
+    this.settings.setStorage(`${category}-${setting}`, value.toString());
     this.__call_listener(category, setting, value);
-    this.__update_required(category, setting);
+    this.__update_required(category);
   }
 
   /**
   * Get any setting and returns it as the proper format.
-  * @param {string} category The setting category
-  * @param {string} setting The name of the setting
-  * @returns {SettingType} The result of the setting, in a format befiting of the setting where possible.
+  * @param category The setting category
+  * @param setting The name of the setting
+  * @returns The result of the setting, in a format befiting of the setting where possible.
   */
-  get_setting(category, setting) {
+  get_setting(category: string, setting: string): SettingType {
     const value = this.settings.getStorage(`${category}-${setting}`);
 
     if (value === null || value === undefined) {
@@ -412,9 +413,8 @@ class DragSettings {
         case 'number':
           return 0;
         case 'string':
-          return '';
         default:
-          return null;
+          return '';
       }
     }
 
@@ -437,12 +437,14 @@ class DragSettings {
 
   /**
   * To show or to hide the settings
-  * @param {boolean} state The state of which to put the settings menu into
+  * @param state The state of which to put the settings menu into
   */
-  visible(state) {
+  visible(state: boolean | undefined = undefined) {
+    let big_settings = document.getElementById("big-settings");
+    if (big_settings == null) return;
     if (state === undefined || state === null) {
       // ability to flip the state if not defined
-      state = document.getElementById("big-settings").hidden;
+      state = big_settings.hidden;
     }
     if (typeof state !== 'boolean') {
       this.verbose.warn('Settings visibility value must be boolean');
@@ -450,8 +452,20 @@ class DragSettings {
     }
 
     // flip state here otherwise it's going to be conufsing in the actual code.
-    document.getElementById("big-settings").hidden = !state;
+    big_settings.hidden = !state;
   }
 }
 
+/**
+* Capitalise a string.... Why does JS not have this already?
+* @param {string} str The string to capitalise
+* @returns The same string, but with a capital start
+*/
+function capitalise(str: string) {
+  return str.charAt(0).toUpperCase() + str.slice(1);
+}
+
+
 const settings = new DragSettings();
+
+export { settings, capitalise, SettingType }

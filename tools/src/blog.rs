@@ -60,24 +60,6 @@ impl Blog {
                     .collect::<Vec<Category>>(),
             )
             .build()
-
-        // Uses itself to generate a rss snippet of stuff.
-        // let mut rss = String::from("\t\t<item>\n");
-        // rss.push_str(&format!("\t\t\t<title>{}</title>\n", self.date));
-        // rss.push_str(&format!(
-        //     "\t\t\t<link>https://dragmine149.github.io/Blog?blog={}</link>\n",
-        //     self.date
-        // ));
-        // rss.push_str(&format!(
-        //     "\t\t\t<description>{}</description>\n",
-        //     self.preview
-        // ));
-        // for category in &self.categories {
-        // rss.push_str(&format!("\t\t\t<category>{}</category>\n", category));
-        // }
-        // rss.push_str("\t\t</item>\n");
-
-        // rss
     }
 
     pub fn sort_blog(&self, other: &Self) -> Ordering {
@@ -92,6 +74,7 @@ pub fn make_blog_list() -> Vec<Blog> {
         .map(|path| path.unwrap().path()) // convert to path
         .filter(|path| path.extension().unwrap_or(OsStr::new("")) == "md") // only have markdown files
         .map(|path| Blog::from_path(&path)) // map to blog object
+        .filter(|b| !b.categories.iter().any(|s| s == "hidden"))
         .collect::<Vec<Blog>>(); // collect
 
     blogs.sort_by(Blog::sort_blog); // sort
@@ -99,20 +82,6 @@ pub fn make_blog_list() -> Vec<Blog> {
 }
 
 pub fn make_rss_feed(blogs: &[Blog]) {
-    // let mut rss = String::from("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
-    // rss.push_str("<rss version=\"2.0\">\n");
-    // rss.push_str("\t<channel>\n");
-    // rss.push_str("\t\t<title>Dragmine149's Blog</title>\n");
-    // rss.push_str("\t\t<link>https://dragmine149.github.io/Blog</link>\n");
-    // rss.push_str("\t\t<description>A blog by Dragmine149</description>\n");
-
-    // // for blog in blogs {
-    // //     rss.push_str(&blog.generate_rss());
-    // // }
-
-    // rss.push_str("\t</channel>\n");
-    // rss.push_str("</rss>");
-
     let channel = ChannelBuilder::default()
         .title("Dragmine149's Blog")
         .link("https://dragmine149.github.io/Blog")

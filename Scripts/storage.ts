@@ -1,3 +1,7 @@
+import type { Compressed } from "compress-json";
+import * as compressJSON from 'compress-json';
+import { Verbose } from "./verbose.mjs";
+
 const maxCacheTime = 7 * 24 * 60 * 60 * 1000;
 
 const MiliSeconds = {
@@ -12,23 +16,35 @@ const MiliSeconds = {
   }
 };
 
+/**
+ * Custom storage interface for localStorage, might expand with the very annoying indexedDB later.
+ *
+ * The "Cache" feature is for storage that needs to be stored longer than a session but not indefinitely.
+ */
 class DragStorage {
+
   prefix = "";
   /**
    * Creates a new Storage instance with a specified prefix
-   * @param {string} prefix - The prefix to use for all storage keys
+   * @param prefix The prefix to use for all storage keys
    */
-  constructor(prefix) {
+  constructor(prefix: string) {
     this.prefix = prefix;
+  }
+
+  #key_loop(callback: Function) {
+    for (let index = 0; index < localStorage.length; index++) {
+      callback(localStorage.key(index));
+    }
   }
 
   /**
    * Sets an item in localStorage with the instance prefix
-   * @param {string} name - The name of the storage item
-   * @param {string} value - The value to store
-   * @param {number} cache - How long to "cache" the value for (in milliseconds). <= 0 = no cache. Max cache time of 7d
+   * @param name - The name of the storage item
+   * @param value - The value to store
+   * @param cache - How long to "cache" the value for (in milliseconds). <= 0 = no cache. Max cache time of 7d
    */
-  setStorage(name, value, cache = 0) {
+  setStorage(name: string, value: string, cache: number = 0) {
     localStorage.setItem(`${this.prefix}-${name}`, value);
     if (cache <= 0) return;
     if (cache > maxCacheTime) console.warn(`Cache time for ${name} (${cache}ms) exceeds max cache time of ${maxCacheTime}ms. Setting to max cache time.`);
@@ -37,10 +53,10 @@ class DragStorage {
 
   /**
    * Gets an item from localStorage by name with the instance prefix
-   * @param {string} name - The name of the storage item
-   * @returns {string|null} The stored value or null if not found
+   * @param name - The name of the storage item
+   * @returns The stored value or null if not found
    */
-  getStorage(name) {
+  getStorage(name: string) {
     if (!this.validCache(name)) {
       // the cache is no longer valid, hence remove it.
       // removing it will cause the next function to return null.
@@ -51,11 +67,11 @@ class DragStorage {
   }
 
   /**
-   * Checks if an item exists in localStorage
-   * @param {string} name - The name of the storage item
-   * @returns {boolean} True if the item exists, false otherwise
+   * Checks if an item exists in localStorage, although just do an if null check on getStorage
+   * @param name - The name of the storage item
+   * @returns True if the item exists, false otherwise
    */
-  hasStorage(name) {
+  hasStorage(name: string) {
     if (!this.validCache(name)) {
       // if the cache has expired, then we have no storage technically.
       return false;
@@ -65,9 +81,9 @@ class DragStorage {
 
   /**
    * Removes an item from localStorage by name
-   * @param {string} name - The name of the storage item to remove
+   * @param name - The name of the storage item to remove
    */
-  removeStorage(name) {
+  removeStorage(name: string) {
     localStorage.removeItem(`${this.prefix}-${name}`);
   }
 
@@ -75,25 +91,24 @@ class DragStorage {
    * Removes all items from localStorage that start with the instance prefix
    */
   clearPrefix() {
-    for (let item = 0; item < localStorage.length; item++) {
-      let key = localStorage.key(item);
+    this.#key_loop((key: string) => {
       if (key.startsWith(this.prefix)) {
         localStorage.removeItem(key);
       }
-    }
+    });
   }
 
   /**
   * Set a value to be counted as "cache". Cached values automatically expire after a given time.
-  * @param {string} name The name of the cache
-  * @param {number} length How long to store the cache for (in milliseconds)
+  * @param name The name of the cache
+  * @param length How long to store the cache for (in milliseconds)
   */
-  setCache(name, length) {
+  setCache(name: string, length: number) {
     // get the cache
     let cache_details = localStorage.getItem(`cache`) ?? JSON.stringify(compressJSON.compress({}));
-    cache_details = JSON.parse(cache_details);
+    let cache_compressed = JSON.parse(cache_details) as Compressed;
     // uncompress the cache
-    const cache = compressJSON.decompress(cache_details);
+    const cache = compressJSON.decompress(cache_compressed);
     // set the cache
     cache[`${this.prefix}-${name}`] = new Date().getTime() + length;
     localStorage.setItem(`cache`, JSON.stringify(compressJSON.compress(cache)));
@@ -101,25 +116,25 @@ class DragStorage {
 
   /**
   * Get the experiiation time (in milliseconds) of the cache.
-  * @param {string} name The name of the cache
-  * @returns {number} The millisecond value of the cache
+  * @param name The name of the cache
+  * @returns The millisecond value of the cache
   */
-  getCache(name) {
+  getCache(name: string) {
     // get the cache
     let cache_details = localStorage.getItem(`cache`) ?? JSON.stringify(compressJSON.compress({}));
-    cache_details = JSON.parse(cache_details);
+    let cache_compressed = JSON.parse(cache_details) as Compressed;
     // uncompress the cache
-    const cache = compressJSON.decompress(cache_details);
+    const cache = compressJSON.decompress(cache_compressed);
     // get the cached value
-    return cache[`${this.prefix}-${name}`];
+    return cache[`${this.prefix}-${name}`] as number;
   }
 
   /**
   * Check if the cache is valid.
-  * @param {string} name The name of the cache
-  * @returns {boolean} The result of the check. True if no cache or valid cache, false otherwise.
+  * @param name The name of the cache
+  * @returns The result of the check. True if no cache or valid cache, false otherwise.
   */
-  validCache(name) {
+  validCache(name: string) {
     const date = this.getCache(name);
     if (!date) return true;
     const now = new Date();
@@ -127,15 +142,20 @@ class DragStorage {
     return false;
   }
 
+  /**
+   * Lists all the keys in localStorage
+   * @returns A list of keys
+   */
   listStorage() {
-    let items = [];
-    for (let item = 0; item < localStorage.length; item++) {
-      let key = localStorage.key(item);
-      if (key == 'cache') continue;
-      if (key.startsWith(this.prefix)) {
-        items.push(key.replace(this.prefix + "-", ""));
+    let items: string[] = [];
+    this.#key_loop((item: string) => {
+      if (item == 'cache') return;
+      if (item.startsWith(this.prefix)) {
+        items.push(item.replace(this.prefix + "-", ""));
       }
-    }
+    });
     return items;
   }
 }
+
+export { DragStorage, MiliSeconds };

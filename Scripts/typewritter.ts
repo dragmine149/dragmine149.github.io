@@ -1,10 +1,13 @@
-let writers = [];
+let writers: typewriter[] = [];
 
 class typewriter {
-  constructor(elm) {
-    if (writers.map(w => w.elm).includes(elm)) {
-      return writers.find(w => w.elm === elm);
-    }
+  elm: HTMLDivElement;
+  in_progress: boolean;
+
+  constructor(elm: HTMLDivElement) {
+    // if (writers.map(w => w.elm).includes(elm)) {
+    //   return writers.find(w => w.elm === elm);
+    // }
 
     this.elm = elm;
     this.in_progress = false;
@@ -12,11 +15,10 @@ class typewriter {
   }
 
   /**
-  * @param {HTMLElement} elm The element to do the effect on. Must have `.innerText` property
-  * @param {String} end The text to end up at (uses the current value if empty)
-  * @param {number} time How long to take to complete the whole cycle (in ms)
+  * @param end The text to end up at (uses the current value if empty)
+  * @param time How long to take to complete the whole cycle (in ms)
   */
-  start(end = "", time = 5000) {
+  start(end: String = "", time: number = 5000) {
     if (this.in_progress) {
       return;
     }
@@ -30,13 +32,7 @@ class typewriter {
     this.loop(end, 1, time / end.length);
   };
 
-  /**
-  *
-  * @param {String} string
-  * @param {number} length
-  * @param {number} timeout
-  */
-  loop(string, length, timeout) {
+  loop(string: String, length: number, timeout: number) {
     this.elm.innerText = string.substring(0, length);
 
     if (length < string.length) {
@@ -48,3 +44,5 @@ class typewriter {
     this.in_progress = false;
   };
 }
+
+export { typewriter }

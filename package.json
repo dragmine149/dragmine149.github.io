@@ -1,0 +1,25 @@
+{
+  "type": "module",
+  "scripts": {
+    "build": "bun_build.sh"
+  },
+  "dependencies": {
+    "compress-json": "^3.2.0",
+    "highlight.js": "^11.11.1",
+    "marked": "^16.1.2",
+    "marked-custom-heading-id": "^2.0.15",
+    "marked-footnote": "^1.4.0",
+    "marked-highlight": "^2.2.2",
+    "suncalc": "^1.9.0",
+    "typescript": "^5.9.2"
+  },
+  "watch": {
+    "build": {
+      "patterns": [
+        "Scripts"
+      ],
+      "extensions": "js,ts,mjs"
+    }
+  },
+  "private": true
+}
