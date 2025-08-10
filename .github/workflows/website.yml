@@ -201,8 +201,8 @@ jobs:
       
       - name: Bun Build
         run: |
-          bun install
           cd tmp/IncludeFile
+          bun install
           ./bun_build.sh
 
       - name: Upload artifact
