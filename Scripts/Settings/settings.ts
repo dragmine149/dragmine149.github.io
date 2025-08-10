@@ -178,14 +178,14 @@ class DragSettings {
       case 'number':
         input.type = 'number';
         inputParent?.classList.add('field', 'border', 'fill');
-        if (input.min) input.min = details.range?.lower.toString() || "0";
-        if (input.max) input.max = details.range?.upper.toString() || "0";
+        input.min = details.range?.lower.toString() || "0";
+        input.max = details.range?.upper.toString() || "0";
         input.value = (details.value as number).toString();
         break;
       case 'bool':
         input.type = 'checkbox';
         inputParent?.classList.add('checkbox', 'extra');
-        if (input.checked) input.checked = details.value as boolean;
+        input.checked = details.value as boolean;
         break;
       case 'string':
       default:
