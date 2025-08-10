@@ -196,6 +196,11 @@ jobs:
           cd tmp/IncludeFile
           tree -L 5
 
+      - name: Bun Build
+        run: |
+          cd tmp/IncludeFile
+          ./bun_build.sh
+
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
