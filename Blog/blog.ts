@@ -40,6 +40,10 @@ class Blog {
     page.addFinishListener("Blog", () => {
       this.load_blog_from_url();
       document.getElementById("blog_back")?.addEventListener('click', () => this.load_blog_list());
+
+      let elm = document.querySelector('h1[id="title"]') as HTMLHeadingElement | null;
+      if (!elm) return;
+      elm.style.fontSize = settings.get_setting("Blog", "title") + "rem";
     })
   }
 
