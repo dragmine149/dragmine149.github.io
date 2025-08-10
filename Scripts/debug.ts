@@ -10,10 +10,12 @@ import { capitalise, settings } from "./Settings/settings";
 import { customHistory } from "./loader/customHistory";
 import * as url_functions from './loader/url_functions';
 import { projects } from "../Projects/projects";
+import { date_time } from "./DayNightCycle/background";
 
 console.log("Setting up debug!");
 
 globalThis.debug = {
+  date_time,
   page,
   loader: {
     loader, RETURN_TYPE

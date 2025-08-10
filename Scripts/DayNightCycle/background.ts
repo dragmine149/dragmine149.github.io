@@ -223,7 +223,7 @@ class DateTime {
   * Get the times for a given location
   * @returns A list of times in Date format.
   */
-  async __get_times() {
+  async __get_times(force_update: boolean = false) {
     // checks if we can bypass the storage check or not.
     // The bypass is for when changing settings, hence we don't have to wait a whole day to get the new values.
     let bypass_storage = false;
@@ -234,7 +234,7 @@ class DateTime {
     }
 
     // If we can't bypass storage, and we have storage. prefer that instead.
-    if (!bypass_storage && this.storage.hasStorage("times")) {
+    if (!force_update && !bypass_storage && this.storage.hasStorage("times")) {
       let data = JSON.parse(this.storage.getStorage("times") as string) as TimesCollection;
       data.sunrise.yesterday = new Date(data.sunrise.yesterday);
       data.sunrise.today = new Date(data.sunrise.today);
@@ -369,6 +369,10 @@ class DateTime {
 
     // get the current progress in the day/night cycle. and for how long.
     let progress = this.get_progress(now, times);
+    if (progress.progress >= 2) {
+      times = await this.__get_times(true);
+      this.verbose.log(times);
+    }
     this.verbose.info(`Progress: ${progress.progress}`);
     this.verbose.info(`Duration: ${progress.duration} hours`);
 
@@ -439,3 +443,5 @@ class DateTime {
 }
 
 const date_time = new DateTime();
+
+export { date_time }
