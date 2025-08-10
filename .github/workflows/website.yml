@@ -203,6 +203,7 @@ jobs:
         run: |
           cd tmp/IncludeFile
           bun install
+          chmod +x ./bun_build.sh
           ./bun_build.sh
 
       - name: Upload artifact
