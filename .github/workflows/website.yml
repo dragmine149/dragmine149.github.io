@@ -196,8 +196,12 @@ jobs:
           cd tmp/IncludeFile
           tree -L 5
 
+      - name: Install Bun
+        uses: oven-sh/setup-bun@v2
+      
       - name: Bun Build
         run: |
+          bun install
           cd tmp/IncludeFile
           ./bun_build.sh
 
