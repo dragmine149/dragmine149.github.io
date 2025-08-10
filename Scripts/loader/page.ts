@@ -96,7 +96,7 @@ class Page {
     this.load_page_contents(destination_url, data);
     customHistory.store_page(destination_url); // event store the page after stuff has loaded.
     let func = this.finish_loaded.get(page);
-    if (func) func();
+    if (typeof func === 'function') func();
   }
 
   /**
