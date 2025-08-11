@@ -369,7 +369,7 @@ class DateTime {
 
     // get the current progress in the day/night cycle. and for how long.
     let progress = this.get_progress(now, times);
-    if (progress.progress >= 2) {
+    if (progress.progress >= 2 || progress.progress < 0) {
       times = await this.__get_times(true);
       this.verbose.log(times);
     }
