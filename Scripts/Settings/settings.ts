@@ -57,6 +57,7 @@ class DragSettings {
    * Settings data structure
    */
   data: { [s: string]: SettingCategoryObject; };
+  icon_templates: Document;
 
   /** Functions to call upon settings being changed */
   listeners: Map<string, Function>;
@@ -89,6 +90,7 @@ class DragSettings {
   async __initial_load() {
     // get settings from server
     this.data = await loader.get_contents_from_server("Scripts/Settings/settings.json", RETURN_TYPE.json);
+    this.icon_templates = await loader.get_contents_from_server("Scripts/Settings/templates/icons.html", RETURN_TYPE.document);
 
     // templates are tempalates, although should not be as important sometimes they are.
     await this.__load_templates();
@@ -335,9 +337,13 @@ class DragSettings {
     input.checked = this.get_setting(category, setting) as boolean;
 
     // icon
-    let icon = quick.querySelectorAll("i").item(1);
-    this.verbose.log(`Adding icon class:`, ...this.data[category].options[setting].icon?.split(" ") || []);
-    icon.classList.add(...this.data[category].options[setting].icon?.split(" ") || []);
+    let icon_elm = quick.querySelector("i") as HTMLElement;
+    let icon = this.data[category].options[setting].icon;
+    this.verbose.log(`Adding icon class:`, this.data[category].options[setting].icon);
+    let icon_clone = this.icon_templates.getElementsByClassName(`i-${icon}`).item(0)?.cloneNode(true);
+    if (icon_clone) icon_elm.appendChild(icon_clone);
+
+    // icon.classList.add(...this.data[category].options[setting].icon?.split(" ") || []);
 
     // insert
     let settings = document.getElementById('Settings');

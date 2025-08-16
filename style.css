@@ -42,18 +42,6 @@ article.main h6 {
   inset: 4rem auto auto 50%;
 }
 
-.fa-brands {
-  font-family: 'Font Awesome 6 Brands';
-}
-
-.fas,
-.fa-classic,
-.fa-solid,
-.far,
-.fa-regular {
-  font-family: 'Font Awesome 6 Free';
-}
-
 .light {
   --primary: #6750a4;
   --on-primary: #ffffff;
