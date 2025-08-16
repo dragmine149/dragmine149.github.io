@@ -471,7 +471,8 @@ function capitalise(str: string) {
   return str.charAt(0).toUpperCase() + str.slice(1);
 }
 
-
 const settings = new DragSettings();
+// the debug script can handle the rest, we don't have to do anything.
+settings.add_listener("Debug", "Load_debug", async (v) => { if (v === true) await import("../debug") });
 
 export { settings, capitalise, SettingType }

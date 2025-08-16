@@ -187,6 +187,12 @@
         "disabled": {
           "reason": "NotYetImplemented"
         }
+      },
+      "Load_debug": {
+        "description": "Load the debug module and all the console stuff with it. (basically loads entire site)",
+        "default": "",
+        "type": "bool",
+        "quick": false
       }
     }
   }
