@@ -235,6 +235,7 @@ class DateTime {
 
     // If we can't bypass storage, and we have storage. prefer that instead.
     if (!force_update && !bypass_storage && this.storage.hasStorage("times")) {
+      this.verbose.debug("We have storage, using that instead!");
       let data = JSON.parse(this.storage.getStorage("times") as string) as TimesCollection;
       data.sunrise.yesterday = new Date(data.sunrise.yesterday);
       data.sunrise.today = new Date(data.sunrise.today);
@@ -248,9 +249,10 @@ class DateTime {
     let [latitude, longitude] = await this.__get_location();
 
     // Get the current time
-    let now = new Date();
-    let yesterday = modifyDay(now, 1);
-    let tomorrow = modifyDay(now, -1);
+    let yesterday = new Date();
+    // let yesterday = modifyDay(now, -1);
+    let now = modifyDay(yesterday, 1);
+    let tomorrow = modifyDay(now, 1);
     // let yesterday = now.subtract(1, 'day');
     // let tomorrow = now.add(1, 'day');
 
@@ -370,6 +372,7 @@ class DateTime {
     // get the current progress in the day/night cycle. and for how long.
     let progress = this.get_progress(now, times);
     if (progress.progress >= 2 || progress.progress < 0) {
+      this.verbose.log("Force update as negative or positive values!");
       times = await this.__get_times(true);
       this.verbose.log(times);
     }
