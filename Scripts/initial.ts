@@ -11,6 +11,9 @@ function socials() {
   document.getElementById('socials')?.classList.toggle("active");
 }
 
+settings.set_setting("Datetime", "default_state", -1);
+settings.set_setting("Datetime", "enabled", false);
+
 setTimeout(() => {
   snackbar.remove_elements(SnackbarArea.Top_Middle);
 }, 5_000);
