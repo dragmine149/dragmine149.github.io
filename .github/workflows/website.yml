@@ -78,6 +78,7 @@ jobs:
           path: |
             .
             !.git
+            .git/HEAD
 
   # For each branch, make an artifact of said branch
   build:
@@ -198,7 +199,7 @@ jobs:
 
       - name: Install Bun
         uses: oven-sh/setup-bun@v2
-      
+
       - name: Bun Build
         run: |
           cd tmp/IncludeFile
