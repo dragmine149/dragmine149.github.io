@@ -71,7 +71,7 @@ jobs:
           submodules: true
 
       - name: move git head
-        run: mv .git/refs/heads/main .git/HEAD
+        run: mv .git/refs/heads/main git_head
 
       - name: Upload main
         uses: actions/upload-artifact@v4
@@ -81,7 +81,6 @@ jobs:
           path: |
             .
             !.git
-            .git/HEAD
 
   # For each branch, make an artifact of said branch
   build:

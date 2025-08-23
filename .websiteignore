@@ -2,4 +2,3 @@ tools/
 .zed
 .git/
 .jj/
-!.git/HEAD
