@@ -70,6 +70,9 @@ jobs:
           ref: "main"
           submodules: true
 
+      - name: move git head
+        run: mv .git/refs/heads/main .git/HEAD
+
       - name: Upload main
         uses: actions/upload-artifact@v4
         with:
