@@ -473,6 +473,6 @@ function capitalise(str: string) {
 
 const settings = new DragSettings();
 // the debug script can handle the rest, we don't have to do anything.
-settings.add_listener("Debug", "Load_debug", async (v) => { if (v === true) await import("../debug") });
+settings.add_listener("Debug", "Load_debug", async (v) => { if (v === true) if (globalThis.import_debug) globalThis.import_debug(); });
 
 export { settings, capitalise, SettingType }

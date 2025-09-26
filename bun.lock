@@ -5,7 +5,7 @@
       "dependencies": {
         "compress-json": "^3.2.0",
         "highlight.js": "^11.11.1",
-        "marked": "^16.1.2",
+        "marked": "^16.3.0",
         "marked-custom-heading-id": "^2.0.15",
         "marked-footnote": "^1.4.0",
         "marked-highlight": "^2.2.2",
@@ -19,7 +19,7 @@
 
     "highlight.js": ["highlight.js@11.11.1", "", {}, "sha512-Xwwo44whKBVCYoliBQwaPvtd/2tYFkRQtXDWj1nackaV2JPXx3L0+Jvd8/qCJ2p+ML0/XVkJ2q+Mr+UVdpJK5w=="],
 
-    "marked": ["marked@16.1.2", "", { "bin": { "marked": "bin/marked.js" } }, "sha512-rNQt5EvRinalby7zJZu/mB+BvaAY2oz3wCuCjt1RDrWNpS1Pdf9xqMOeC9Hm5adBdcV/3XZPJpG58eT+WBc0XQ=="],
+    "marked": ["marked@16.3.0", "", { "bin": { "marked": "bin/marked.js" } }, "sha512-K3UxuKu6l6bmA5FUwYho8CfJBlsUWAooKtdGgMcERSpF7gcBUrCGsLH7wDaaNOzwq18JzSUDyoEb/YsrqMac3w=="],
 
     "marked-custom-heading-id": ["marked-custom-heading-id@2.0.15", "", { "peerDependencies": { "marked": ">=1 <17" } }, "sha512-V/VAQkd240lwS/h5Noqm3bnMeK8lA97aG108zddZWttrPihMJ6iVp0w6ZJrbHuWWA0755GaQUIhq41i9UE6Z5A=="],
 

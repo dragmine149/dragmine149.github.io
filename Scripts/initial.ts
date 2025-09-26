@@ -1,3 +1,4 @@
+import '../Modules/modules_extension';
 import { snackbar, SnackbarArea } from './snackbar_hover';
 import { loader, RETURN_TYPE } from './loader/loader';
 import { page } from './loader/page';
@@ -55,6 +56,10 @@ document.getElementById("nav_soci")?.addEventListener('click', socials);
 
 document.getElementById("settings-more")?.addEventListener('click', () => settings.visible());
 document.getElementById("settings-hide")?.addEventListener('click', () => settings.visible());
+
+globalThis.import_debug = async () => await import('./debug');
+
+
 
 async function getGitHeadInfo(head: string): Promise<string> {
   const trimmedContent = head.trim();

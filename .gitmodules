@@ -4,3 +4,6 @@
 [submodule "ETOH"]
 	path = ETOH
 	url = git@github.com:dragmine149/ETOH.git
+[submodule "test_website"]
+	path = test_website
+	url = git@github.com:dragmine149/test_website.git
