@@ -33,7 +33,7 @@ jobs:
       - name: Check for blog update
         id: determine_blog_changes
         run: |
-          # git fetch --tags --quiet
+          git fetch --tags --quiet
 
           if [ -z "$(git tag -l blog_latest)" ]; then
             printf 'Warning: tag "blog_latest" not found; assuming Blog has changes.\n' >&2
