@@ -60,8 +60,8 @@ jobs:
         if: steps.determine_blog_changes.outputs.changed == 'false'
         run: |
           mkdir -p Blog
-          curl https://dragmine149.github.io/Blog/feed.xml Blog/feed.xml
-          curl https://dragmine149.github.io/Blog/list.json Blog/list.json
+          curl https://dragmine149.github.io/Blog/feed.xml > Blog/feed.xml
+          curl https://dragmine149.github.io/Blog/list.json > Blog/list.json
 
       - name: Upload
         uses: actions/upload-artifact@v4
