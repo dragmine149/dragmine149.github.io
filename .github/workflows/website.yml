@@ -202,6 +202,9 @@ jobs:
           name: data
           path: website/Blog
 
+      - name: Setup rust
+        uses: actions-rust-lang/setup-rust-toolchain@v1
+
       - name: Process website ignore
         run: |
           cd website/tools
