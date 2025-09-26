@@ -30,11 +30,38 @@ jobs:
         with:
           ref: "main"
 
+      - name: Check for blog update
+        id: determine_blog_changes
+        run: |
+          # git fetch --tags --quiet
+
+          if [ -z "$(git tag -l blog_latest)" ]; then
+            printf 'Warning: tag "blog_latest" not found; assuming Blog has changes.\n' >&2
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          changed=$(git diff --name-only blog_latest...HEAD -- Blog || true)
+          if [ -z "$changed" ]; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          echo "changed=true" >> "$GITHUB_OUTPUT"
+
       - name: Generate blog list
+        if: steps.determine_blog_changes.outputs.changed == 'true'
         run: |
           cd tools
           cargo run json
           cargo run rss
+
+      - name: Download from website
+        if: steps.determine_blog_changes.outputs.changed == 'false'
+        run: |
+          mkdir -p Blog
+          curl https://dragmine149.github.io/Blog/feed.xml Blog/feed.xml
+          curl https://dragmine149.github.io/Blog/list.json Blog/list.json
 
       - name: Upload
         uses: actions/upload-artifact@v4
